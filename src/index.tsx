@@ -2,12 +2,15 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {GlobalStyle} from './theme/globalStyles';
+import { GlobalStyle } from './theme/globalStyles';
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
     <StrictMode>
-        <GlobalStyle />
+        <BrowserRouter>
+            <GlobalStyle />
             <App />
+        </BrowserRouter>
     </StrictMode>,
     document.getElementById('root'),
 );
