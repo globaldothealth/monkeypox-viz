@@ -1,18 +1,17 @@
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import { createTheme } from '@mui/material';
-import { AppBar } from '@mui/material';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-
-import GHListLogo from './components/GHListLogo';
 import TopBar from './components/TopBar';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { CountryView } from './components/CountryView/CountryView';
+import { RegionalView } from './components/RegionalView/RegionalView';
+import { CoverageView } from './components/CoverageView/CoverageView';
 
 declare module '@mui/material/styles' {
-    interface Theme {
-        Typography: {
-            palette: string;
-        };
-    }
+    // interface Theme {
+    //     Typography: {
+    //         palette: string;
+    //     };
+    // }
 
     // allow configuration using `createTheme`
     interface ThemeOptions {
@@ -84,15 +83,16 @@ const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <div className="App">
-                <Box sx={{ flexGrow: 1 }}>
-                    <AppBar position="static">
-                        <Toolbar variant="dense">
-                            <GHListLogo />
-                            <TopBar />
-                        </Toolbar>
-                    </AppBar>
-                </Box>
-                <p>it is working</p>
+                <TopBar />
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<Navigate replace to="/country" />}
+                    />
+                    <Route path="/country" element={<CountryView />} />
+                    <Route path="/region" element={<RegionalView />} />
+                    <Route path="/coverage" element={<CoverageView />} />
+                </Routes>
             </div>
         </ThemeProvider>
     );

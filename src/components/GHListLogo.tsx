@@ -2,7 +2,7 @@ import React from 'react';
 import logo from '../assets/images/gh_logo.svg';
 import styled from 'styled-components';
 
-export default function GHListLogo(props: unknown): JSX.Element {
+export default function GHListLogo(): JSX.Element {
 
     const LogoImage = styled.img`
         border-right: 1px solid #555;
