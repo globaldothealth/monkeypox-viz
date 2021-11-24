@@ -38,11 +38,12 @@ export const theme = createTheme({
             color: 'red',
         },
     },
-    // palette: {
-    //     background: {
-    //         default: '#ecf3f0',
-    //         paper: '#fff',
-    //     },
+    palette: {
+        background: {
+            default: '#edf3f1',
+            paper: '#333',
+        },
+    }
     //     primary: {
     //         main: '#0E7569',
     //         contrastText: '#fff',

@@ -5,8 +5,12 @@ import GHListLogo from './GHListLogo';
 import { AppBar } from '@mui/material';
 import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom';
+import { theme } from '../App';
 
 const TopBarContainerStyle = styled.div`
+header {
+    background-color: ${theme.palette.background.default};
+}
     .toolbar {
         display: flex;
         justify-content: space-between;
