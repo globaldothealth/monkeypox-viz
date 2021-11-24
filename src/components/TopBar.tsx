@@ -1,33 +1,31 @@
 import Typography from '@mui/material/Typography';
-import styled from 'styled-components';
+import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import GHListLogo from './GHListLogo';
 import { AppBar } from '@mui/material';
 import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom';
-import { theme } from '../App';
 
-const TopBarContainerStyle = styled.div`
-header {
-    background-color: ${theme.palette.background.default};
-}
-    .toolbar {
+const TopBarContainerStyle = styled('div')(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
+}));
+
+const StyledTooolbar = styled(Toolbar)`
+    display: flex;
+    justify-content: space-between;
+
+    & nav {
         display: flex;
         justify-content: space-between;
-        nav {
-            display: flex;
-            justify-content: space-between;
-            gap: 25px;
-        }
+        gap: 25px;
     }
 `;
-
 const TopBar = () => {
     return (
         <TopBarContainerStyle>
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
-                    <Toolbar variant="regular" className="toolbar">
+                    <StyledTooolbar variant="regular" className="toolbar">
                         <GHListLogo />
                         <nav>
                             <Link to="/country">
@@ -45,13 +43,17 @@ const TopBar = () => {
                                     Coverage
                                 </Typography>
                             </Link>
-                            <a href="https://data.covid-19.global.health/" rel="noopener noreferrer" target="_blank">
+                            <a
+                                href="https://data.covid-19.global.health/"
+                                rel="noopener noreferrer"
+                                target="_blank"
+                            >
                                 <Typography variant="body1" gutterBottom>
                                     G.h Data
                                 </Typography>
                             </a>
                         </nav>
-                    </Toolbar>
+                    </StyledTooolbar>
                 </AppBar>
             </Box>
         </TopBarContainerStyle>
