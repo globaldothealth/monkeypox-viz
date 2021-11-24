@@ -4,43 +4,41 @@ import { AppBar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
-
 import GHListLogo from './components/GHListLogo';
 import TopBar from './components/TopBar';
 
 declare module '@mui/material/styles' {
     interface Theme {
-        typography: {
+        Typography: {
             palette: string;
         };
     }
 
-
-    
     // allow configuration using `createTheme`
     interface ThemeOptions {
         custom?: any;
     }
+
+    interface TypographyVariants {
+        poster: React.CSSProperties;
+    }
+    interface TypographyVariantsOptions {
+        poster?: React.CSSProperties;
+    }
 }
-interface TypographyVariants {
-    poster: React.CSSProperties;
-  }
-  interface TypographyVariantsOptions {
-    poster?: React.CSSProperties;
-  }
-  // Update the Typography's variant prop options
+// Update the Typography's variant prop options
 declare module '@mui/material/Typography' {
     interface TypographyPropsVariantOverrides {
-      poster: true;
+        poster: true;
     }
-  }
+}
 export const theme = createTheme({
     typography: {
         fontFamily: 'Mabry Pro, sans-serif',
         poster: {
-          color: 'red',
+            color: 'red',
         },
-      },
+    },
     // palette: {
     //     background: {
     //         default: '#ecf3f0',
