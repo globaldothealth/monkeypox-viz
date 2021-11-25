@@ -1,13 +1,23 @@
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
-import GHListLogo from './GHListLogo';
 import { AppBar } from '@mui/material';
+import { NavLink } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import { Link } from 'react-router-dom';
+import GHListLogo from './GHListLogo';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
 
-const TopBarContainerStyle = styled('div')(({ theme }) => ({
+const AppBarStyle = styled(AppBar)(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
+}));
+
+const NavBar = styled('nav')(({ theme }) => ({
+    a: {
+        textDecoration: 'none',
+        color: theme.palette.background.paper,
+        '&:hover': {
+            color: theme.primary.main,
+        },
+    },
 }));
 
 const StyledTooolbar = styled(Toolbar)`
@@ -20,43 +30,42 @@ const StyledTooolbar = styled(Toolbar)`
         gap: 25px;
     }
 `;
+
 const TopBar = () => {
     return (
-        <TopBarContainerStyle>
-            <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                    <StyledTooolbar variant="regular" className="toolbar">
-                        <GHListLogo />
-                        <nav>
-                            <Link to="/country">
-                                <Typography variant="poster" gutterBottom>
-                                    Country view
-                                </Typography>
-                            </Link>
-                            <Link to="/region">
-                                <Typography variant="body1" gutterBottom>
-                                    Regional view
-                                </Typography>
-                            </Link>
-                            <Link to="/coverage">
-                                <Typography variant="body1" gutterBottom>
-                                    Coverage
-                                </Typography>
-                            </Link>
-                            <a
-                                href="https://data.covid-19.global.health/"
-                                rel="noopener noreferrer"
-                                target="_blank"
-                            >
-                                <Typography variant="body1" gutterBottom>
-                                    G.h Data
-                                </Typography>
-                            </a>
-                        </nav>
-                    </StyledTooolbar>
-                </AppBar>
-            </Box>
-        </TopBarContainerStyle>
+        <Box sx={{ flexGrow: 1 }}>
+            <AppBarStyle position="static">
+                <StyledTooolbar variant="regular" className="toolbar">
+                    <GHListLogo />
+                    <NavBar>
+                        <NavLink to="/country" activeClassName="selected">
+                            <Typography variant="navbarlink" gutterBottom>
+                                Country view
+                            </Typography>
+                        </NavLink>
+                        <NavLink to="/region" activeClassName="selected">
+                            <Typography variant="navbarlink" gutterBottom>
+                                Regional view
+                            </Typography>
+                        </NavLink>
+                        <NavLink to="/coverage" activeClassName="selected">
+                            <Typography variant="navbarlink" gutterBottom>
+                                Coverage
+                            </Typography>
+                        </NavLink>
+                        <a
+                            href="https://data.covid-19.global.health/"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                        >
+                            <Typography variant="navbarlink" gutterBottom>
+                                G.h Data
+                            </Typography>
+                        </a>
+                    </NavBar>
+                </StyledTooolbar>
+            </AppBarStyle>
+        </Box>
     );
 };
 export default TopBar;

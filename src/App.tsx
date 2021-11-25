@@ -7,35 +7,46 @@ import { RegionalView } from './components/RegionalView/RegionalView';
 import { CoverageView } from './components/CoverageView/CoverageView';
 
 declare module '@mui/material/styles' {
-    // interface Theme {
-    //     Typography: {
-    //         palette: string;
-    //     };
-    // }
+    interface Theme {
+        // Typography: {
+        //     palette: string;
+        // };
+        primary: {
+            main: string;
+        }
+    }
 
     // allow configuration using `createTheme`
     interface ThemeOptions {
-        custom?: any;
+        primary?: any;
     }
 
     interface TypographyVariants {
-        poster: React.CSSProperties;
+        navbarlink: React.CSSProperties;
     }
     interface TypographyVariantsOptions {
-        poster?: React.CSSProperties;
+        navbarlink?: React.CSSProperties;
     }
 }
 // Update the Typography's variant prop options
 declare module '@mui/material/Typography' {
     interface TypographyPropsVariantOverrides {
-        poster: true;
+        navbarlink: true;
     }
 }
 export const theme = createTheme({
     typography: {
         fontFamily: 'Mabry Pro, sans-serif',
-        poster: {
-            color: 'red',
+        navbarlink: {
+            fontWeight: 500,
+            textShadow:
+                '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff',
+            borderTop: '4px solid transparent',
+            borderBottom: '4px solid transparent',
+            margin: 0,
+            padding: '3.5ex 2ex 2.5ex',
+            cursor: 'pointer',
+            textDecoration: 'none',
         },
     },
     palette: {
@@ -43,11 +54,11 @@ export const theme = createTheme({
             default: '#edf3f1',
             paper: '#333',
         },
-    }
-    //     primary: {
-    //         main: '#0E7569',
-    //         contrastText: '#fff',
-    //     },
+    },
+        primary: {
+            main: '#0094e2',
+            contrastText: '#fff',
+        },
     //     secondary: {
     //         main: '#00C6AF',
     //         contrastText: '#fff',

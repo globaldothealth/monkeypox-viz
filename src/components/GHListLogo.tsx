@@ -11,7 +11,18 @@ export default function GHListLogo(): JSX.Element {
         object-fit: contain;
         vertical-align: middle;
         width: 5ex;
+        ~.logoText {
+            color: #0094e2;
+            font-size: 5ex;
+            vertical-align: middle;
+            font-family: "Mabry Pro";
+        }
     `
+
+    const linkStyle =
+{    textDecoration: 'none'}
+
+    
 
     const logoStyles = {
         height: '6ex',
@@ -20,15 +31,16 @@ export default function GHListLogo(): JSX.Element {
         zIndex: 999,
         display: 'flex',
         alignItems: 'center',
-        marginRight: '30px'
+        marginRight: '30px',
     };
+
     return (
         <>
             <div id="logo" style={logoStyles as React.CSSProperties}>
-                <a href="https://global.health/">
+                <a href="https://global.health/" style={linkStyle as React.CSSProperties} >
                     <div id="logo-container">
                         <LogoImage src={logo} />
-                        <span>Map</span>{' '}
+                        <span className="logoText">Map</span>
                     </div>
                 </a>
             </div>
