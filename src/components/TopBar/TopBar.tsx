@@ -1,35 +1,8 @@
-import { AppBar } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import GHListLogo from './GHListLogo';
-import Toolbar from '@mui/material/Toolbar';
+import GHListLogo from '../GHListLogo/GHListLogo';
 import Typography from '@mui/material/Typography';
-
-const AppBarStyle = styled(AppBar)(({ theme }) => ({
-    backgroundColor: theme.palette.background.default,
-}));
-
-const NavBar = styled('nav')(({ theme }) => ({
-    a: {
-        textDecoration: 'none',
-        color: theme.palette.background.paper,
-        '&:hover': {
-            color: theme.primary.main,
-        },
-    },
-}));
-
-const StyledTooolbar = styled(Toolbar)`
-    display: flex;
-    justify-content: space-between;
-
-    & nav {
-        display: flex;
-        justify-content: space-between;
-        gap: 25px;
-    }
-`;
+import {AppBarStyle, NavBar, StyledTooolbar} from '../TopBar/TopBarStyles';
 
 const TopBar = () => {
     return (
@@ -38,17 +11,17 @@ const TopBar = () => {
                 <StyledTooolbar variant="regular" className="toolbar">
                     <GHListLogo />
                     <NavBar>
-                        <NavLink to="/country" activeClassName="selected">
+                        <NavLink to="/country" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
                             <Typography variant="navbarlink" gutterBottom>
                                 Country view
                             </Typography>
                         </NavLink>
-                        <NavLink to="/region" activeClassName="selected">
+                        <NavLink to="/region" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
                             <Typography variant="navbarlink" gutterBottom>
                                 Regional view
                             </Typography>
                         </NavLink>
-                        <NavLink to="/coverage" activeClassName="selected">
+                        <NavLink to="/coverage" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
                             <Typography variant="navbarlink" gutterBottom>
                                 Coverage
                             </Typography>
