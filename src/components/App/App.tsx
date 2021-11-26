@@ -4,7 +4,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { CountryView } from '../CountryView/CountryView';
 import { RegionalView } from '../RegionalView/RegionalView';
 import { CoverageView } from '../CoverageView/CoverageView';
-import {theme} from './AppTheme';
+import { theme } from './AppTheme';
+import SideBar from '../SideBar/SideBar';
 declare module '@mui/material/styles' {
     interface Theme {
         // Typography: {
@@ -12,7 +13,7 @@ declare module '@mui/material/styles' {
         // };
         primary: {
             main: string;
-        }
+        };
     }
 
     // allow configuration using `createTheme`
@@ -34,12 +35,13 @@ declare module '@mui/material/Typography' {
     }
 }
 
-
 const App = () => {
+
     return (
         <ThemeProvider theme={theme}>
             <div className="App">
                 <TopBar />
+                <SideBar />
                 <Routes>
                     <Route
                         path="/"
