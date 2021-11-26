@@ -1,11 +1,8 @@
-// import { useState } from 'react';
-import { styled } from '@mui/system';
+import { styled } from '@mui/material/styles';
 
-export const StyledSideBar = styled('aside')<{ sidebaropen: boolean }>`
+export const StyledSideBar = styled('aside')<{ $sidebaropen: boolean }>`
     backdrop-filter: blur(0.5rem);
-    /* background-color: white; */
-    background-color: ${({ sidebaropen }) =>
-    sidebaropen === true ? 'red' : 'blue'};
+    background-color: white;
     border-radius: 1ex;
     bottom: 25%;
     box-shadow: 0 10px 30px 1px rgb(0 0 0 / 10%);
@@ -13,7 +10,7 @@ export const StyledSideBar = styled('aside')<{ sidebaropen: boolean }>`
     display: flex;
     flex-direction: column;
     height: 70%;
-    left: 2ex;
+    left: ${({ $sidebaropen }) => ($sidebaropen === true ? '2ex' : '-19rem')};
     padding: 2ex;
     position: fixed;
     margin-top: 0;
@@ -40,5 +37,40 @@ export const StyledSideBar = styled('aside')<{ sidebaropen: boolean }>`
         #sidebar-tab-icon {
             font-size: 80%;
         }
+    }
+`;
+
+export const SideBarHeader = styled('div')(({ theme }) => ({
+    cursor: 'pointer',
+    height: 'auto',
+    position: 'relative',
+    h1: {
+        borderRadius: '4px',
+        display: 'inline-block',
+        fontSize: '12px',
+        margin: 0,
+        padding: '0.7ex 2ex',
+        background: theme.primary.main,
+        color: theme.primary.contrastText,
+    },
+}));
+
+export const LatestGlobal = styled('aside')<{ $sidebaropen: boolean }>`
+    margin: 2ex 0;
+    #total-cases,
+    #total-deaths,
+    #p1-cases,
+    #b1351-cases {
+        display: none;
+        color: black;
+        font-size: 1.7rem;
+        font-weight: 500;
+        margin-right: 0.35ex;
+    }
+    #total-cases {
+        display: inline;
+    }
+    .last-updated-date {
+        color: #999;
     }
 `;

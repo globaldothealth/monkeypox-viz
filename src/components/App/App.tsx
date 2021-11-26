@@ -7,13 +7,15 @@ import { CoverageView } from '../CoverageView/CoverageView';
 import { theme } from './AppTheme';
 import SideBar from '../SideBar/SideBar';
 declare module '@mui/material/styles' {
-    interface Theme {
+    export interface Theme {
         // Typography: {
         //     palette: string;
         // };
-        primary: {
-            main: string;
-        };
+        primary: any;
+        // primary: {
+        //     main: string;
+        //     contrastText: string;
+        // };
     }
 
     // allow configuration using `createTheme`
@@ -36,7 +38,6 @@ declare module '@mui/material/Typography' {
 }
 
 const App = () => {
-
     return (
         <ThemeProvider theme={theme}>
             <div className="App">
