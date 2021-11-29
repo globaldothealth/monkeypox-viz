@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { StyledSideBar, SideBarHeader, LatestGlobal } from './SideBarStyle';
+import {
+    StyledSideBar,
+    SideBarHeader,
+    LatestGlobal,
+    SearchBar,
+} from './SideBarStyle';
+import TextField from '@mui/material/TextField';
 
 const SideBar = () => {
     const [openSidebar, setOpenSidebar] = useState(true);
@@ -32,6 +38,9 @@ const SideBar = () => {
                     Updated: <span id="last-updated-date">Thu Nov 25 2021</span>
                 </div>
             </LatestGlobal>
+            <SearchBar className="searchbar">
+                <TextField id="outlined-required" label="Search" />
+            </SearchBar>
             <div id="sidebar-tab">
                 <span onClick={handleOnClick()} id="sidebar-tab-icon">
                     ◀

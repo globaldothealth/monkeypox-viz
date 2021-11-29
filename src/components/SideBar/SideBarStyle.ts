@@ -71,6 +71,27 @@ export const LatestGlobal = styled('aside')<{ $sidebaropen: boolean }>`
         display: inline;
     }
     .last-updated-date {
+        font-size: 0.7rem;
         color: #999;
+        margin-top: 15px;
+    }
+`;
+
+export const SearchBar = styled('div')`
+    margin-top: 10px;
+    div:first-of-type {
+        width: 100%;
+    }
+    label {
+        line-height: 0.9;
+    }
+    input {
+        background: #edf3f1;
+        height: 12px;
+        border-radius: 10px;
+    }
+    fieldset {
+        border-color: rgb(0 0 0 / 5%);
+        border-radius: 10px;
     }
 `;
