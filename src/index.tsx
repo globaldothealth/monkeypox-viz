@@ -1,20 +1,25 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App/App';
-import reportWebVitals from './reportWebVitals';
-import { GlobalStyle } from './theme/globalStyles';
-import { BrowserRouter } from 'react-router-dom';
-import { Reset } from 'styled-reset';
-import { Normalize } from 'styled-normalize'
+import App from 'components/App';
+import reportWebVitals from 'reportWebVitals';
+import { GlobalStyle } from 'theme/globalStyles';
+import { store } from 'redux/store';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router } from 'react-router-dom';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+import { theme } from 'theme/theme';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 ReactDOM.render(
     <StrictMode>
-        <BrowserRouter>
-            <Reset />
-            <Normalize />
-            <GlobalStyle />
-            <App />
-        </BrowserRouter>
+        <Provider store={store}>
+            <ThemeProvider theme={theme}>
+                <Router>
+                    <GlobalStyle />
+                    <App />
+                </Router>
+            </ThemeProvider>
+        </Provider>
     </StrictMode>,
     document.getElementById('root'),
 );
