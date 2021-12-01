@@ -20,11 +20,14 @@ export const theme = createTheme({
     palette: {
         background: {
             default: '#edf3f1',
-            paper: '#333',
         },
     },
     primary: {
         main: '#0094e2',
         contrastText: '#fff',
+    },
+    navbarLinks: {
+        default: '#edf3f1',
+        paper: '#333',
     },
 });

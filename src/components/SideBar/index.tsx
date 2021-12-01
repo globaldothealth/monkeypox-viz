@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
     StyledSideBar,
     SideBarHeader,
     LatestGlobal,
     SearchBar,
+    LocationList,
+    LocationListItem,
 } from './styled';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
 
 const SideBar = () => {
     const [openSidebar, setOpenSidebar] = useState(true);
@@ -14,9 +18,58 @@ const SideBar = () => {
 
     const handleOnClick: ClickHandler = () => () => {
         setOpenSidebar((value) => !value);
-
-        console.log(openSidebar);
     };
+
+    interface ICountries {
+        widthBar: number;
+        countryCode: string;
+        countryName: string;
+        number: number;
+    }
+
+    const countriesList: ICountries[] = [
+        {
+            countryCode: 'US',
+            countryName: 'United States',
+            widthBar: 49,
+            number: 30261846,
+        },
+        {
+            countryCode: 'DE',
+            countryName: 'Germany',
+            widthBar: 60,
+            number: 5077124,
+        },
+        {
+            countryCode: 'IT',
+            countryName: 'Italy',
+            widthBar: 36,
+            number: 5077124,
+        },
+        {
+            countryCode: 'ES',
+            countryName: 'Spain',
+            widthBar: 3,
+            number: 5077124,
+        },
+    ];
+
+    const Countries = () => (
+        <>
+            {countriesList.map((row: ICountries) => {
+                const { widthBar, countryCode, countryName, number } = row;
+                return (
+                    <LocationListItem key={countryCode} $barWidth={widthBar}>
+                        <button country={countryCode}>
+                            <span className="label">{countryName}</span>
+                            <span className="num">{number}</span>
+                        </button>
+                        <div className="country-cases-bar"></div>
+                    </LocationListItem>
+                );
+            })}
+        </>
+    );
 
     return (
         <StyledSideBar $sidebaropen={openSidebar}>
@@ -39,11 +92,45 @@ const SideBar = () => {
                 </div>
             </LatestGlobal>
             <SearchBar className="searchbar">
-                <TextField id="outlined-required" label="Search" />
+                <Autocomplete
+                    id="country-select"
+                    sx={{ width: 300 }}
+                    options={countriesList}
+                    autoHighlight
+                    getOptionLabel={(option) => option.countryName}
+                    renderOption={(props, option) => (
+                        <Box
+                            component="li"
+                            sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                            {...props}
+                        >
+                            <img
+                                loading="lazy"
+                                width="20"
+                                src={`https://flagcdn.com/w20/${option.countryCode.toLowerCase()}.png`}
+                                srcSet={`https://flagcdn.com/w40/${option.countryCode.toLowerCase()}.png 2x`}
+                                alt=""
+                            />
+                            {option.countryName} ({option.countryCode})
+                        </Box>
+                    )}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label="Choose a country"
+                            inputProps={{
+                                ...params.inputProps,
+                            }}
+                        />
+                    )}
+                />
             </SearchBar>
+            <LocationList>
+                <Countries />
+            </LocationList>
             <div id="sidebar-tab">
                 <span onClick={handleOnClick()} id="sidebar-tab-icon">
-                    ◀
+                    {openSidebar ? '◀' : '▶'}
                 </span>
             </div>
         </StyledSideBar>

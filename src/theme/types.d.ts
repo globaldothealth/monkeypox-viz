@@ -6,7 +6,11 @@ declare module '@mui/material/styles' {
         primary: {
             main: string;
             contrastText: string;
-        };
+        },
+        navbarLinks: {
+            default: string,
+            paper: string,
+        },
     }
 
     // allow configuration using `createTheme`
@@ -14,6 +18,10 @@ declare module '@mui/material/styles' {
         primary: {
             main: string;
             contrastText: string;
+        };
+        navbarLinks: {
+            default: string,
+            paper: string,
         };
     }
 
@@ -28,5 +36,11 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/Typography' {
     interface TypographyPropsVariantOverrides {
         navbarlink: true;
+    }
+}
+declare module 'react' {
+    interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
+        // extends React's HTMLAttributes
+        country?: string;
     }
 }
