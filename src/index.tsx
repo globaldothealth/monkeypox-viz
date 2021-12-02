@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import App from 'components/App';
+import App from 'containers/App';
 import reportWebVitals from 'reportWebVitals';
 import { GlobalStyle } from 'theme/globalStyles';
 import { store } from 'redux/store';

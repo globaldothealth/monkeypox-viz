@@ -1,10 +1,8 @@
 import ReactDOM from 'react-dom';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useMapboxMap } from 'hooks/useMapboxMap';
-import { useAppSelector, useAppDispatch } from 'redux/hooks';
-import * as countryViewSelectors from 'redux/CountryView/selectors';
-import { fetchCountriesData } from 'redux/CountryView/thunks';
-import { setMapLoaded } from 'redux/CountryView/slice';
+import { useAppSelector } from 'redux/hooks';
+import { selectIsLoading, selectCountriesData } from 'redux/App/selectors';
 import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CountryViewColors } from 'models/Colors';
 import mapboxgl, { MapSourceDataEvent, EventData } from 'mapbox-gl';
@@ -14,6 +12,8 @@ import { parseSearchQuery } from 'utils/helperFunctions';
 import MapPopup from 'components/MapPopup';
 
 import { MapContainer } from 'theme/globalStyles';
+import Loader from 'components/Loader';
+import { PopupContentText } from './styled';
 
 const dataLayers: LegendRow[] = [
     { label: '< 10k', color: CountryViewColors['10K'] },
@@ -28,13 +28,9 @@ const CountryView: React.FC = () => {
     const mapboxAccessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || '';
     const dataPortalUrl = process.env.REACT_APP_DATA_PORTAL_URL;
 
-    const dispatch = useAppDispatch();
-    const isLoading = useAppSelector(countryViewSelectors.selectIsLoading);
-    const error = useAppSelector(countryViewSelectors.selectError);
-    const countriesData = useAppSelector(
-        countryViewSelectors.selectCountriesData,
-    );
-    const mapLoaded = useAppSelector(countryViewSelectors.selectMapLoaded);
+    const isLoading = useAppSelector(selectIsLoading);
+    const countriesData = useAppSelector(selectCountriesData);
+    const [mapLoaded, setMapLoaded] = useState(false);
 
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useMapboxMap(mapboxAccessToken, mapContainer);
@@ -43,17 +39,16 @@ const CountryView: React.FC = () => {
         [key: string]: any;
     };
 
-    // Fetch countries data
-    useEffect(() => {
-        dispatch(fetchCountriesData());
-    }, []);
-
     // Setup map
     useEffect(() => {
         const mapRef = map.current;
-        if (!mapRef) return;
+        if (!mapRef || isLoading) return;
 
         mapRef.on('load', () => {
+            if (mapRef.getSource('countriesData')) {
+                mapRef.removeSource('countriesData');
+            }
+
             mapRef.addSource('countriesData', {
                 type: 'vector',
                 url: 'mapbox://mapbox.country-boundaries-v1',
@@ -64,23 +59,24 @@ const CountryView: React.FC = () => {
                 e: MapSourceDataEvent & EventData,
             ) => {
                 if (e.sourceID !== 'countriesData' && !e.isSourceLoaded) return;
-                dispatch(setMapLoaded(true));
+                displayCountriesOnMap();
+                setMapLoaded(true);
                 mapRef.off('sourcedata', setAfterSourceLoaded);
             };
 
             if (mapRef.isSourceLoaded('countriesData')) {
-                dispatch(setMapLoaded(true));
+                displayCountriesOnMap();
+                setMapLoaded(true);
             } else {
                 mapRef.on('sourcedata', setAfterSourceLoaded);
             }
         });
-    }, []);
+    }, [isLoading]);
 
     // Display countries data on the map
-    useEffect(() => {
-        if (isLoading || countriesData.length === 0 || !mapLoaded) return;
+    const displayCountriesOnMap = () => {
         const mapRef = map.current;
-        if (!mapRef) return;
+        if (!countriesData || countriesData.length === 0 || !mapRef) return;
 
         for (const countryRow of countriesData) {
             if (lookupTableData[countryRow.code]) {
@@ -171,10 +167,10 @@ const CountryView: React.FC = () => {
             const url = `${dataPortalUrl}/${searchQuery}`;
 
             const popupContent = (
-                <p>
+                <PopupContentText>
                     {caseCount.toLocaleString()} line list case
                     {caseCount > 1 ? 's' : ''}
-                </p>
+                </PopupContentText>
             );
 
             // This has to be done this way in order to allow for React components as a content of the popup
@@ -194,14 +190,11 @@ const CountryView: React.FC = () => {
                 .setDOMContent(popupElement)
                 .addTo(mapRef);
         });
-    }, [isLoading, mapLoaded]);
+    };
 
     return (
         <>
-            {/* @TODO: add error popup once MUI is configured */}
-            {error && <h1>{error}</h1>}
-            {/* @TODO: add loading indicator once MUI is configured */}
-            {(isLoading || !mapLoaded) && <h1>Loading...</h1>}
+            {!mapLoaded && <Loader />}
             <MapContainer
                 ref={mapContainer}
                 isLoading={isLoading || !mapLoaded}

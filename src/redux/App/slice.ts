@@ -1,29 +1,23 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { fetchCountriesData } from './thunks';
-import { CountryDataRow } from 'models/CountryViewModels';
+import { CountryDataRow } from 'models/CountryData';
 
-interface CountryViewState {
+interface AppState {
     isLoading: boolean;
     error: string | undefined;
     countriesData: CountryDataRow[];
-    mapLoaded: boolean;
 }
 
-const initialState: CountryViewState = {
+const initialState: AppState = {
     isLoading: false,
     error: undefined,
     countriesData: [],
-    mapLoaded: false,
 };
 
-export const countryViewSlice = createSlice({
-    name: 'countryView',
+export const appSlice = createSlice({
+    name: 'app',
     initialState,
-    reducers: {
-        setMapLoaded: (state, action: PayloadAction<boolean>) => {
-            state.mapLoaded = action.payload;
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchCountriesData.pending, (state) => {
             state.isLoading = true;
@@ -42,6 +36,4 @@ export const countryViewSlice = createSlice({
     },
 });
 
-export const { setMapLoaded } = countryViewSlice.actions;
-
-export default countryViewSlice.reducer;
+export default appSlice.reducer;

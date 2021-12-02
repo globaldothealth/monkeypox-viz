@@ -8,3 +8,13 @@ export enum CountryViewColors {
     'Fallback' = 'rgba(215, 233, 237, 1)',
     'Outline' = 'rgba(0, 148, 226, 1)',
 }
+
+export enum CoverageViewColors {
+    '20%' = 'rgba(154, 215, 238, 1)',
+    '40%' = 'rgba(123, 207, 242, 1)',
+    '60%' = 'rgba(107, 200, 238, 1)',
+    '80%' = 'rgba(73, 189, 237, 1)',
+    '>80%' = 'rgba(38, 163, 232, 1)',
+    'Fallback' = 'rgba(215, 233, 237, 1)',
+    'Outline' = 'rgba(0, 148, 226, 1)',
+}

@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
-import { AppBar } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
 
 export const AppBarStyle = styled(AppBar)(({ theme }) => ({
     position: 'fixed',

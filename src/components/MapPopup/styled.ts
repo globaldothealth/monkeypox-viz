@@ -28,7 +28,5 @@ export const Button = styled.button`
 `;
 
 export const ContentContainer = styled.div`
-    font-size: 1.6rem;
-    font-weight: bold;
     margin: 1.2rem 0;
 `;

@@ -1,9 +1,9 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
-import countryViewReducer from './CountryView/slice';
+import appReducer from './App/slice';
 
 export const rootReducer = combineReducers({
-    countryView: countryViewReducer,
+    app: appReducer,
 });
 
 export const store = configureStore({

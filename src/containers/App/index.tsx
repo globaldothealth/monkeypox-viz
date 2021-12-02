@@ -1,0 +1,52 @@
+import { useEffect } from 'react';
+import TopBar from 'components/TopBar';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import CountryView from 'containers/CountryView';
+import { RegionalView } from 'containers/RegionalView';
+import CoverageView from 'containers/CoverageView';
+import SideBar from 'components/SideBar';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { fetchCountriesData } from 'redux/App/thunks';
+import { selectIsLoading, selectError } from 'redux/App/selectors';
+import Loader from 'components/Loader';
+import ErrorAlert from 'components/ErrorAlert';
+
+import { ErrorContainer } from './styled';
+
+const App = () => {
+    const dispatch = useAppDispatch();
+
+    const isLoading = useAppSelector(selectIsLoading);
+    const error = useAppSelector(selectError);
+
+    useEffect(() => {
+        dispatch(fetchCountriesData());
+    }, []);
+
+    return (
+        <div className="App">
+            {isLoading && <Loader />}
+
+            <TopBar />
+            <SideBar />
+
+            {!error ? (
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<Navigate replace to="/country" />}
+                    />
+                    <Route path="/country" element={<CountryView />} />
+                    <Route path="/region" element={<RegionalView />} />
+                    <Route path="/coverage" element={<CoverageView />} />
+                </Routes>
+            ) : (
+                <ErrorContainer>
+                    <ErrorAlert errorMessage={error} />
+                </ErrorContainer>
+            )}
+        </div>
+    );
+};
+
+export default App;
