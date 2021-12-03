@@ -54,13 +54,20 @@ const SideBar = () => {
         },
     ];
 
+    const handleOnCountryClick = (e: any) => {
+        console.log('displayCountry', e.target.attributes.country.textContent);
+    };
+
     const Countries = () => (
         <>
             {countriesList.map((row: ICountries) => {
                 const { widthBar, countryCode, countryName, number } = row;
                 return (
                     <LocationListItem key={countryCode} $barWidth={widthBar}>
-                        <button country={countryCode}>
+                        <button
+                            country={countryCode}
+                            onClick={(e) => handleOnCountryClick(e)}
+                        >
                             <span className="label">{countryName}</span>
                             <span className="num">{number}</span>
                         </button>
