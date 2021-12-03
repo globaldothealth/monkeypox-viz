@@ -5,7 +5,7 @@ import AppBar from '@mui/material/AppBar';
 export const AppBarStyle = styled(AppBar)(({ theme }) => ({
     position: 'fixed',
     top: 0,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.navbarLinks.default,
     boxShadow: 'none',
     zIndex: 999,
     a: {
@@ -16,13 +16,13 @@ export const AppBarStyle = styled(AppBar)(({ theme }) => ({
 export const NavBar = styled('nav')(({ theme }) => ({
     a: {
         textDecoration: 'none',
-        color: theme.palette.background.paper,
+        color: theme.navbarLinks.paper,
         padding: '3.5ex 2ex 2.5ex',
         '&:hover, &.activated': {
             color: theme.primary.main,
         },
         '&.activated': {
-            borderBottom: '4px solid #0094e2',
+            borderBottom: '.4rem solid #0094e2',
         },
     },
 }));

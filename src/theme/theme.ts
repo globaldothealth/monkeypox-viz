@@ -6,7 +6,7 @@ export const theme = createTheme({
         htmlFontSize: 10,
         navbarlink: {
             fontWeight: 500,
-            fontSize: '17px',
+            fontSize: '14px',
             textShadow:
                 '-1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff',
             borderTop: '4px solid transparent',
@@ -20,11 +20,14 @@ export const theme = createTheme({
     palette: {
         background: {
             default: '#edf3f1',
-            paper: '#333',
         },
     },
     primary: {
         main: '#0094e2',
         contrastText: '#fff',
+    },
+    navbarLinks: {
+        default: '#edf3f1',
+        paper: '#333',
     },
 });

@@ -7,7 +7,7 @@ export const GlobalStyle = createGlobalStyle`
   
   body {
     margin: 0;    
-    font-family: 'Mabry Pro';
+    font-family: "Inter", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 1.6rem;
