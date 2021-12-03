@@ -22,7 +22,7 @@ export const NavBar = styled('nav')(({ theme }) => ({
             color: theme.primary.main,
         },
         '&.activated': {
-            borderBottom: '4px solid #0094e2',
+            borderBottom: '.4rem solid #0094e2',
         },
     },
 }));

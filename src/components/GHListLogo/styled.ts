@@ -7,7 +7,7 @@ export const LogoStyles = styled.div`
     z-index: 999;
     display: 'flex';
     align-items: 'center';
-    margin-right: '30px';
+    margin-right: '3rem';
 `;
 
 export const LogoImage = styled.img`
