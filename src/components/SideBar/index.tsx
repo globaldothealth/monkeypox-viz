@@ -6,6 +6,7 @@ import {
     SearchBar,
     LocationList,
     LocationListItem,
+    FlagIcon,
 } from './styled';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -14,9 +15,7 @@ import Box from '@mui/material/Box';
 const SideBar = () => {
     const [openSidebar, setOpenSidebar] = useState(true);
 
-    type ClickHandler = () => (e: React.MouseEvent) => void;
-
-    const handleOnClick: ClickHandler = () => () => {
+    const handleOnClick = () => {
         setOpenSidebar((value) => !value);
     };
 
@@ -54,22 +53,24 @@ const SideBar = () => {
         },
     ];
 
-    const handleOnCountryClick = (e: any) => {
-        console.log('displayCountry', e.target.attributes.country.textContent);
+    const handleOnCountryClick = (row: React.MouseEvent<HTMLElement>) => {
+        console.log(row);
     };
 
     const Countries = () => (
         <>
-            {countriesList.map((row: ICountries) => {
+            {countriesList.map((row) => {
                 const { widthBar, countryCode, countryName, number } = row;
                 return (
                     <LocationListItem key={countryCode} $barWidth={widthBar}>
                         <button
                             country={countryCode}
-                            onClick={(e) => handleOnCountryClick(e)}
+                            onClick={(row) => handleOnCountryClick(row)}
                         >
                             <span className="label">{countryName}</span>
-                            <span className="num">{number}</span>
+                            <span className="num">
+                                {number.toLocaleString()}
+                            </span>
                         </button>
                         <div className="country-cases-bar"></div>
                     </LocationListItem>
@@ -101,17 +102,17 @@ const SideBar = () => {
             <SearchBar className="searchbar">
                 <Autocomplete
                     id="country-select"
-                    sx={{ width: 300 }}
                     options={countriesList}
                     autoHighlight
                     getOptionLabel={(option) => option.countryName}
                     renderOption={(props, option) => (
                         <Box
                             component="li"
-                            sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                            // sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                            className="autocompleteBox"
                             {...props}
                         >
-                            <img
+                            <FlagIcon
                                 loading="lazy"
                                 width="20"
                                 src={`https://flagcdn.com/w20/${option.countryCode.toLowerCase()}.png`}
@@ -136,7 +137,7 @@ const SideBar = () => {
                 <Countries />
             </LocationList>
             <div id="sidebar-tab">
-                <span onClick={handleOnClick()} id="sidebar-tab-icon">
+                <span onClick={handleOnClick} id="sidebar-tab-icon">
                     {openSidebar ? '◀' : '▶'}
                 </span>
             </div>

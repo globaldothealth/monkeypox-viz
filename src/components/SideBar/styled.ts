@@ -38,7 +38,15 @@ export const StyledSideBar = styled('aside')<{ $sidebaropen: boolean }>`
             font-size: 80%;
         }
     }
+    //
 `;
+
+// export const flagStyle = { '& > img': { mr: 2, flexShrink: 0 } };
+
+export const FlagIcon = styled('img')(() => ({
+    marginRight: '2rem',
+    flexShrink: 0,
+}));
 
 export const SideBarHeader = styled('div')(({ theme }) => ({
     cursor: 'pointer',
@@ -73,7 +81,7 @@ export const LatestGlobal = styled('aside')<{ $sidebaropen: boolean }>`
     .last-updated-date {
         font-size: 1.2rem;
         color: #999;
-        margin-top: 15px;
+        margin-top: 2rem;
     }
 `;
 
@@ -91,6 +99,10 @@ export const SearchBar = styled('div')`
             background-color: #fff;
         }
     }
+    .autocompleteBox {
+        '& > img': { mr: 2, flexShrink: 0 } 
+    }
+
 `;
 
 export const LocationList = styled('div')`
@@ -134,7 +146,7 @@ export const LocationListItem = styled('div')<{ $barWidth: number }>(
         },
         '& .country-cases-bar': {
             background: theme.primary.main,
-            height: '3px',
+            height: '.3rem',
             width: $barWidth + '%',
         },
     }),
