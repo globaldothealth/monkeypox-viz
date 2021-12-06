@@ -1,9 +1,11 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 import appReducer from './App/slice';
+import variantsViewReducer from './VariantsView/slice';
 
 export const rootReducer = combineReducers({
     app: appReducer,
+    variantsView: variantsViewReducer,
 });
 
 export const store = configureStore({

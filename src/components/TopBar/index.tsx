@@ -42,8 +42,18 @@ const TopBar = () => {
                                 Coverage
                             </Typography>
                         </NavLink>
+                        <NavLink
+                            to="/variant-reporting"
+                            className={({ isActive }) =>
+                                'nav-link' + (isActive ? ' activated' : '')
+                            }
+                        >
+                            <Typography variant="navbarlink" gutterBottom>
+                                Variant Reporting
+                            </Typography>
+                        </NavLink>
                         <a
-                            href="https://data.covid-19.global.health/"
+                            href={process.env.REACT_APP_DATA_PORTAL_URL || ''}
                             rel="noopener noreferrer"
                             target="_blank"
                         >

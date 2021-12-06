@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
     StyledSideBar,
     SideBarHeader,
@@ -11,9 +12,18 @@ import {
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
+import VariantsContent from './VariantsContent';
 
 const SideBar = () => {
+    const location = useLocation();
+
     const [openSidebar, setOpenSidebar] = useState(true);
+    const [isVariantsView, setIsVariantsView] = useState(false);
+
+    // Sidebar has other content in VariantsView
+    useEffect(() => {
+        setIsVariantsView(location.pathname === '/variant-reporting');
+    }, [location]);
 
     const handleOnClick = () => {
         setOpenSidebar((value) => !value);
@@ -80,65 +90,73 @@ const SideBar = () => {
     );
 
     return (
-        <StyledSideBar $sidebaropen={openSidebar} className="sidebar">
-            <SideBarHeader id="sidebar-header">
-                <h1 id="total" className="sidebar-title total">
-                    COVID-19 LINE LIST CASES
-                </h1>
-                <br />
-                <div id="disease-selector"></div>
-            </SideBarHeader>
-            <LatestGlobal id="latest-global">
-                <span id="total-cases" className="active">
-                    61,078,740
-                </span>
-                <span id="p1-cases">NaN</span>
-                <span id="b1351-cases">NaN</span>
-                <span className="reported-cases-label"> cases</span>
-                <div className="last-updated-date">
-                    Updated: <span id="last-updated-date">Thu Nov 25 2021</span>
-                </div>
-            </LatestGlobal>
-            <SearchBar className="searchbar">
-                <Autocomplete
-                    id="country-select"
-                    options={countriesList}
-                    autoHighlight
-                    getOptionLabel={(option) => option.countryName}
-                    renderOption={(props, option) => (
-                        <Box
-                            component="li"
-                            className="autocompleteBox"
-                            {...props}
-                        >
-                            <FlagIcon
-                                loading="lazy"
-                                width="20"
-                                src={`https://flagcdn.com/w20/${option.countryCode.toLowerCase()}.png`}
-                                srcSet={`https://flagcdn.com/w40/${option.countryCode.toLowerCase()}.png 2x`}
-                                alt=""
-                            />
-                            {option.countryName} ({option.countryCode})
-                        </Box>
-                    )}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Choose a country"
-                            inputProps={{
-                                ...params.inputProps,
-                            }}
+        <StyledSideBar
+            $sidebaropen={openSidebar}
+            $isVariantsView={isVariantsView}
+        >
+            {!isVariantsView ? (
+                <>
+                    <SideBarHeader id="sidebar-header">
+                        <h1 id="total" className="sidebar-title total">
+                            COVID-19 LINE LIST CASES
+                        </h1>
+                        <br />
+                        <div id="disease-selector"></div>
+                    </SideBarHeader>
+                    <LatestGlobal id="latest-global">
+                        <span id="total-cases" className="active">
+                            61,078,740
+                        </span>
+                        <span id="p1-cases">NaN</span>
+                        <span id="b1351-cases">NaN</span>
+                        <span className="reported-cases-label"> cases</span>
+                        <div className="last-updated-date">
+                            Updated:{' '}
+                            <span id="last-updated-date">Thu Nov 25 2021</span>
+                        </div>
+                    </LatestGlobal>
+                    <SearchBar className="searchbar">
+                        <Autocomplete
+                            id="country-select"
+                            options={countriesList}
+                            autoHighlight
+                            getOptionLabel={(option) => option.countryName}
+                            renderOption={(props, option) => (
+                                <Box
+                                    component="li"
+                                    className="autocompleteBox"
+                                    {...props}
+                                >
+                                    <FlagIcon
+                                        loading="lazy"
+                                        width="20"
+                                        src={`https://flagcdn.com/w20/${option.countryCode.toLowerCase()}.png`}
+                                        srcSet={`https://flagcdn.com/w40/${option.countryCode.toLowerCase()}.png 2x`}
+                                        alt=""
+                                    />
+                                    {option.countryName} ({option.countryCode})
+                                </Box>
+                            )}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Choose a country"
+                                    inputProps={{
+                                        ...params.inputProps,
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
-            </SearchBar>
-            <LocationList>
-                <Countries />
-            </LocationList>
-            <div id="sidebar-tab">
-                <span onClick={handleOnClick} id="sidebar-tab-icon">
-                    {openSidebar ? '◀' : '▶'}
-                </span>
+                    </SearchBar>
+                    <LocationList>
+                        <Countries />
+                    </LocationList>
+                </>
+            ) : (
+                <VariantsContent />
+            )}
+            <div id="sidebar-tab" onClick={handleOnClick}>
+                <span id="sidebar-tab-icon">{openSidebar ? '◀' : '▶'}</span>
             </div>
         </StyledSideBar>
     );

@@ -1,15 +1,20 @@
 import { styled } from '@mui/material/styles';
 
-export const StyledSideBar = styled('aside')<{ $sidebaropen: boolean }>`
+interface StyledSideBarProps {
+    $sidebaropen: boolean;
+    $isVariantsView?: boolean;
+}
+
+export const StyledSideBar = styled('aside')<StyledSideBarProps>`
     backdrop-filter: blur(0.5rem);
     background-color: white;
     border-radius: 1ex;
-    bottom: 25%;
     box-shadow: 0 10px 30px 1px rgb(0 0 0 / 10%);
     color: #aaa;
     display: flex;
     flex-direction: column;
-    height: 70%;
+    bottom: ${(props) => (props.$isVariantsView ? 'unset' : '25%')};
+    height: ${(props) => (props.$isVariantsView ? 'unset' : '70%')};
     left: ${({ $sidebaropen }) => ($sidebaropen === true ? '2ex' : '-28rem')};
     padding: 2ex;
     position: fixed;

@@ -18,3 +18,16 @@ export enum CoverageViewColors {
     'Fallback' = 'rgba(215, 233, 237, 1)',
     'Outline' = 'rgba(0, 148, 226, 1)',
 }
+
+export enum VariantsFillColors {
+    CheckedHasData = '#38A397',
+    CheckedNoData = '#88d0eb',
+    NotChecked = '#FD9986',
+    NoData = '#D7E9ED',
+}
+
+export enum VariantsOutlineColors {
+    CheckedHasData = '#0E766A',
+    CheckedNoData = '#007AEC',
+    NotChecked = '#FD685B',
+}

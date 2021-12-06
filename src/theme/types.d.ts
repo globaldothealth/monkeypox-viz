@@ -6,11 +6,11 @@ declare module '@mui/material/styles' {
         primary: {
             main: string;
             contrastText: string;
-        },
+        };
         navbarLinks: {
-            default: string,
-            paper: string,
-        },
+            default: string;
+            paper: string;
+        };
     }
 
     // allow configuration using `createTheme`
@@ -20,9 +20,16 @@ declare module '@mui/material/styles' {
             contrastText: string;
         };
         navbarLinks: {
-            default: string,
-            paper: string,
+            default: string;
+            paper: string;
         };
+    }
+
+    interface Palette {
+        dark: Palette['primary'];
+    }
+    interface PaletteOptions {
+        dark: PaletteOptions['primary'];
     }
 
     interface TypographyVariants {

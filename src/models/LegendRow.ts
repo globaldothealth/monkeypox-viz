@@ -1,6 +1,10 @@
-import { CountryViewColors, CoverageViewColors } from 'models/Colors';
+import {
+    CountryViewColors,
+    CoverageViewColors,
+    VariantsFillColors,
+} from 'models/Colors';
 
 export interface LegendRow {
     label: string;
-    color: CountryViewColors | CoverageViewColors;
+    color: CountryViewColors | CoverageViewColors | VariantsFillColors;
 }

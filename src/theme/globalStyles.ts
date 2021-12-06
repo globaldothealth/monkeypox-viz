@@ -19,6 +19,10 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  .mapboxgl-popup {
+    z-index: 999;
+  }
+
   @font-face {
     font-family: 'Mabry Pro';
     src: url("https://covid-19-aggregates.s3.amazonaws.com/fonts/mabry-regular-pro/mabry-regular-pro.ttf") format('truetype'),
@@ -86,10 +90,10 @@ interface MapContainerProps {
 
 export const MapContainer = styled.div<MapContainerProps>`
     position: absolute;
-    top: 64px;
+    top: 6.4rem;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 6.4rem);
     transition: opacity 0.5s ease-in-out;
 
     opacity: ${(props) => (props.isLoading ? '0' : '1')};
