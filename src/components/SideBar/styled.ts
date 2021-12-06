@@ -36,6 +36,9 @@ export const StyledSideBar = styled('aside')<{ $sidebaropen: boolean }>`
         width: 2.5ex;
         #sidebar-tab-icon {
             font-size: 80%;
+            height: 100%;
+            display: flex;
+            align-items: center;
         }
     }
     //
