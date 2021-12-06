@@ -80,7 +80,7 @@ const SideBar = () => {
     );
 
     return (
-        <StyledSideBar $sidebaropen={openSidebar}>
+        <StyledSideBar $sidebaropen={openSidebar} className="sidebar">
             <SideBarHeader id="sidebar-header">
                 <h1 id="total" className="sidebar-title total">
                     COVID-19 LINE LIST CASES
