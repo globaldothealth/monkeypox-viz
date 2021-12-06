@@ -9,7 +9,6 @@ describe('<TopBar />', () => {
         cy.contains('Country view').should('be.visible');
         cy.contains('Regional view').should('be.visible');
         cy.contains('Coverage').should('be.visible');
-        cy.contains('G.h Data').should('be.visible');
 
         cy.url().should('include', '/country');
 

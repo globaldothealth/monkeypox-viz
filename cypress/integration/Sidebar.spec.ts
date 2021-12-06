@@ -17,7 +17,7 @@ describe('<SideBar />', () => {
         cy.get('.sidebar').should('be.visible');
     });
 
-    it.only('Countries list dropdown opens', () => {
+    it('Countries list dropdown opens', () => {
         cy.visit('/');
 
         cy.get('.searchbar')
