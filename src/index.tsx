@@ -9,6 +9,12 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import { theme } from 'theme/theme';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl';
+
+// This has to be done in order to avoid transpilation errors after build
+// @ts-ignore
+mapboxgl.workerClass =
+    require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 ReactDOM.render(
     <StrictMode>
