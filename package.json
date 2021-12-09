@@ -12,7 +12,7 @@
     "@types/node": "^12.20.37",
     "@types/react": "^17.0.34",
     "@types/react-dom": "^17.0.11",
-    "@types/react-router-dom": "^5.3.2",    
+    "@types/react-router-dom": "^5.3.2",
     "date-fns": "^2.27.0",
     "mapbox-gl": "^2.6.1",
     "react": "^17.0.2",

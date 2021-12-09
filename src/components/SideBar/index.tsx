@@ -93,6 +93,7 @@ const SideBar = () => {
         <StyledSideBar
             $sidebaropen={openSidebar}
             $isVariantsView={isVariantsView}
+            data-cy="sidebar"
         >
             {!isVariantsView ? (
                 <>
