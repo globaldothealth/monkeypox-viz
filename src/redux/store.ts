@@ -2,10 +2,12 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 import appReducer from './App/slice';
 import variantsViewReducer from './VariantsView/slice';
+import regionalViewReducer from './RegionalView/slice';
 
 export const rootReducer = combineReducers({
     app: appReducer,
     variantsView: variantsViewReducer,
+    regionalView: regionalViewReducer,
 });
 
 export const store = configureStore({

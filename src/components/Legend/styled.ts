@@ -17,6 +17,7 @@ export const Title = styled('p')`
     font-size: 1.4rem;
     font-weight: bold;
     margin-bottom: 1rem;
+    text-align: center;
 `;
 
 export const Row = styled('div')`

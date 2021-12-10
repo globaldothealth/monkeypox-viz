@@ -31,3 +31,12 @@ export enum VariantsOutlineColors {
     CheckedNoData = '#007AEC',
     NotChecked = '#FD685B',
 }
+
+export enum RegionalViewColors {
+    '<100' = 'rgba(253, 255, 210, 1)',
+    '100-1k' = 'rgba(253, 255, 210, 1)',
+    '1k-5k' = 'rgba(130, 215, 198, 1)',
+    '5k-20k' = 'rgba(39, 196, 205, 1)',
+    '20k-100k' = 'rgba(39, 148, 197, 1)',
+    '>100k' = 'rgba(74, 82, 165, 1)',
+}

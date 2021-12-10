@@ -2,6 +2,8 @@ import { parse, isAfter } from 'date-fns';
 import { CountryDataRow } from 'models/CountryData';
 import { VariantsDataRow, VariantsLabels } from 'models/VariantsData';
 import { statesList, StatesData, DataStatus } from 'data/statesData';
+import { RegionalData } from 'models/RegionalData';
+import { Feature, FeatureSet } from 'models/FeatureSet';
 
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
@@ -22,6 +24,34 @@ export const getCoveragePercentage = (countryData: CountryDataRow): number => {
     );
 
     return percentage > 100 ? 100 : percentage;
+};
+
+// Regional data has to be converted to GeoJson type in order to be displayed on the map
+export const convertRegionalDataToFeatureSet = (
+    data: RegionalData[],
+): FeatureSet => {
+    const featureSet: FeatureSet = { type: 'FeatureCollection', features: [] };
+
+    for (const dataRow of data) {
+        const feature: Feature = {
+            type: 'Feature',
+            properties: {
+                id: dataRow._id,
+                caseCount: dataRow.casecount,
+                country: dataRow.country,
+                region: dataRow._id,
+                search: dataRow.search,
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: [dataRow.long, dataRow.lat],
+            },
+        };
+
+        featureSet.features.push(feature);
+    }
+
+    return featureSet;
 };
 
 /**

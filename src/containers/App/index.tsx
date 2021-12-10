@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { fetchCountriesData } from 'redux/App/thunks';
 import { selectIsLoading, selectError } from 'redux/App/selectors';
 import { selectIsLoading as selectVariantsViewLoading } from 'redux/VariantsView/selectors';
+import { selectIsRegionalViewLoading } from 'redux/RegionalView/selectors';
 import Loader from 'components/Loader';
 import ErrorAlert from 'components/ErrorAlert';
 import VariantsView from 'containers/VariantsView';
@@ -20,6 +21,7 @@ const App = () => {
 
     const isLoading = useAppSelector(selectIsLoading);
     const isVariantsViewLoading = useAppSelector(selectVariantsViewLoading);
+    const isRegionalViewLoading = useAppSelector(selectIsRegionalViewLoading);
     const error = useAppSelector(selectError);
 
     useEffect(() => {
@@ -28,7 +30,9 @@ const App = () => {
 
     return (
         <div className="App">
-            {isLoading || (isVariantsViewLoading && <Loader />)}
+            {(isLoading || isVariantsViewLoading || isRegionalViewLoading) && (
+                <Loader />
+            )}
 
             <TopBar />
             <SideBar />

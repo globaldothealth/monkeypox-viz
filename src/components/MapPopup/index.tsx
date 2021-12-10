@@ -16,7 +16,7 @@ const MapPopup: React.FC<MapPopupProps> = ({
     const handleButtonClick = () => {
         if (!buttonUrl) return;
 
-        window.location.href = buttonUrl;
+        window.open(buttonUrl, '_blank');
     };
 
     return (
