@@ -18,6 +18,8 @@ import { LegendRow } from 'models/LegendRow';
 
 import { MapContainer } from 'theme/globalStyles';
 import { PopupContentText } from './styled';
+import { selectCountriesData, selectSelectedCountryInSideBar } from 'redux/App/selectors';
+import { CountryDataRow } from 'models/CountryData';
 
 const dataLayers: LegendRow[] = [
     { label: '< 100', color: RegionalViewColors['<100'] },
@@ -36,6 +38,8 @@ export const RegionalView: React.FC = () => {
 
     const [mapLoaded, setMapLoaded] = useState(false);
     const regionalData = useAppSelector(selectRegionalData);
+    const countriesData = useAppSelector(selectCountriesData);
+    const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
 
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useMapboxMap(mapboxAccessToken, mapContainer);
@@ -51,6 +55,26 @@ export const RegionalView: React.FC = () => {
 
         return convertRegionalDataToFeatureSet(regionalData);
     }, [regionalData]);
+
+    // Fly to country
+    useEffect(() => {
+        if (selectedCountry) {
+            const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
+                const finalCountry = contriesList.filter(
+                    (el) =>
+                        el.code.toLowerCase() === selectedCountry.toLowerCase(),
+                );
+                return {
+                    center: [
+                        finalCountry[0].long,
+                        finalCountry[0].lat,
+                    ] as LngLatLike,
+                    zoom: 5,
+                };
+            };
+            map.current?.flyTo(getCountryCoordinates(countriesData));
+        }
+    }, [selectedCountry]);
 
     // Setup map
     useEffect(() => {

@@ -2,10 +2,14 @@ import ReactDOM from 'react-dom';
 import { useRef, useEffect, useState } from 'react';
 import { useMapboxMap } from 'hooks/useMapboxMap';
 import { useAppSelector } from 'redux/hooks';
-import { selectIsLoading, selectCountriesData } from 'redux/App/selectors';
+import {
+    selectIsLoading,
+    selectCountriesData,
+    selectSelectedCountryInSideBar,
+} from 'redux/App/selectors';
 import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CountryViewColors } from 'models/Colors';
-import mapboxgl, { MapSourceDataEvent, EventData } from 'mapbox-gl';
+import mapboxgl, { MapSourceDataEvent, EventData, LngLatLike } from 'mapbox-gl';
 import Legend from 'components/Legend';
 import { LegendRow } from 'models/LegendRow';
 import { parseSearchQuery } from 'utils/helperFunctions';
@@ -14,6 +18,7 @@ import MapPopup from 'components/MapPopup';
 import { MapContainer } from 'theme/globalStyles';
 import Loader from 'components/Loader';
 import { PopupContentText } from './styled';
+import { CountryDataRow } from 'models/CountryData';
 
 const dataLayers: LegendRow[] = [
     { label: '< 10k', color: CountryViewColors['10K'] },
@@ -30,6 +35,8 @@ const CountryView: React.FC = () => {
 
     const isLoading = useAppSelector(selectIsLoading);
     const countriesData = useAppSelector(selectCountriesData);
+    const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
+
     const [mapLoaded, setMapLoaded] = useState(false);
 
     const mapContainer = useRef<HTMLDivElement>(null);
@@ -38,6 +45,23 @@ const CountryView: React.FC = () => {
     const lookupTableData = countryLookupTable.adm0.data.all as {
         [key: string]: any;
     };
+
+    // Fly to country
+    useEffect(() => {
+        if (selectedCountry) {
+            const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
+                const finalCountry = contriesList.filter(
+                    (el) =>
+                        el.code.toLowerCase() === selectedCountry.toLowerCase(),
+                );
+                return {
+                    center: [finalCountry[0].long, finalCountry[0].lat] as LngLatLike,
+                    zoom: 5,
+                };
+            };
+            map.current?.flyTo(getCountryCoordinates(countriesData));
+        }
+    }, [selectedCountry]);
 
     // Setup map
     useEffect(() => {

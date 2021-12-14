@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchCountriesData } from './thunks';
+import { fetchCountriesData, fetchTotalCases } from './thunks';
 import { fetchVariantsData } from 'redux/VariantsView/thunks';
 import { fetchRegionalData } from 'redux/RegionalView/thunks';
 import { CountryDataRow } from 'models/CountryData';
@@ -9,6 +9,9 @@ interface AppState {
     isMapLoading: boolean;
     error: string | undefined;
     countriesData: CountryDataRow[];
+    totalNumberOfCases: number;
+    selectedCountryInSideBar: string;
+    lastUpdateDate: string;
 }
 
 const initialState: AppState = {
@@ -16,6 +19,9 @@ const initialState: AppState = {
     isMapLoading: false,
     error: undefined,
     countriesData: [],
+    totalNumberOfCases: 0,
+    selectedCountryInSideBar: '',
+    lastUpdateDate: '',
 };
 
 export const appSlice = createSlice({
@@ -24,6 +30,12 @@ export const appSlice = createSlice({
     reducers: {
         setIsMapLoading: (state, action: PayloadAction<boolean>) => {
             state.isMapLoading = action.payload;
+        },
+        setSelectedCountryInSidebar: (state, action: PayloadAction<string>) => {
+            state.selectedCountryInSideBar = action.payload;
+        },
+        setLastUpdateDate: (state, action: PayloadAction<string>) => {
+            state.lastUpdateDate = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -52,6 +64,23 @@ export const appSlice = createSlice({
                 : action.error.message;
         });
 
+        // Total Cases Count
+        builder.addCase(fetchTotalCases.pending, (state) => {
+            state.isLoading = true;
+            state.error = undefined;
+        });
+        builder.addCase(fetchTotalCases.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.totalNumberOfCases = payload.total;
+        });
+        builder.addCase(fetchTotalCases.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload
+            ? action.payload
+            : action.error.message;
+        });
+
+
         // Regional view (error handling)
         builder.addCase(fetchRegionalData.pending, (state) => {
             state.error = undefined;
@@ -61,9 +90,10 @@ export const appSlice = createSlice({
                 ? action.payload
                 : action.error.message;
         });
-    },
+    }
 });
 
-export const { setIsMapLoading } = appSlice.actions;
+export const { setIsMapLoading, setSelectedCountryInSidebar, setLastUpdateDate } =
+    appSlice.actions;
 
 export default appSlice.reducer;

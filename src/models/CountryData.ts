@@ -6,3 +6,7 @@ export interface CountryDataRow {
     lat: number;
     long: number;
 }
+
+export interface TotalCasesValues {
+    total: number;
+}

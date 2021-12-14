@@ -6,7 +6,7 @@ import { RegionalView } from 'containers/RegionalView';
 import CoverageView from 'containers/CoverageView';
 import SideBar from 'components/SideBar';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
-import { fetchCountriesData } from 'redux/App/thunks';
+import { fetchCountriesData, fetchTotalCases } from 'redux/App/thunks';
 import { selectIsLoading, selectError } from 'redux/App/selectors';
 import { selectIsLoading as selectVariantsViewLoading } from 'redux/VariantsView/selectors';
 import { selectIsRegionalViewLoading } from 'redux/RegionalView/selectors';
@@ -26,6 +26,7 @@ const App = () => {
 
     useEffect(() => {
         dispatch(fetchCountriesData());
+        dispatch(fetchTotalCases());
     }, []);
 
     return (

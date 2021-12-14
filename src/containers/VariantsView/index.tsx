@@ -4,17 +4,17 @@ import { useMapboxMap } from 'hooks/useMapboxMap';
 import { Popup, MapSourceDataEvent, EventData, LngLatLike } from 'mapbox-gl';
 import { fetchVariantsData } from 'redux/VariantsView/thunks';
 import {
+    selectChosenVariant,
     selectIsLoading,
     selectVariantsData,
-    selectChosenVariant,
 } from 'redux/VariantsView/selectors';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
-    sortData,
-    sortStatesData,
     getDetailedData,
     getMostRecentCountryData,
     getMostRecentStatesData,
+    sortData,
+    sortStatesData,
 } from 'utils/helperFunctions';
 import { VariantsFillColors, VariantsOutlineColors } from 'models/Colors';
 import MapPopup from 'components/MapPopup';
