@@ -27,7 +27,12 @@ export const fetchCountriesData = createAsyncThunk<
         const latestKey = keys[0];
 
         const countriesData = jsonResponse[latestKey] as CountryDataRow[];
-        return countriesData;
+        const countriesDataSorted = countriesData
+            .filter(
+                (item) => item._id != null && item.code && item.code !== 'ZZ',
+            )
+            .sort((a, b) => (a.casecount < b.casecount ? 1 : -1));
+        return countriesDataSorted;
     } catch (err: any) {
         if (err.response) return rejectWithValue(err.response.message);
 

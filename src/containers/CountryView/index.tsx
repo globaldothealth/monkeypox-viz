@@ -52,7 +52,7 @@ const CountryView: React.FC = () => {
             const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
                 const finalCountry = contriesList.filter(
                     (el) =>
-                        el.code.toLowerCase() === selectedCountry.toLowerCase(),
+                        el.code === selectedCountry
                 );
                 return {
                     center: [finalCountry[0].long, finalCountry[0].lat] as LngLatLike,

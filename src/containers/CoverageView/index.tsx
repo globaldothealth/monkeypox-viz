@@ -50,8 +50,7 @@ const CoverageView: React.FC = () => {
         if (selectedCountry) {
             const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
                 const finalCountry = contriesList.filter(
-                    (el) =>
-                        el.code.toLowerCase() === selectedCountry.toLowerCase(),
+                    (el) => el.code === selectedCountry,
                 );
                 return {
                     center: [

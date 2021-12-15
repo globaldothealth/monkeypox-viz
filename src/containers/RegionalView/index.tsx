@@ -18,7 +18,10 @@ import { LegendRow } from 'models/LegendRow';
 
 import { MapContainer } from 'theme/globalStyles';
 import { PopupContentText } from './styled';
-import { selectCountriesData, selectSelectedCountryInSideBar } from 'redux/App/selectors';
+import {
+    selectCountriesData,
+    selectSelectedCountryInSideBar,
+} from 'redux/App/selectors';
 import { CountryDataRow } from 'models/CountryData';
 
 const dataLayers: LegendRow[] = [
@@ -61,8 +64,7 @@ export const RegionalView: React.FC = () => {
         if (selectedCountry) {
             const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
                 const finalCountry = contriesList.filter(
-                    (el) =>
-                        el.code.toLowerCase() === selectedCountry.toLowerCase(),
+                    (el) => el.code === selectedCountry,
                 );
                 return {
                     center: [
