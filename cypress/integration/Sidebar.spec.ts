@@ -1,4 +1,12 @@
 describe('<SideBar />', () => {
+    beforeEach(() => {
+        cy.intercept(
+            'GET',
+            'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/country/latest.json',
+            { fixture: 'countriesData.json', statusCode: 200 },
+        ).as('fetchCountriesData');
+    });
+
     it('Displays navbar, hides navbar', () => {
         cy.visit('/');
 
@@ -16,17 +24,30 @@ describe('<SideBar />', () => {
         cy.get('[data-cy="sidebar"]').should('be.visible');
     });
 
-    // Skipped until the test is finished
-    it.skip('Countries list dropdown opens', () => {
+    it('Displays loading skeleton while feetching data', () => {
+        cy.intercept(
+            'GET',
+            'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/country/latest.json',
+            { fixture: 'countriesData.json', statusCode: 200, delay: 1000 },
+        ).as('fetchCountriesData');
+
         cy.visit('/');
 
-        cy.get('button.MuiIconButton-root')
-            .should('have.attr', 'aria-label', 'Open')
-            .click();
-        cy.contains(/Germany (DE)/i).scrollIntoView();
-        cy.contains(/Germany/i).click();
+        cy.get('[data-cy="loading-skeleton"]').should('have.length', 3);
 
-        //TODO: add action to check if germany was clicked correctly (ie. zoom into the right country)
+        cy.wait('@fetchCountriesData');
+
+        cy.get('[data-cy="loading-skeleton"]').should('not.exist');
+        cy.contains(/United States/i);
+    });
+
+    it('Countries list dropdown opens', () => {
+        cy.visit('/');
+
+        cy.get('.searchbar')
+            .should('be.visible')
+            .click()
+            .type('Germany{downarrow}{enter}');
     });
 
     it('Displays completeness select in coverage view', () => {
@@ -49,15 +70,8 @@ describe('<SideBar />', () => {
             { fixture: 'completenessData.json', statusCode: 200 },
         ).as('fetchCompletenessData');
 
-        cy.intercept(
-            'GET',
-            'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/country/latest.json',
-            { fixture: 'countriesData.json', statusCode: 200 },
-        ).as('fetchCountriesData');
-
         cy.visit('/coverage');
-        cy.wait('@fetchCompletenessData');
-        cy.wait('@fetchCountriesData');
+        cy.wait(['@fetchCompletenessData', '@fetchCountriesData']);
 
         cy.wait(1000);
 
@@ -67,5 +81,17 @@ describe('<SideBar />', () => {
 
         cy.contains(/United States/i).should('not.exist');
         cy.contains(/Cuba/i);
+    });
+
+    it('Redirects user to Data portal after clicking "See all cases"', () => {
+        cy.visit('/');
+
+        cy.wait('@fetchCountriesData');
+
+        cy.get('#ghlist').should(
+            'have.attr',
+            'href',
+            'https://dev-data.covid-19.global.health',
+        );
     });
 });
