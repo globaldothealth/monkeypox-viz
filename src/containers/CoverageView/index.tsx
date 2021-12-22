@@ -166,6 +166,10 @@ const CoverageView: React.FC = () => {
                     const countryCode = country?.alpha2;
 
                     if (countryCode && lookupTableData[countryCode]) {
+                        const coverage = Math.round(
+                            row[chosenCompletenessField] as number,
+                        );
+
                         mapRef.setFeatureState(
                             {
                                 source: 'countriesData',
@@ -176,7 +180,7 @@ const CoverageView: React.FC = () => {
                                 name: country.country,
                                 lat: lookupTableData[countryCode].centroid[1],
                                 long: lookupTableData[countryCode].centroid[0],
-                                coverage: row[chosenCompletenessField],
+                                coverage,
                             },
                         );
 

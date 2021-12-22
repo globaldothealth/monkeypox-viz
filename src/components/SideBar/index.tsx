@@ -96,7 +96,7 @@ const SideBar = () => {
                         if (!country) return;
 
                         const code = country.alpha2;
-                        const percentage = Math.floor(
+                        const percentage = Math.round(
                             el[chosenCompletenessField] as number,
                         );
 
