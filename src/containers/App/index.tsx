@@ -38,21 +38,15 @@ const App = () => {
             <TopBar />
             <SideBar />
 
-            {!error ? (
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<Navigate replace to="/country" />}
-                    />
-                    <Route path="/country" element={<CountryView />} />
-                    <Route path="/region" element={<RegionalView />} />
-                    <Route path="/coverage" element={<CoverageView />} />
-                    <Route
-                        path="/variant-reporting"
-                        element={<VariantsView />}
-                    />
-                </Routes>
-            ) : (
+            <Routes>
+                <Route path="/" element={<Navigate replace to="/country" />} />
+                <Route path="/country" element={<CountryView />} />
+                <Route path="/region" element={<RegionalView />} />
+                <Route path="/coverage" element={<CoverageView />} />
+                <Route path="/variant-reporting" element={<VariantsView />} />
+            </Routes>
+
+            {error && (
                 <ErrorContainer>
                     <ErrorAlert errorMessage={error} />
                 </ErrorContainer>

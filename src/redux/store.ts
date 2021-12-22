@@ -3,11 +3,13 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import appReducer from './App/slice';
 import variantsViewReducer from './VariantsView/slice';
 import regionalViewReducer from './RegionalView/slice';
+import coverageViewReducer from './CoverageView/slice';
 
 export const rootReducer = combineReducers({
     app: appReducer,
     variantsView: variantsViewReducer,
     regionalView: regionalViewReducer,
+    coverageView: coverageViewReducer,
 });
 
 export const store = configureStore({

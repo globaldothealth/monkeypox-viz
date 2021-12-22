@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchCountriesData, fetchTotalCases } from './thunks';
 import { fetchVariantsData } from 'redux/VariantsView/thunks';
 import { fetchRegionalData } from 'redux/RegionalView/thunks';
+import { fetchCompletenessData } from 'redux/CoverageView/thunks';
 import { CountryDataRow } from 'models/CountryData';
 
 interface AppState {
@@ -76,10 +77,9 @@ export const appSlice = createSlice({
         builder.addCase(fetchTotalCases.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.payload
-            ? action.payload
-            : action.error.message;
+                ? action.payload
+                : action.error.message;
         });
-
 
         // Regional view (error handling)
         builder.addCase(fetchRegionalData.pending, (state) => {
@@ -90,10 +90,23 @@ export const appSlice = createSlice({
                 ? action.payload
                 : action.error.message;
         });
-    }
+
+        // Variants view (error handling)
+        builder.addCase(fetchCompletenessData.pending, (state) => {
+            state.error = undefined;
+        });
+        builder.addCase(fetchCompletenessData.rejected, (state, action) => {
+            state.error = action.payload
+                ? action.payload
+                : action.error.message;
+        });
+    },
 });
 
-export const { setIsMapLoading, setSelectedCountryInSidebar, setLastUpdateDate } =
-    appSlice.actions;
+export const {
+    setIsMapLoading,
+    setSelectedCountryInSidebar,
+    setLastUpdateDate,
+} = appSlice.actions;
 
 export default appSlice.reducer;

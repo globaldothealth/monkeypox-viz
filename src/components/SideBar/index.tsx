@@ -26,10 +26,18 @@ import {
 } from './styled';
 import { setSelectedCountryInSidebar } from 'redux/App/slice';
 import { CountryDataRow } from 'models/CountryData';
+import { CompletenessDropdown } from './CompletenessDropdown';
+import {
+    selectCompletenessData,
+    selectChosenCompletenessField,
+    selectIsLoading,
+} from 'redux/CoverageView/selectors';
+import iso from 'iso-3166-1';
 
 const SideBar = () => {
     const [openSidebar, setOpenSidebar] = useState(true);
     const [isVariantsView, setIsVariantsView] = useState(false);
+    const [isCoverageView, setIsCoverageView] = useState(false);
 
     const location = useLocation();
     const dispatch = useAppDispatch();
@@ -37,11 +45,17 @@ const SideBar = () => {
     const totalCasesCount = useAppSelector(selectTotalCases);
     const totalCasesCountIsLoading = useAppSelector(selectTotalCasesIsLoading);
     const lastUpdateDate = useAppSelector(selectLastUpdateDate);
+    const completenessData = useAppSelector(selectCompletenessData);
+    const chosenCompletenessField = useAppSelector(
+        selectChosenCompletenessField,
+    );
+    const completenessDataLoading = useAppSelector(selectIsLoading);
     const convertedDate = new Date(lastUpdateDate).toDateString();
 
-    // Sidebar has other content in VariantsView
+    // Sidebar has other content in VariantsView and CoverageView
     useEffect(() => {
         setIsVariantsView(location.pathname === '/variant-reporting');
+        setIsCoverageView(location.pathname === '/coverage');
     }, [location]);
 
     const countriesData = useAppSelector(selectCountriesData);
@@ -62,32 +76,79 @@ const SideBar = () => {
         value !== null && dispatch(setSelectedCountryInSidebar(value.code));
     };
 
-    const Countries = () => (
-        <>
-            {countriesData.map((row) => {
-                const { code, _id, casecount } = row;
-                const countryCasesCountPercentage =
-                    (casecount / totalCasesCount) * 100;
-                return (
-                    <LocationListItem
-                        key={_id}
-                        $barWidth={countryCasesCountPercentage}
-                        onClick={(e: React.MouseEvent<HTMLElement>) =>
-                            handleOnCountryClick(e)
-                        }
-                    >
-                        <button value={code}>
-                            <span className="label">{_id}</span>
-                            <span className="num">
-                                {casecount.toLocaleString()}
-                            </span>
-                        </button>
-                        <div className="country-cases-bar"></div>
-                    </LocationListItem>
-                );
-            })}
-        </>
-    );
+    const Countries = () => {
+        if (
+            isCoverageView &&
+            chosenCompletenessField &&
+            chosenCompletenessField !== 'cases'
+        ) {
+            const sortedCompletenessData = [...completenessData].sort((a, b) =>
+                Number(a[chosenCompletenessField]) <
+                Number(b[chosenCompletenessField])
+                    ? 1
+                    : -1,
+            );
+
+            return (
+                <>
+                    {sortedCompletenessData.map((el) => {
+                        const country = iso.whereCountry(el.country);
+                        if (!country) return;
+
+                        const code = country.alpha2;
+                        const percentage = Math.floor(
+                            el[chosenCompletenessField] as number,
+                        );
+
+                        return (
+                            <LocationListItem
+                                key={el.country}
+                                $barWidth={percentage}
+                                onClick={(e: React.MouseEvent<HTMLElement>) =>
+                                    handleOnCountryClick(e)
+                                }
+                            >
+                                <button value={code}>
+                                    <span className="label">
+                                        {country.country}
+                                    </span>
+                                    <span className="num">{percentage}%</span>
+                                </button>
+                                <div className="country-cases-bar"></div>
+                            </LocationListItem>
+                        );
+                    })}
+                </>
+            );
+        }
+
+        return (
+            <>
+                {countriesData.map((row) => {
+                    const { code, _id, casecount } = row;
+                    const countryCasesCountPercentage =
+                        (casecount / totalCasesCount) * 100;
+                    return (
+                        <LocationListItem
+                            key={_id}
+                            $barWidth={countryCasesCountPercentage}
+                            onClick={(e: React.MouseEvent<HTMLElement>) =>
+                                handleOnCountryClick(e)
+                            }
+                        >
+                            <button value={code}>
+                                <span className="label">{_id}</span>
+                                <span className="num">
+                                    {casecount.toLocaleString()}
+                                </span>
+                            </button>
+                            <div className="country-cases-bar"></div>
+                        </LocationListItem>
+                    );
+                })}
+            </>
+        );
+    };
 
     return (
         <StyledSideBar
@@ -176,8 +237,10 @@ const SideBar = () => {
                             )}
                         />
                     </SearchBar>
+                    {isCoverageView && <CompletenessDropdown />}
                     <LocationList>
-                        {totalCasesCountIsLoading ? (
+                        {totalCasesCountIsLoading ||
+                        (isCoverageView && completenessDataLoading) ? (
                             <CountriesListSkeleton
                                 animation="pulse"
                                 variant="rectangular"

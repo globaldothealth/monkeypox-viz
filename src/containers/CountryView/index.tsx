@@ -55,7 +55,10 @@ const CountryView: React.FC = () => {
                         el.code === selectedCountry
                 );
                 return {
-                    center: [finalCountry[0].long, finalCountry[0].lat] as LngLatLike,
+                    center: [
+                        finalCountry[0].long,
+                        finalCountry[0].lat,
+                    ] as LngLatLike,
                     zoom: 5,
                 };
             };
