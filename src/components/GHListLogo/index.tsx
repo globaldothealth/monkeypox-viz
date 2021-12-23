@@ -1,5 +1,6 @@
 import logo from 'assets/images/gh_logo.svg';
 import { LogoStyles, LogoImage } from './styled';
+import MapGuide from 'components/MapGuide';
 
 export default function GHListLogo(): JSX.Element {
     return (
@@ -10,6 +11,7 @@ export default function GHListLogo(): JSX.Element {
                     <span className="logoText">Map</span>
                 </div>
             </a>
+            <MapGuide />
         </LogoStyles>
     );
 }

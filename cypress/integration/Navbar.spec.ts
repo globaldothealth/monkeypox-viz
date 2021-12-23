@@ -1,4 +1,4 @@
-describe('<TopBar />', () => {
+describe('<Navbar />', () => {
     it('Displays navbar and logo', () => {
         cy.visit('/');
 
@@ -15,5 +15,22 @@ describe('<TopBar />', () => {
         cy.get('.regionalViewNavButton').click();
         cy.url().should('include', '/region');
         cy.url().should('not.include', '/country');
+    });
+
+    it('Opens and closes the MapGuide', () => {
+        cy.visit('/');
+
+        cy.get('.MuiDialog-paperScrollPaper').should('not.exist');
+        cy.contains(/Map Guide/i)
+            .should('be.visible')
+            .click();
+        cy.get('.MuiDialog-paperScrollPaper').should('exist');
+        cy.get('[aria-label="close"]').click();
+        cy.get('.MuiDialog-paperScrollPaper').should('not.exist');
+        cy.contains(/Map Guide/i)
+            .should('be.visible')
+            .click();
+        cy.get('body').click(0, 0);
+        cy.get('.MuiDialog-paperScrollPaper').should('not.exist');
     });
 });
