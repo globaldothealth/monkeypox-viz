@@ -28,7 +28,18 @@ export const CompletenessDropdown: React.FC = () => {
         const keys = Object.keys(completenessData[0]);
         const fields = keys.filter((key) => key !== 'country');
 
-        return fields;
+        // Filter out fields without any data in any country
+        const filteredFields = [] as string[];
+        for (const key of fields) {
+            for (const el of completenessData) {
+                if (el[key] !== 0) {
+                    filteredFields.push(key);
+                    break;
+                }
+            }
+        }
+
+        return filteredFields;
     }, [completenessData]);
 
     const handleChange = (e: SelectChangeEvent<string>) => {

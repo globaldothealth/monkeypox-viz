@@ -29,6 +29,8 @@ const App = () => {
         dispatch(fetchTotalCases());
     }, []);
 
+    const env = process.env.NODE_ENV;
+
     return (
         <div className="App">
             {(isLoading || isVariantsViewLoading || isRegionalViewLoading) && (
@@ -43,7 +45,16 @@ const App = () => {
                 <Route path="/country" element={<CountryView />} />
                 <Route path="/region" element={<RegionalView />} />
                 <Route path="/coverage" element={<CoverageView />} />
-                <Route path="/variant-reporting" element={<VariantsView />} />
+                <Route
+                    path="/variant-reporting"
+                    element={
+                        env === 'development' ? (
+                            <VariantsView />
+                        ) : (
+                            <Navigate replace to="/country" />
+                        )
+                    }
+                />
             </Routes>
 
             {error && (

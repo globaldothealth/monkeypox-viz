@@ -64,9 +64,8 @@ const SideBar = () => {
         setOpenSidebar((value) => !value);
     };
 
-    const handleOnCountryClick = (e: React.MouseEvent<HTMLElement>) => {
-        const buttonValue = e.target as HTMLButtonElement;
-        dispatch(setSelectedCountryInSidebar(buttonValue.value));
+    const handleOnCountryClick = (code: string) => {
+        dispatch(setSelectedCountryInSidebar(code));
     };
 
     const handleAutocompleteCountrySelect = (
@@ -104,11 +103,9 @@ const SideBar = () => {
                             <LocationListItem
                                 key={el.country}
                                 $barWidth={percentage}
-                                onClick={(e: React.MouseEvent<HTMLElement>) =>
-                                    handleOnCountryClick(e)
-                                }
+                                onClick={() => handleOnCountryClick(code)}
                             >
-                                <button value={code}>
+                                <button>
                                     <span className="label">
                                         {country.country}
                                     </span>
@@ -132,11 +129,9 @@ const SideBar = () => {
                         <LocationListItem
                             key={_id}
                             $barWidth={countryCasesCountPercentage}
-                            onClick={(e: React.MouseEvent<HTMLElement>) =>
-                                handleOnCountryClick(e)
-                            }
+                            onClick={() => handleOnCountryClick(code)}
                         >
-                            <button value={code}>
+                            <button>
                                 <span className="label">{_id}</span>
                                 <span className="num">
                                     {casecount.toLocaleString()}
