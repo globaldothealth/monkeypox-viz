@@ -65,6 +65,12 @@ const TopBar = () => {
                                 G.h Data
                             </Typography>
                         </a>
+
+                        <a href="mailto:info@global.health?subject=Feedback regarding Global.health map">
+                            <Typography variant="navbarlink" gutterBottom>
+                                Feedback
+                            </Typography>
+                        </a>
                     </NavBar>
                 </StyledTooolbar>
             </AppBarStyle>
