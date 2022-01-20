@@ -59,6 +59,9 @@ const SideBar = () => {
     }, [location]);
 
     const countriesData = useAppSelector(selectCountriesData);
+    const [coverageCountriesData, setCoverageCountriesData] = useState<
+        { _id: string; code: string }[]
+    >([]);
 
     const handleOnClick = () => {
         setOpenSidebar((value) => !value);
@@ -70,10 +73,38 @@ const SideBar = () => {
 
     const handleAutocompleteCountrySelect = (
         event: SyntheticEvent<Element, Event>,
-        value: CountryDataRow | null,
+        value: CountryDataRow | { _id: string; code: string } | null,
     ) => {
         value !== null && dispatch(setSelectedCountryInSidebar(value.code));
     };
+
+    // Parse completeness data in coverage view
+    useEffect(() => {
+        if (
+            isCoverageView &&
+            chosenCompletenessField &&
+            chosenCompletenessField !== 'cases'
+        ) {
+            const sortedCompletenessData = [...completenessData].sort((a, b) =>
+                Number(a[chosenCompletenessField]) <
+                Number(b[chosenCompletenessField])
+                    ? 1
+                    : -1,
+            );
+
+            const mappedData: { _id: string; code: string }[] = [];
+            for (const el of sortedCompletenessData) {
+                const country = iso.whereCountry(el.country);
+
+                if (country) {
+                    const code = country.alpha2;
+                    mappedData.push({ _id: el.country, code: code });
+                }
+            }
+
+            setCoverageCountriesData(mappedData);
+        }
+    }, [isCoverageView, chosenCompletenessField]);
 
     const Countries = () => {
         if (
@@ -198,13 +229,22 @@ const SideBar = () => {
                     <SearchBar className="searchbar">
                         <Autocomplete
                             id="country-select"
-                            options={countriesData}
+                            options={
+                                isCoverageView &&
+                                chosenCompletenessField !== 'cases'
+                                    ? coverageCountriesData
+                                    : countriesData
+                            }
                             autoHighlight
                             disabled={totalCasesCountIsLoading}
                             getOptionLabel={(option) => option._id}
-                            onChange={(event, value: CountryDataRow | null) =>
-                                handleAutocompleteCountrySelect(event, value)
-                            }
+                            onChange={(
+                                event,
+                                value:
+                                    | CountryDataRow
+                                    | { _id: string; code: string }
+                                    | null,
+                            ) => handleAutocompleteCountrySelect(event, value)}
                             renderOption={(props, option) => (
                                 <Box
                                     component="li"
@@ -216,7 +256,7 @@ const SideBar = () => {
                                         width="20"
                                         src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
                                         srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                                        alt=""
+                                        alt={`${option._id} flag`}
                                     />
                                     {option._id} ({option.code})
                                 </Box>

@@ -21,7 +21,6 @@ import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CoverageViewColors } from 'models/Colors';
 import MapPopup from 'components/MapPopup';
 import { LegendRow } from 'models/LegendRow';
-import { CountryDataRow } from 'models/CountryData';
 import Legend from 'components/Legend';
 import iso from 'iso-3166-1';
 
@@ -66,21 +65,15 @@ const CoverageView: React.FC = () => {
 
     // Fly to country
     useEffect(() => {
-        if (selectedCountry) {
-            const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
-                const finalCountry = contriesList.filter(
-                    (el) => el.code === selectedCountry,
-                );
-                return {
-                    center: [
-                        finalCountry[0].long,
-                        finalCountry[0].lat,
-                    ] as LngLatLike,
-                    zoom: 5,
-                };
-            };
-            map.current?.flyTo(getCountryCoordinates(countriesData));
-        }
+        if (!selectedCountry) return;
+
+        const lat = lookupTableData[selectedCountry].centroid[1];
+        const long = lookupTableData[selectedCountry].centroid[0];
+
+        map.current?.flyTo({
+            center: [long, lat] as LngLatLike,
+            zoom: 5,
+        });
     }, [selectedCountry]);
 
     // Setup map

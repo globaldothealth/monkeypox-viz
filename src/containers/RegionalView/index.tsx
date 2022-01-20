@@ -212,10 +212,12 @@ export const RegionalView: React.FC = () => {
                 searchQuery = `cases?country=${parseSearchQuery(
                     country,
                 )}${admin1Query}${admin2Query}${admin3Query}`;
-            } else {
+            } else if (country !== region) {
                 searchQuery = `cases?country=${parseSearchQuery(
                     country,
                 )}&${searchResolution}=${region}`;
+            } else {
+                searchQuery = `cases?country=${parseSearchQuery(country)}`;
             }
 
             const url = `${dataPortalUrl}/${searchQuery}`;
