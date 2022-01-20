@@ -11,5 +11,8 @@ export interface RegionalData {
     country: string;
     lat: number;
     long: number;
+    admin1: string | undefined;
+    admin2: string | undefined;
+    admin3: string | undefined;
     search: SearchResolution;
 }

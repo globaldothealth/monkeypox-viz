@@ -10,7 +10,6 @@ import {
     parseSearchQuery,
 } from 'utils/helperFunctions';
 import { RegionalViewColors } from 'models/Colors';
-import { SearchResolution } from 'models/RegionalData';
 import MapPopup from 'components/MapPopup';
 import Loader from 'components/Loader';
 import Legend from 'components/Legend';
@@ -23,6 +22,7 @@ import {
     selectSelectedCountryInSideBar,
 } from 'redux/App/selectors';
 import { CountryDataRow } from 'models/CountryData';
+import { SearchResolution } from 'models/RegionalData';
 
 const dataLayers: LegendRow[] = [
     { label: '< 100', color: RegionalViewColors['<100'] },
@@ -183,17 +183,39 @@ export const RegionalView: React.FC = () => {
             const lat = geometry.coordinates[1];
             const lng = geometry.coordinates[0];
             const caseCount = e.features[0].properties.caseCount;
-            const search = e.features[0].properties.search;
+
+            const admin1 = e.features[0].properties.admin1;
+            const admin2 = e.features[0].properties.admin2;
+            const admin3 = e.features[0].properties.admin3;
+            const searchResolution = e.features[0].properties
+                .search as SearchResolution;
+
             const coordinates: LngLatLike = { lng, lat };
 
-            let searchQuery: string;
+            // Prepare search query to always pass all available regional data
+            const admin1Query = admin1
+                ? `&admin1=${parseSearchQuery(admin1)}`
+                : '';
+            const admin2Query = admin2
+                ? `&admin2=${parseSearchQuery(admin2)}`
+                : '';
+            const admin3Query = admin3
+                ? `&admin3=${parseSearchQuery(admin3)}`
+                : '';
 
-            if (search === SearchResolution.Country) {
-                searchQuery = `cases?country=${parseSearchQuery(country)}`;
+            let searchQuery: string;
+            if (
+                admin1Query !== '' ||
+                admin2Query !== '' ||
+                admin3Query !== ''
+            ) {
+                searchQuery = `cases?country=${parseSearchQuery(
+                    country,
+                )}${admin1Query}${admin2Query}${admin3Query}`;
             } else {
                 searchQuery = `cases?country=${parseSearchQuery(
                     country,
-                )}&${search}=${parseSearchQuery(region)}`;
+                )}&${searchResolution}=${region}`;
             }
 
             const url = `${dataPortalUrl}/${searchQuery}`;

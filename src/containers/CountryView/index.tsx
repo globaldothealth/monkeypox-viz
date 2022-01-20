@@ -51,8 +51,7 @@ const CountryView: React.FC = () => {
         if (selectedCountry) {
             const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
                 const finalCountry = contriesList.filter(
-                    (el) =>
-                        el.code === selectedCountry
+                    (el) => el.code === selectedCountry,
                 );
                 return {
                     center: [

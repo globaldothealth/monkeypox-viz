@@ -41,6 +41,9 @@ export const convertRegionalDataToFeatureSet = (
                 country: dataRow.country,
                 region: dataRow._id,
                 search: dataRow.search,
+                admin1: dataRow.admin1,
+                admin2: dataRow.admin2,
+                admin3: dataRow.admin3,
             },
             geometry: {
                 type: 'Point',

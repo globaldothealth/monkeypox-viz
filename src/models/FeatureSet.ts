@@ -6,6 +6,9 @@ export interface Feature {
         country: string;
         region: string;
         search: string;
+        admin1: string | undefined;
+        admin2: string | undefined;
+        admin3: string | undefined;
     };
     geometry: {
         type: 'Point';
