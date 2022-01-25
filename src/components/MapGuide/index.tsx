@@ -95,7 +95,7 @@ export const MapGuide: React.FC = () => {
                         corresponding filtered results of data for that country.
                         You can also use the left-hand navigation to search or
                         select a country. Darker colours indicate more available
-                        line-list data. Please see our{' '}
+                        line-list data. (Please see our{' '}
                         <a href="https://global.health/faqs/" title="FAQs">
                             FAQs
                         </a>{' '}
