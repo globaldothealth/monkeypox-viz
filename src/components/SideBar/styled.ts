@@ -56,7 +56,7 @@ export const FlagIcon = styled('img')(() => ({
 }));
 
 export const SideBarHeader = styled('div')(({ theme }) => ({
-    cursor: 'pointer',
+    cursor: 'default',
     height: 'auto',
     position: 'relative',
     h1: {
