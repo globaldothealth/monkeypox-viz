@@ -229,6 +229,12 @@ export const RegionalView: React.FC = () => {
                 </PopupContentText>
             );
 
+            // Fly to the selected country before showing popup
+            mapRef.flyTo({
+                center: [lng, lat] as LngLatLike,
+                zoom: 5,
+            });
+
             // This has to be done this way in order to allow for React components as a content of the popup
             const popupElement = document.createElement('div');
             ReactDOM.render(
