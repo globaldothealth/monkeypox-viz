@@ -59,7 +59,7 @@ const SideBar = () => {
     }, [location]);
 
     const countriesData = useAppSelector(selectCountriesData);
-    const [coverageCountriesData, setCoverageCountriesData] = useState<
+    const [autocompleteData, setAutocompleteData] = useState<
         { _id: string; code: string }[]
     >([]);
 
@@ -102,9 +102,15 @@ const SideBar = () => {
                 }
             }
 
-            setCoverageCountriesData(mappedData);
+            setAutocompleteData(mappedData);
+        } else {
+            const mappedData = countriesData.map((el) => {
+                return { _id: el._id, code: el.code };
+            });
+
+            setAutocompleteData(mappedData);
         }
-    }, [isCoverageView, chosenCompletenessField]);
+    }, [isCoverageView, chosenCompletenessField, countriesData]);
 
     const Countries = () => {
         if (
@@ -229,22 +235,17 @@ const SideBar = () => {
                     <SearchBar className="searchbar">
                         <Autocomplete
                             id="country-select"
-                            options={
-                                isCoverageView &&
-                                chosenCompletenessField !== 'cases'
-                                    ? coverageCountriesData
-                                    : countriesData
-                            }
+                            options={autocompleteData}
                             autoHighlight
                             disabled={totalCasesCountIsLoading}
                             getOptionLabel={(option) => option._id}
                             onChange={(
                                 event,
-                                value:
-                                    | CountryDataRow
-                                    | { _id: string; code: string }
-                                    | null,
+                                value: { _id: string; code: string } | null,
                             ) => handleAutocompleteCountrySelect(event, value)}
+                            isOptionEqualToValue={(option, value) =>
+                                option.code === value.code
+                            }
                             renderOption={(props, option) => (
                                 <Box
                                     component="li"

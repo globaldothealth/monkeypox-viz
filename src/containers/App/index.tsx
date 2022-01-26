@@ -18,7 +18,7 @@ import ReactGA from 'react-ga';
 import { ErrorContainer } from './styled';
 
 const App = () => {
-    const env = process.env.NODE_ENV || 'development';
+    const env = process.env.NODE_ENV;
     const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID || '';
 
     if (env === 'production') {
