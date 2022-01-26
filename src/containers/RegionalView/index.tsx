@@ -89,7 +89,7 @@ export const RegionalView: React.FC = () => {
     }, []);
 
     // Visualize regional data
-    // It has to be done in separate function because regional data take a lot of time to load
+    // It has to be done in separate function because regional data takes a lot of time to load
     useEffect(() => {
         const mapRef = map.current;
         if (!mapRef || !mapLoaded || !regionalDataFeatureSet) return;
@@ -215,7 +215,7 @@ export const RegionalView: React.FC = () => {
             } else if (country !== region) {
                 searchQuery = `cases?country=${parseSearchQuery(
                     country,
-                )}&${searchResolution}=${region}`;
+                )}&${searchResolution}=${parseSearchQuery(region)}`;
             } else {
                 searchQuery = `cases?country=${parseSearchQuery(country)}`;
             }
