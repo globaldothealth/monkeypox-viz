@@ -94,4 +94,21 @@ describe('<SideBar />', () => {
             'https://dev-data.covid-19.global.health',
         );
     });
+
+    it('Updates value in autocomplete field after selecting country from the Sidebar', () => {
+        cy.visit('/');
+
+        cy.wait('@fetchCountriesData');
+
+        cy.get('[data-cy="autocomplete-input"').should('have.value', '');
+        const listedCountries = cy.get('[data-cy="listed-country"]');
+        listedCountries.should('have.length.gte', 5);
+
+        cy.contains(/United States/i).click();
+
+        cy.get('[data-cy="autocomplete-input"').should(
+            'have.value',
+            'United States',
+        );
+    });
 });

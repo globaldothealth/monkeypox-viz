@@ -61,21 +61,21 @@ export const RegionalView: React.FC = () => {
 
     // Fly to country
     useEffect(() => {
-        if (selectedCountry) {
-            const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
-                const finalCountry = contriesList.filter(
-                    (el) => el.code === selectedCountry,
-                );
-                return {
-                    center: [
-                        finalCountry[0].long,
-                        finalCountry[0].lat,
-                    ] as LngLatLike,
-                    zoom: 5,
-                };
+        if (!selectedCountry) return;
+
+        const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
+            const finalCountry = contriesList.filter(
+                (el) => el.code === selectedCountry.code,
+            );
+            return {
+                center: [
+                    finalCountry[0].long,
+                    finalCountry[0].lat,
+                ] as LngLatLike,
+                zoom: 5,
             };
-            map.current?.flyTo(getCountryCoordinates(countriesData));
-        }
+        };
+        map.current?.flyTo(getCountryCoordinates(countriesData));
     }, [selectedCountry]);
 
     // Setup map

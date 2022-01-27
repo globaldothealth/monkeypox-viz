@@ -67,8 +67,8 @@ const CoverageView: React.FC = () => {
     useEffect(() => {
         if (!selectedCountry) return;
 
-        const lat = lookupTableData[selectedCountry].centroid[1];
-        const long = lookupTableData[selectedCountry].centroid[0];
+        const lat = lookupTableData[selectedCountry.code].centroid[1];
+        const long = lookupTableData[selectedCountry.code].centroid[0];
 
         map.current?.flyTo({
             center: [long, lat] as LngLatLike,

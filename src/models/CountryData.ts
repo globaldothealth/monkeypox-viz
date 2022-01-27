@@ -10,3 +10,9 @@ export interface CountryDataRow {
 export interface TotalCasesValues {
     total: number;
 }
+
+// Used by Autocomplete in the Sidebar
+export interface SelectedCountry {
+    _id: string;
+    code: string;
+}

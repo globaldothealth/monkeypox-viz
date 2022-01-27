@@ -3,7 +3,7 @@ import { fetchCountriesData, fetchTotalCases } from './thunks';
 import { fetchVariantsData } from 'redux/VariantsView/thunks';
 import { fetchRegionalData } from 'redux/RegionalView/thunks';
 import { fetchCompletenessData } from 'redux/CoverageView/thunks';
-import { CountryDataRow } from 'models/CountryData';
+import { CountryDataRow, SelectedCountry } from 'models/CountryData';
 
 interface AppState {
     isLoading: boolean;
@@ -11,7 +11,7 @@ interface AppState {
     error: string | undefined;
     countriesData: CountryDataRow[];
     totalNumberOfCases: number;
-    selectedCountryInSideBar: string;
+    selectedCountryInSideBar: SelectedCountry | undefined;
     lastUpdateDate: string;
 }
 
@@ -21,7 +21,7 @@ const initialState: AppState = {
     error: undefined,
     countriesData: [],
     totalNumberOfCases: 0,
-    selectedCountryInSideBar: '',
+    selectedCountryInSideBar: undefined,
     lastUpdateDate: '',
 };
 
@@ -32,7 +32,10 @@ export const appSlice = createSlice({
         setIsMapLoading: (state, action: PayloadAction<boolean>) => {
             state.isMapLoading = action.payload;
         },
-        setSelectedCountryInSidebar: (state, action: PayloadAction<string>) => {
+        setSelectedCountryInSidebar: (
+            state,
+            action: PayloadAction<SelectedCountry>,
+        ) => {
             state.selectedCountryInSideBar = action.payload;
         },
         setLastUpdateDate: (state, action: PayloadAction<string>) => {
