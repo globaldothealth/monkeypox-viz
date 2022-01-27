@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import ReactDOM from 'react-dom';
-import mapboxgl, { MapSourceDataEvent, EventData, LngLatLike } from 'mapbox-gl';
+import mapboxgl, { MapSourceDataEvent, EventData } from 'mapbox-gl';
 import { useMapboxMap } from 'hooks/useMapboxMap';
 import { MapContainer } from 'theme/globalStyles';
 import { useAppSelector, useAppDispatch } from 'redux/hooks';
@@ -140,6 +140,7 @@ const CoverageView: React.FC = () => {
                                 lat: countryRow.lat,
                                 long: countryRow.long,
                                 coverage: coveragePercentage,
+                                bounds: lookupTableData[countryRow.code].bounds,
                             },
                         );
 
@@ -198,6 +199,7 @@ const CoverageView: React.FC = () => {
 
         const lat = e.features[0].state.lat;
         const lng = e.features[0].state.long;
+        const bounds = e.features[0].state.bounds;
         const coordinates: mapboxgl.LngLatLike = { lng, lat };
 
         const searchQuery = `cases?country=${parseSearchQuery(countryName)}`;
@@ -217,10 +219,7 @@ const CoverageView: React.FC = () => {
         );
 
         // Fly to the selected country before showing popup
-        mapRef.flyTo({
-            center: [lng, lat] as LngLatLike,
-            zoom: 5,
-        });
+        mapRef.fitBounds(bounds);
 
         // This has to be done this way in order to allow for React components as a content of the popup
         const popupElement = document.createElement('div');

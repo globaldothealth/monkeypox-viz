@@ -9,7 +9,7 @@ import {
 } from 'redux/App/selectors';
 import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CountryViewColors } from 'models/Colors';
-import mapboxgl, { MapSourceDataEvent, EventData, LngLatLike } from 'mapbox-gl';
+import mapboxgl, { MapSourceDataEvent, EventData } from 'mapbox-gl';
 import Legend from 'components/Legend';
 import { LegendRow } from 'models/LegendRow';
 import { parseSearchQuery } from 'utils/helperFunctions';
@@ -105,6 +105,7 @@ const CountryView: React.FC = () => {
                         name: countryRow._id,
                         lat: countryRow.lat,
                         long: countryRow.long,
+                        bounds: lookupTableData[countryRow.code].bounds,
                     },
                 );
             }
@@ -173,6 +174,7 @@ const CountryView: React.FC = () => {
 
             const lat = e.features[0].state.lat;
             const lng = e.features[0].state.long;
+            const bounds = e.features[0].state.bounds;
             const coordinates: mapboxgl.LngLatLike = { lng, lat };
 
             const searchQuery = `cases?country=${parseSearchQuery(
@@ -188,10 +190,7 @@ const CountryView: React.FC = () => {
             );
 
             // Fly to the selected country before showing popup
-            mapRef.flyTo({
-                center: [lng, lat] as LngLatLike,
-                zoom: 5,
-            });
+            mapRef.fitBounds(bounds);
 
             // This has to be done this way in order to allow for React components as a content of the popup
             const popupElement = document.createElement('div');
