@@ -18,7 +18,6 @@ import MapPopup from 'components/MapPopup';
 import { MapContainer } from 'theme/globalStyles';
 import Loader from 'components/Loader';
 import { PopupContentText } from './styled';
-import { CountryDataRow } from 'models/CountryData';
 
 const dataLayers: LegendRow[] = [
     { label: '< 10k', color: CountryViewColors['10K'] },
@@ -50,19 +49,8 @@ const CountryView: React.FC = () => {
     useEffect(() => {
         if (!selectedCountry) return;
 
-        const getCountryCoordinates = (contriesList: CountryDataRow[]) => {
-            const finalCountry = contriesList.filter(
-                (el) => el.code === selectedCountry.code,
-            );
-            return {
-                center: [
-                    finalCountry[0].long,
-                    finalCountry[0].lat,
-                ] as LngLatLike,
-                zoom: 5,
-            };
-        };
-        map.current?.flyTo(getCountryCoordinates(countriesData));
+        const bounds = lookupTableData[selectedCountry.code].bounds;
+        map.current?.fitBounds(bounds);
     }, [selectedCountry]);
 
     // Setup map
