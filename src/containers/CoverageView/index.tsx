@@ -8,6 +8,8 @@ import {
     selectCountriesData,
     selectIsLoading,
     selectSelectedCountryInSideBar,
+    selectFreshnessData,
+    selectFreshnessLoading,
 } from 'redux/App/selectors';
 import {
     selectCompletenessData,
@@ -47,6 +49,8 @@ const CoverageView: React.FC = () => {
     const chosenCompletenessField = useAppSelector(
         selectChosenCompletenessField,
     );
+    const freshnessData = useAppSelector(selectFreshnessData);
+    const freshnessLoading = useAppSelector(selectFreshnessLoading);
 
     const [mapLoaded, setMapLoaded] = useState(false);
     const [featureIds, setFeatureIds] = useState<number[]>([]);
@@ -74,7 +78,7 @@ const CoverageView: React.FC = () => {
     // Setup map
     useEffect(() => {
         const mapRef = map.current;
-        if (!mapRef || isLoading) return;
+        if (!mapRef || isLoading || freshnessLoading) return;
 
         mapRef.on('load', () => {
             if (mapRef.getSource('countriesData')) {
@@ -103,7 +107,7 @@ const CoverageView: React.FC = () => {
                 mapRef.on('sourcedata', setAfterSourceLoaded);
             }
         });
-    }, [isLoading]);
+    }, [isLoading, freshnessLoading]);
 
     const setMapState = () => {
         const mapRef = map.current;
@@ -141,6 +145,8 @@ const CoverageView: React.FC = () => {
                                 long: countryRow.long,
                                 coverage: coveragePercentage,
                                 bounds: lookupTableData[countryRow.code].bounds,
+                                lastUploadDate:
+                                    freshnessData[countryRow.code] || 'unknown',
                             },
                         );
 
@@ -148,15 +154,15 @@ const CoverageView: React.FC = () => {
                     }
                 }
             } else {
-                for (const row of completenessData) {
-                    const country = iso.whereCountry(
-                        row.country.replace('_', ' '),
-                    );
+                for (const row of Object.keys(completenessData)) {
+                    const country = iso.whereCountry(row.replace('_', ' '));
                     const countryCode = country?.alpha2;
 
                     if (countryCode && lookupTableData[countryCode]) {
                         const coverage = Math.round(
-                            row[chosenCompletenessField] as number,
+                            completenessData[row][
+                                chosenCompletenessField
+                            ] as number,
                         );
 
                         mapRef.setFeatureState(
@@ -170,6 +176,9 @@ const CoverageView: React.FC = () => {
                                 lat: lookupTableData[countryCode].centroid[1],
                                 long: lookupTableData[countryCode].centroid[0],
                                 coverage,
+                                bounds: lookupTableData[countryCode].bounds,
+                                lastUploadDate:
+                                    freshnessData[countryCode] || 'unknown',
                             },
                         );
 
@@ -196,6 +205,7 @@ const CoverageView: React.FC = () => {
         const totalCases = e.features[0].state.totalCases;
         const countryName = e.features[0].state.name;
         const coverage = e.features[0].state.coverage;
+        const lastUploadDate = e.features[0].state.lastUploadDate;
 
         const lat = e.features[0].state.lat;
         const lng = e.features[0].state.long;
@@ -227,6 +237,7 @@ const CoverageView: React.FC = () => {
             <MapPopup
                 title={`${countryName} ${coverage}%`}
                 content={popupContent}
+                lastUploadDate={lastUploadDate}
                 buttonText="Explore Country Data"
                 buttonUrl={url}
             />,

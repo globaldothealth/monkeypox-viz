@@ -1,9 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchCountriesData, fetchTotalCases } from './thunks';
+import {
+    fetchCountriesData,
+    fetchTotalCases,
+    fetchFreshnessData,
+} from './thunks';
 import { fetchVariantsData } from 'redux/VariantsView/thunks';
 import { fetchRegionalData } from 'redux/RegionalView/thunks';
 import { fetchCompletenessData } from 'redux/CoverageView/thunks';
 import { CountryDataRow, SelectedCountry } from 'models/CountryData';
+import { ParsedFreshnessData } from 'models/FreshnessData';
 
 interface AppState {
     isLoading: boolean;
@@ -13,6 +18,8 @@ interface AppState {
     totalNumberOfCases: number;
     selectedCountryInSideBar: SelectedCountry | undefined;
     lastUpdateDate: string;
+    freshnessData: ParsedFreshnessData;
+    freshnessLoading: boolean;
 }
 
 const initialState: AppState = {
@@ -23,6 +30,8 @@ const initialState: AppState = {
     totalNumberOfCases: 0,
     selectedCountryInSideBar: undefined,
     lastUpdateDate: '',
+    freshnessData: {},
+    freshnessLoading: true,
 };
 
 export const appSlice = createSlice({
@@ -79,6 +88,22 @@ export const appSlice = createSlice({
         });
         builder.addCase(fetchTotalCases.rejected, (state, action) => {
             state.isLoading = false;
+            state.error = action.payload
+                ? action.payload
+                : action.error.message;
+        });
+
+        // Freshness data
+        builder.addCase(fetchFreshnessData.pending, (state) => {
+            state.freshnessLoading = true;
+            state.error = undefined;
+        });
+        builder.addCase(fetchFreshnessData.fulfilled, (state, { payload }) => {
+            state.freshnessLoading = false;
+            state.freshnessData = payload;
+        });
+        builder.addCase(fetchFreshnessData.rejected, (state, action) => {
+            state.freshnessLoading = false;
             state.error = action.payload
                 ? action.payload
                 : action.error.message;

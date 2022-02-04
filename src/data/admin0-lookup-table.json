@@ -3967,6 +3967,62 @@
                 }
             },
             "all": {
+                "RS": {
+                    "feature_id": 13045950,
+                    "wikidata_id": "Q403",
+                    "worldview": "CN",
+                    "unit_code": "RS",
+                    "name": "Serbia",
+                    "names": {
+                        "ar": ["صربيا"],
+                        "de": ["Serbien"],
+                        "en": [
+                            "Republic of Serbia",
+                            "Republika Srbija",
+                            "SRB",
+                            "Serbia",
+                            "Srbija",
+                            "rs",
+                            "🇷🇸"
+                        ],
+                        "es": ["Serbia"],
+                        "fr": ["Serbie"],
+                        "it": ["Serbia"],
+                        "ja": ["セルビア"],
+                        "ko": ["세르비아"],
+                        "pt": ["Sérvia"],
+                        "ru": ["Сербия"],
+                        "sq": ["Republika e Serbisë", "Serbia"],
+                        "sr": [
+                            "Republika Srbija",
+                            "rs",
+                            "Република Србија",
+                            "Србија"
+                        ],
+                        "vi": ["Serbia"],
+                        "sr-ec": ["Србија"],
+                        "sr-el": ["Srbija"],
+                        "zh-Hans": ["塞尔维亚"],
+                        "zh-Hant": ["塞爾維亞"]
+                    },
+                    "description": "state",
+                    "unit_code_description": "",
+                    "source_date": "2016",
+                    "iso_3166_1_alpha_3": "SRB",
+                    "iso_3166_1": "RS",
+                    "grouping_attributes": {
+                        "UN M49 Region": ["Europe"],
+                        "UN M49 Sub-region": ["Southern Europe"]
+                    },
+                    "join_attributes": {
+                        "UN M49 Sub-region code": "039",
+                        "UN M49 Region code": "150"
+                    },
+                    "z_min": 0,
+                    "centroid": [21.0101, 44.2456],
+                    "bounds": [18.838, 42.2357, 23.006, 46.1898],
+                    "area_sqkm": 108170
+                },
                 "BT": {
                     "feature_id": 1642529,
                     "wikidata_id": "Q917",

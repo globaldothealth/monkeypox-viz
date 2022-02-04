@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CompletenessDataRow } from 'models/CompletenessData';
+import { CompletenessData } from 'models/CompletenessData';
 import { fetchCompletenessData } from './thunks';
 
 interface CoverageViewState {
     isLoading: boolean;
-    completenessData: CompletenessDataRow[];
+    completenessData: CompletenessData;
     chosenCompletenessField: string;
 }
 
 const initialState: CoverageViewState = {
     isLoading: false,
-    completenessData: [],
+    completenessData: {},
     chosenCompletenessField: 'cases',
 };
 

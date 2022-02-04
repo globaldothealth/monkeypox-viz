@@ -9,6 +9,7 @@ export interface Feature {
         admin1: string | undefined;
         admin2: string | undefined;
         admin3: string | undefined;
+        lastUploadDate: string;
     };
     geometry: {
         type: 'Point';

@@ -87,20 +87,22 @@ const SideBar = () => {
             chosenCompletenessField &&
             chosenCompletenessField !== 'cases'
         ) {
-            const sortedCompletenessData = [...completenessData].sort((a, b) =>
-                Number(a[chosenCompletenessField]) <
-                Number(b[chosenCompletenessField])
+            const sortedCompletenessData = [
+                ...Object.keys(completenessData),
+            ].sort((a, b) =>
+                Number(completenessData[a][chosenCompletenessField]) <
+                Number(completenessData[b][chosenCompletenessField])
                     ? 1
                     : -1,
             );
 
             const mappedData: SelectedCountry[] = [];
-            for (const el of sortedCompletenessData) {
-                const country = iso.whereCountry(el.country);
+            for (const row of sortedCompletenessData) {
+                const country = iso.whereCountry(row.replace('_', ' '));
 
                 if (country) {
                     const code = country.alpha2;
-                    mappedData.push({ _id: el.country, code: code });
+                    mappedData.push({ _id: country.country, code: code });
                 }
             }
 
@@ -120,9 +122,11 @@ const SideBar = () => {
             chosenCompletenessField &&
             chosenCompletenessField !== 'cases'
         ) {
-            const sortedCompletenessData = [...completenessData].sort((a, b) =>
-                Number(a[chosenCompletenessField]) <
-                Number(b[chosenCompletenessField])
+            const sortedCompletenessData = [
+                ...Object.keys(completenessData),
+            ].sort((a, b) =>
+                Number(completenessData[a][chosenCompletenessField]) <
+                Number(completenessData[b][chosenCompletenessField])
                     ? 1
                     : -1,
             );
@@ -130,17 +134,19 @@ const SideBar = () => {
             return (
                 <>
                     {sortedCompletenessData.map((el) => {
-                        const country = iso.whereCountry(el.country);
+                        const country = iso.whereCountry(el.replace('_', ' '));
                         if (!country) return;
 
                         const code = country.alpha2;
                         const percentage = Math.round(
-                            el[chosenCompletenessField] as number,
+                            completenessData[el][
+                                chosenCompletenessField
+                            ] as number,
                         );
 
                         return (
                             <LocationListItem
-                                key={el.country}
+                                key={el}
                                 $barWidth={percentage}
                                 onClick={() =>
                                     handleOnCountryClick({

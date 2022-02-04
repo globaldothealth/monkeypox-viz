@@ -20,7 +20,8 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   .mapboxgl-popup {
-    z-index: 999;
+    z-index: 999;    
+    max-width: 50rem !important;
   }
 
   @font-face {

@@ -1,12 +1,15 @@
 import ReactDOM from 'react-dom';
 import { useRef, useEffect, useState } from 'react';
 import { useMapboxMap } from 'hooks/useMapboxMap';
-import { useAppSelector } from 'redux/hooks';
+import { useAppSelector, useAppDispatch } from 'redux/hooks';
 import {
     selectIsLoading,
     selectCountriesData,
     selectSelectedCountryInSideBar,
+    selectFreshnessData,
+    selectFreshnessLoading,
 } from 'redux/App/selectors';
+import { setSelectedCountryInSidebar } from 'redux/App/slice';
 import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CountryViewColors } from 'models/Colors';
 import mapboxgl, { MapSourceDataEvent, EventData } from 'mapbox-gl';
@@ -29,12 +32,16 @@ const dataLayers: LegendRow[] = [
 ];
 
 const CountryView: React.FC = () => {
+    const dispatch = useAppDispatch();
+
     const mapboxAccessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || '';
     const dataPortalUrl = process.env.REACT_APP_DATA_PORTAL_URL;
 
     const isLoading = useAppSelector(selectIsLoading);
     const countriesData = useAppSelector(selectCountriesData);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
+    const freshnessData = useAppSelector(selectFreshnessData);
+    const freshnessLoading = useAppSelector(selectFreshnessLoading);
 
     const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -56,7 +63,7 @@ const CountryView: React.FC = () => {
     // Setup map
     useEffect(() => {
         const mapRef = map.current;
-        if (!mapRef || isLoading) return;
+        if (!mapRef || isLoading || freshnessLoading) return;
 
         mapRef.on('load', () => {
             if (mapRef.getSource('countriesData')) {
@@ -85,7 +92,7 @@ const CountryView: React.FC = () => {
                 mapRef.on('sourcedata', setAfterSourceLoaded);
             }
         });
-    }, [isLoading]);
+    }, [isLoading, freshnessLoading]);
 
     // Display countries data on the map
     const displayCountriesOnMap = () => {
@@ -105,7 +112,9 @@ const CountryView: React.FC = () => {
                         name: countryRow._id,
                         lat: countryRow.lat,
                         long: countryRow.long,
-                        bounds: lookupTableData[countryRow.code].bounds,
+                        code: countryRow.code,
+                        lastUploadDate:
+                            freshnessData[countryRow.code] || 'unknown',
                     },
                 );
             }
@@ -171,16 +180,19 @@ const CountryView: React.FC = () => {
 
             const caseCount = e.features[0].state.caseCount || 0;
             const countryName = e.features[0].state.name;
+            const code = e.features[0].state.code;
+            const lastUploadDate = e.features[0].state.lastUploadDate;
 
             const lat = e.features[0].state.lat;
             const lng = e.features[0].state.long;
-            const bounds = e.features[0].state.bounds;
             const coordinates: mapboxgl.LngLatLike = { lng, lat };
 
             const searchQuery = `cases?country=${parseSearchQuery(
                 countryName,
             )}`;
             const url = `${dataPortalUrl}/${searchQuery}`;
+
+            dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));
 
             const popupContent = (
                 <PopupContentText>
@@ -189,15 +201,13 @@ const CountryView: React.FC = () => {
                 </PopupContentText>
             );
 
-            // Fly to the selected country before showing popup
-            mapRef.fitBounds(bounds);
-
             // This has to be done this way in order to allow for React components as a content of the popup
             const popupElement = document.createElement('div');
             ReactDOM.render(
                 <MapPopup
                     title={countryName}
                     content={popupContent}
+                    lastUploadDate={lastUploadDate}
                     buttonText="Explore Country Data"
                     buttonUrl={url}
                 />,

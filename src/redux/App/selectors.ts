@@ -12,3 +12,7 @@ export const selectSelectedCountryInSideBar = (state: RootState) =>
     state.app.selectedCountryInSideBar;
 export const selectLastUpdateDate = (state: RootState) =>
     state.app.lastUpdateDate;
+export const selectFreshnessData = (state: RootState) =>
+    state.app.freshnessData;
+export const selectFreshnessLoading = (state: RootState) =>
+    state.app.freshnessLoading;

@@ -1,8 +1,17 @@
-import { Popup, Title, Button, ContentContainer } from './styled';
+import {
+    Popup,
+    Title,
+    Button,
+    ContentContainer,
+    UploadDateContainer,
+    UploadDateLabel,
+    UploadDate,
+} from './styled';
 
 interface MapPopupProps {
     title: string;
     content: JSX.Element;
+    lastUploadDate?: string;
     buttonText?: string;
     buttonUrl?: string;
 }
@@ -10,6 +19,7 @@ interface MapPopupProps {
 const MapPopup: React.FC<MapPopupProps> = ({
     title,
     content,
+    lastUploadDate,
     buttonText,
     buttonUrl,
 }: MapPopupProps) => {
@@ -23,7 +33,18 @@ const MapPopup: React.FC<MapPopupProps> = ({
         <Popup>
             <Title>{title}</Title>
 
-            <ContentContainer>{content}</ContentContainer>
+            <ContentContainer>
+                {content}
+
+                {lastUploadDate && (
+                    <UploadDateContainer>
+                        <UploadDateLabel>
+                            Last ingestion date:{' '}
+                            <UploadDate>{lastUploadDate}</UploadDate>
+                        </UploadDateLabel>
+                    </UploadDateContainer>
+                )}
+            </ContentContainer>
 
             {buttonText && buttonUrl && (
                 <Button type="button" onClick={handleButtonClick}>

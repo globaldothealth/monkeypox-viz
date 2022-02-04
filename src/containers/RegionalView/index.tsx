@@ -17,7 +17,11 @@ import { LegendRow } from 'models/LegendRow';
 
 import { MapContainer } from 'theme/globalStyles';
 import { PopupContentText } from './styled';
-import { selectSelectedCountryInSideBar } from 'redux/App/selectors';
+import {
+    selectSelectedCountryInSideBar,
+    selectFreshnessData,
+    selectFreshnessLoading,
+} from 'redux/App/selectors';
 import { SearchResolution } from 'models/RegionalData';
 import countryLookupTable from 'data/admin0-lookup-table.json';
 
@@ -39,6 +43,8 @@ export const RegionalView: React.FC = () => {
     const [mapLoaded, setMapLoaded] = useState(false);
     const regionalData = useAppSelector(selectRegionalData);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
+    const freshnessData = useAppSelector(selectFreshnessData);
+    const freshnessLoading = useAppSelector(selectFreshnessLoading);
     const lookupTableData = countryLookupTable.adm0.data.all as {
         [key: string]: any;
     };
@@ -55,7 +61,7 @@ export const RegionalView: React.FC = () => {
     const regionalDataFeatureSet = useMemo(() => {
         if (!regionalData || regionalData.length === 0) return undefined;
 
-        return convertRegionalDataToFeatureSet(regionalData);
+        return convertRegionalDataToFeatureSet(regionalData, freshnessData);
     }, [regionalData]);
 
     // Fly to country
@@ -80,7 +86,13 @@ export const RegionalView: React.FC = () => {
     // It has to be done in separate function because regional data takes a lot of time to load
     useEffect(() => {
         const mapRef = map.current;
-        if (!mapRef || !mapLoaded || !regionalDataFeatureSet) return;
+        if (
+            !mapRef ||
+            !mapLoaded ||
+            !regionalDataFeatureSet ||
+            freshnessLoading
+        )
+            return;
 
         if (!mapRef.getSource('regionalData')) {
             mapRef.addSource('regionalData', {
@@ -171,6 +183,7 @@ export const RegionalView: React.FC = () => {
             const lat = geometry.coordinates[1];
             const lng = geometry.coordinates[0];
             const caseCount = e.features[0].properties.caseCount;
+            const lastUploadDate = e.features[0].properties.lastUploadDate;
 
             const admin1 = e.features[0].properties.admin1;
             const admin2 = e.features[0].properties.admin2;
@@ -229,6 +242,7 @@ export const RegionalView: React.FC = () => {
                 <MapPopup
                     title={`${region}, ${country}`}
                     content={popupContent}
+                    lastUploadDate={lastUploadDate}
                     buttonText="Explore Regional Data"
                     buttonUrl={url}
                 />,
@@ -264,7 +278,7 @@ export const RegionalView: React.FC = () => {
         } else {
             mapRef.on('sourcedata', setAfterSourceLoaded);
         }
-    }, [mapLoaded, regionalDataFeatureSet]);
+    }, [mapLoaded, regionalDataFeatureSet, freshnessLoading]);
 
     return (
         <>

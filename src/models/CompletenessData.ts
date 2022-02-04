@@ -1,5 +1,9 @@
+export interface CompletenessData {
+    [index: string]: CompletenessDataRow;
+}
+
 export interface CompletenessDataRow extends Record<string, number | string> {
-    country: string;
+    SGTF: number;
     _id: number;
     'caseReference.additionalSources': number;
     'caseReference.sourceEntryId': number;

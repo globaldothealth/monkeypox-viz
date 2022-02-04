@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { CompletenessDataRow } from 'models/CompletenessData';
+import { CompletenessData } from 'models/CompletenessData';
 
 export const fetchCompletenessData = createAsyncThunk<
-    CompletenessDataRow[],
+    CompletenessData,
     void,
     { rejectValue: string }
 >('coverageView/fetchCompletenessData', async (_, { rejectWithValue }) => {
@@ -15,7 +15,7 @@ export const fetchCompletenessData = createAsyncThunk<
         if (response.status !== 200)
             throw new Error('Fetching countries data failed');
 
-        const jsonResponse = (await response.json()) as CompletenessDataRow[];
+        const jsonResponse = (await response.json()) as CompletenessData;
 
         return jsonResponse;
     } catch (error: any) {

@@ -35,6 +35,7 @@ jobs:
                   REACT_APP_REGIONAL_VIEW_DATA_URL: https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/regional/latest.json
                   REACT_APP_TOTAL_CASES_URL: https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/total/latest.json
                   REACT_APP_COMPLETENESS_DATA_URL: https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/completeness-data.json
+                  REACT_APP_FRESHNESS_DATA_URL: https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/metrics/freshness.json
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
