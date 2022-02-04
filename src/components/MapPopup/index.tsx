@@ -36,10 +36,10 @@ const MapPopup: React.FC<MapPopupProps> = ({
             <ContentContainer>
                 {content}
 
-                {lastUploadDate && (
+                {lastUploadDate && lastUploadDate !== 'unknown' && (
                     <UploadDateContainer>
                         <UploadDateLabel>
-                            Last ingestion date:{' '}
+                            Last updated:{' '}
                             <UploadDate>{lastUploadDate}</UploadDate>
                         </UploadDateLabel>
                     </UploadDateContainer>
