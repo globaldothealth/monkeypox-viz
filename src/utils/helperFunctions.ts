@@ -4,6 +4,7 @@ import { VariantsDataRow, VariantsLabels } from 'models/VariantsData';
 import { statesList, StatesData, DataStatus } from 'data/statesData';
 import { RegionalData } from 'models/RegionalData';
 import { Feature, FeatureSet } from 'models/FeatureSet';
+import { format, parseISO } from 'date-fns';
 
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
@@ -323,4 +324,16 @@ export const parseVariantData = (
     });
 
     return { vocList, voiList };
+};
+
+export const convertStringDateToDate = (date: string) => {
+    let finalDate;
+    try {
+        finalDate = JSON.parse(date);
+        finalDate = format(parseISO(finalDate), 'E LLL d yyyy');
+    } catch (e) {
+        finalDate = 'loading date';
+    }
+
+    return finalDate;
 };

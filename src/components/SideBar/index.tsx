@@ -34,6 +34,7 @@ import {
     selectIsLoading,
 } from 'redux/CoverageView/selectors';
 import iso from 'iso-3166-1';
+import { convertStringDateToDate } from 'utils/helperFunctions';
 
 const SideBar = () => {
     const [openSidebar, setOpenSidebar] = useState(true);
@@ -51,7 +52,6 @@ const SideBar = () => {
         selectChosenCompletenessField,
     );
     const completenessDataLoading = useAppSelector(selectIsLoading);
-    const convertedDate = new Date(lastUpdateDate).toDateString();
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
 
     // Sidebar has other content in VariantsView and CoverageView
@@ -235,7 +235,7 @@ const SideBar = () => {
                                 />
                             ) : (
                                 <span id="last-updated-date">
-                                    {convertedDate}
+                                    {convertStringDateToDate(lastUpdateDate)}
                                 </span>
                             )}
                         </div>
