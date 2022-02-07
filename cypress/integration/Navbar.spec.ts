@@ -4,6 +4,8 @@ describe('<Navbar />', () => {
 
         cy.url().should('include', '/country');
 
+        cy.get('.popup-small-screens').should('not.exist');
+
         cy.get('.navbar').should('be.visible');
         cy.get('#logo').should('be.visible');
         cy.contains('Country view').should('be.visible');
@@ -32,5 +34,17 @@ describe('<Navbar />', () => {
             .click();
         cy.get('body').click(0, 0);
         cy.get('.MuiDialog-paperScrollPaper').should('not.exist');
+    });
+
+    it('Displays popup on small devices', () => {
+        cy.viewport(520, 780);
+        cy.visit('/');
+
+        cy.get('.popup-small-screens').contains(
+            'For a better experience please visit this website using a device with a bigger screen',
+        );
+
+        cy.get('.small-screens-popup-close-btn').click();
+        cy.get('.popup-small-screens').should('not.exist');
     });
 });

@@ -29,7 +29,7 @@ const PopupSmallScreens = () => {
     };
 
     return (
-        <Dialog open={dialogOpen} onClose={handleClose} sx={{ height: '40%' }}>
+        <Dialog open={dialogOpen} onClose={handleClose} sx={{ height: '40%' }} className="popup-small-screens">
             <DialogTitle
                 sx={{
                     display: 'flex',
@@ -44,6 +44,7 @@ const PopupSmallScreens = () => {
                         right: 8,
                         top: 8,
                     }}
+                    className="small-screens-popup-close-btn"
                 >
                     <CloseIcon />
                 </IconButton>
