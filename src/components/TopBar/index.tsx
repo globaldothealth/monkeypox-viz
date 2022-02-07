@@ -41,7 +41,7 @@ const TopBar = () => {
                             }
                         >
                             <Typography variant="navbarlink" gutterBottom>
-                                Coverage
+                                Coverage view
                             </Typography>
                         </NavLink>
                         {env !== 'production' && (
