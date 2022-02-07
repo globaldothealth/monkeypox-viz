@@ -16,6 +16,7 @@ import VariantsView from 'containers/VariantsView';
 import ReactGA from 'react-ga';
 
 import { ErrorContainer } from './styled';
+import PopupSmallScreens from 'components/PopupSmallScreens';
 
 const App = () => {
     const env = process.env.NODE_ENV;
@@ -53,6 +54,7 @@ const App = () => {
             )}
 
             <TopBar />
+            <PopupSmallScreens />
             <SideBar />
 
             <Routes>
