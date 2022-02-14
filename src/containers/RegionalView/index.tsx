@@ -204,22 +204,9 @@ export const RegionalView: React.FC = () => {
                 ? `&admin3=${parseSearchQuery(admin3)}`
                 : '';
 
-            let searchQuery: string;
-            if (
-                admin1Query !== '' ||
-                admin2Query !== '' ||
-                admin3Query !== ''
-            ) {
-                searchQuery = `cases?country=${parseSearchQuery(
-                    country,
-                )}${admin1Query}${admin2Query}${admin3Query}`;
-            } else if (country !== region) {
-                searchQuery = `cases?country=${parseSearchQuery(
-                    country,
-                )}&${searchResolution}=${parseSearchQuery(region)}`;
-            } else {
-                searchQuery = `cases?country=${parseSearchQuery(country)}`;
-            }
+            const searchQuery = `cases?country=${parseSearchQuery(
+                country,
+            )}${admin1Query}${admin2Query}${admin3Query}`;
 
             const url = `${dataPortalUrl}/${searchQuery}`;
 
@@ -236,11 +223,16 @@ export const RegionalView: React.FC = () => {
                 zoom: 5,
             });
 
+            const popupTitle =
+                searchResolution !== SearchResolution.Country
+                    ? `${region}, ${country}`
+                    : country;
+
             // This has to be done this way in order to allow for React components as a content of the popup
             const popupElement = document.createElement('div');
             ReactDOM.render(
                 <MapPopup
-                    title={`${region}, ${country}`}
+                    title={popupTitle}
                     content={popupContent}
                     lastUploadDate={lastUploadDate}
                     buttonText="Explore Regional Data"

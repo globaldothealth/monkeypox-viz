@@ -9,6 +9,7 @@ export interface RegionalData {
     _id: string;
     casecount: number;
     country: string;
+    country_code: string;
     lat: number;
     long: number;
     admin1: string | undefined;

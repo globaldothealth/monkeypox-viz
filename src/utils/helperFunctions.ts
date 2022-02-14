@@ -44,7 +44,7 @@ export const convertRegionalDataToFeatureSet = (
             properties: {
                 id: dataRow._id,
                 caseCount: dataRow.casecount,
-                country: dataRow.country,
+                country: dataRow.country_code,
                 region: dataRow._id,
                 search: dataRow.search,
                 admin1: dataRow.admin1,
