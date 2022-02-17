@@ -1,1 +1,348 @@
-{"11-18-2021": [{"_id": "TENANCINGO", "casecount": 164, "country": "Mexico", "lat": 19.15074398, "long": -98.19029715, "search": "admin2"}, {"_id": "Congonhal", "casecount": 5, "country": "Brazil", "lat": -22.14338119, "long": -46.04137599, "search": "admin2"}, {"_id": "San Buenaventura", "casecount": 34, "country": "Peru", "lat": -11.4893, "long": -76.662, "search": "admin3"}, {"_id": "Tio Hugo", "casecount": 29, "country": "Brazil", "lat": -28.5768, "long": -52.5969, "search": "admin3"}, {"_id": "General Sampaio", "casecount": 16, "country": "Brazil", "lat": -4.063921093, "long": -39.45111788, "search": "admin2"}, {"_id": "SAN MIGUEL", "casecount": 345, "country": "Peru", "lat": -7.07750525133226, "long": -78.922376922569, "search": "admin3"}, {"_id": "ISLAY", "casecount": 407, "country": "Peru", "lat": -16.8763347033734, "long": -72.1022333632458, "search": "admin3"}, {"_id": "Clementina", "casecount": 57, "country": "Brazil", "lat": -21.57032918, "long": -50.46006991, "search": "admin2"}, {"_id": "Vila Maria", "casecount": 5, "country": "Brazil", "lat": -28.55780581, "long": -52.15176923, "search": "admin2"}, {"_id": "QUECHULTENANGO", "casecount": 94, "country": "Mexico", "lat": 17.31282285, "long": -99.18521692, "search": "admin2"}, {"_id": "Colonna", "casecount": 18, "country": "Italy", "lat": 41.8334725, "long": 12.751404, "search": "admin3"}, {"_id": "Miyako-machi", "casecount": 2, "country": "Japan", "lat": 33.7, "long": 130.91806, "search": "admin3"}, {"_id": "Paranapanema", "casecount": 115, "country": "Brazil", "lat": -23.43848236, "long": -48.79520919, "search": "admin2"}, {"_id": "Jord\u00e3o", "casecount": 210, "country": "Brazil", "lat": -9.1911, "long": -71.9481, "search": "admin3"}, {"_id": "Torres Causana", "casecount": 178, "country": "Peru", "lat": -1.312, "long": -74.9281, "search": "admin3"}, {"_id": "Cotia", "casecount": 925, "country": "Brazil", "lat": -23.6751544, "long": -46.96051233, "search": "admin2"}, {"_id": "Santa Vit\u00f3ria do Palmar", "casecount": 138, "country": "Brazil", "lat": -33.16428464, "long": -53.00777871, "search": "admin2"}, {"_id": "Caconde", "casecount": 139, "country": "Brazil", "lat": -21.53951446, "long": -46.61703823, "search": "admin2"}, {"_id": "VISTA ALEGRE", "casecount": 1179, "country": "Peru", "lat": -14.9284661610987, "long": -74.8280058437458, "search": "admin3"}, {"_id": "Cipot\u00e2nea", "casecount": 4, "country": "Brazil", "lat": -20.92398834, "long": -43.35816488, "search": "admin2"}, {"_id": "RANRACANCHA", "casecount": 83, "country": "Peru", "lat": -13.5476379529812, "long": -73.5963018008872, "search": "admin3"}, {"_id": "Bel\u00e9m", "casecount": 2, "country": "Brazil", "lat": -1.33, "long": -48.45, "search": "admin3"}, {"_id": "TIXTLA DE GUERRERO", "casecount": 871, "country": "Mexico", "lat": 17.59935009, "long": -99.36746755, "search": "admin2"}, {"_id": "AYUTLA DE LOS LIBRES", "casecount": 464, "country": "Mexico", "lat": 16.95727114, "long": -99.06753635, "search": "admin2"}, {"_id": "Santo Anast\u00e1cio", "casecount": 63, "country": "Brazil", "lat": -21.9747, "long": -51.6527, "search": "admin3"}, {"_id": "Omaezaki-shi", "casecount": 2, "country": "Japan", "lat": 34.63806, "long": 138.12806, "search": "admin3"}, {"_id": "HUANCARQUI", "casecount": 99, "country": "Peru", "lat": -16.0123989265889, "long": -72.3681882063559, "search": "admin3"}, {"_id": "Ajmer", "casecount": 19, "country": "India", "lat": 26.45, "long": 74.63333, "search": "admin3"}, {"_id": "Pampacolca", "casecount": 9, "country": "Peru", "lat": -15.7146, "long": -72.5736, "search": "admin3"}, {"_id": "Capit\u00e3o Le\u00f4nidas Marques", "casecount": 118, "country": "Brazil", "lat": -25.47032129, "long": -53.59298724, "search": "admin2"}, {"_id": "PITUMARCA", "casecount": 88, "country": "Peru", "lat": -13.8887915444732, "long": -71.1581667044718, "search": "admin3"}, {"_id": "VILLANUEVA", "casecount": 1255, "country": "Colombia", "lat": 4.52830773090375, "long": -72.823142823975, "search": "admin2"}, {"_id": "Aizumi-cho", "casecount": 1, "country": "Japan", "lat": 34.127732, "long": 134.499639, "search": "admin3"}, {"_id": "PUERTO PE\u00d1ASCO", "casecount": 586, "country": "Mexico", "lat": 31.52942876, "long": -113.29311909999998, "search": "admin2"}, {"_id": "MARIA", "casecount": 39, "country": "Peru", "lat": -6.49656553530174, "long": -77.960795954565, "search": "admin3"}, {"_id": "ESPERANZA", "casecount": 39, "country": "Mexico", "lat": 18.85903205, "long": -97.36462519999999, "search": "admin2"}, {"_id": "Richland", "casecount": 1, "country": "United States", "lat": 43.38, "long": -90.43, "search": "admin2"}, {"_id": "COYUCA DE BEN\u00cdTEZ", "casecount": 266, "country": "Mexico", "lat": 17.14254842, "long": -100.05896870000001, "search": "admin2"}, {"_id": "Bayeux", "casecount": 2477, "country": "Brazil", "lat": -7.1302, "long": -34.9365, "search": "admin3"}, {"_id": "Coxilha", "casecount": 181, "country": "Brazil", "lat": -28.1254, "long": -52.298, "search": "admin3"}, {"_id": "Mara Rosa", "casecount": 234, "country": "Brazil", "lat": -14.0148, "long": -49.1777, "search": "admin3"}, {"_id": "SAN MIGUEL DE HORCASITAS", "casecount": 20, "country": "Mexico", "lat": 29.46301686, "long": -110.79864009999999, "search": "admin2"}, {"_id": "S\u00e3o Jo\u00e3o do Tigre", "casecount": 33, "country": "Brazil", "lat": -8.077, "long": -36.8547, "search": "admin3"}]}
+{
+    "11-18-2021": [
+        {
+            "_id": "TENANCINGO",
+            "casecount": 164,
+            "country": "Mexico",
+            "lat": 19.15074398,
+            "long": -98.19029715,
+            "search": "admin2"
+        },
+        {
+            "_id": "Congonhal",
+            "casecount": 5,
+            "country": "Brazil",
+            "lat": -22.14338119,
+            "long": -46.04137599,
+            "search": "admin2"
+        },
+        {
+            "_id": "San Buenaventura",
+            "casecount": 34,
+            "country": "Peru",
+            "lat": -11.4893,
+            "long": -76.662,
+            "search": "admin3"
+        },
+        {
+            "_id": "Tio Hugo",
+            "casecount": 29,
+            "country": "Brazil",
+            "lat": -28.5768,
+            "long": -52.5969,
+            "search": "admin3"
+        },
+        {
+            "_id": "General Sampaio",
+            "casecount": 16,
+            "country": "Brazil",
+            "lat": -4.063921093,
+            "long": -39.45111788,
+            "search": "admin2"
+        },
+        {
+            "_id": "SAN MIGUEL",
+            "casecount": 345,
+            "country": "Peru",
+            "lat": -7.07750525133226,
+            "long": -78.922376922569,
+            "search": "admin3"
+        },
+        {
+            "_id": "ISLAY",
+            "casecount": 407,
+            "country": "Peru",
+            "lat": -16.8763347033734,
+            "long": -72.1022333632458,
+            "search": "admin3"
+        },
+        {
+            "_id": "Clementina",
+            "casecount": 57,
+            "country": "Brazil",
+            "lat": -21.57032918,
+            "long": -50.46006991,
+            "search": "admin2"
+        },
+        {
+            "_id": "Vila Maria",
+            "casecount": 5,
+            "country": "Brazil",
+            "lat": -28.55780581,
+            "long": -52.15176923,
+            "search": "admin2"
+        },
+        {
+            "_id": "QUECHULTENANGO",
+            "casecount": 94,
+            "country": "Mexico",
+            "lat": 17.31282285,
+            "long": -99.18521692,
+            "search": "admin2"
+        },
+        {
+            "_id": "Colonna",
+            "casecount": 18,
+            "country": "Italy",
+            "lat": 41.8334725,
+            "long": 12.751404,
+            "search": "admin3"
+        },
+        {
+            "_id": "Miyako-machi",
+            "casecount": 2,
+            "country": "Japan",
+            "lat": 33.7,
+            "long": 130.91806,
+            "search": "admin3"
+        },
+        {
+            "_id": "Paranapanema",
+            "casecount": 115,
+            "country": "Brazil",
+            "lat": -23.43848236,
+            "long": -48.79520919,
+            "search": "admin2"
+        },
+        {
+            "_id": "Jord\u00e3o",
+            "casecount": 210,
+            "country": "Brazil",
+            "lat": -9.1911,
+            "long": -71.9481,
+            "search": "admin3"
+        },
+        {
+            "_id": "Torres Causana",
+            "casecount": 178,
+            "country": "Peru",
+            "lat": -1.312,
+            "long": -74.9281,
+            "search": "admin3"
+        },
+        {
+            "_id": "Cotia",
+            "casecount": 925,
+            "country": "Brazil",
+            "lat": -23.6751544,
+            "long": -46.96051233,
+            "search": "admin2"
+        },
+        {
+            "_id": "Santa Vit\u00f3ria do Palmar",
+            "casecount": 138,
+            "country": "Brazil",
+            "lat": -33.16428464,
+            "long": -53.00777871,
+            "search": "admin2"
+        },
+        {
+            "_id": "Caconde",
+            "casecount": 139,
+            "country": "Brazil",
+            "lat": -21.53951446,
+            "long": -46.61703823,
+            "search": "admin2"
+        },
+        {
+            "_id": "VISTA ALEGRE",
+            "casecount": 1179,
+            "country": "Peru",
+            "lat": -14.9284661610987,
+            "long": -74.8280058437458,
+            "search": "admin3"
+        },
+        {
+            "_id": "Cipot\u00e2nea",
+            "casecount": 4,
+            "country": "Brazil",
+            "lat": -20.92398834,
+            "long": -43.35816488,
+            "search": "admin2"
+        },
+        {
+            "_id": "RANRACANCHA",
+            "casecount": 83,
+            "country": "Peru",
+            "lat": -13.5476379529812,
+            "long": -73.5963018008872,
+            "search": "admin3"
+        },
+        {
+            "_id": "Bel\u00e9m",
+            "casecount": 2,
+            "country": "Brazil",
+            "lat": -1.33,
+            "long": -48.45,
+            "search": "admin3"
+        },
+        {
+            "_id": "TIXTLA DE GUERRERO",
+            "casecount": 871,
+            "country": "Mexico",
+            "lat": 17.59935009,
+            "long": -99.36746755,
+            "search": "admin2"
+        },
+        {
+            "_id": "AYUTLA DE LOS LIBRES",
+            "casecount": 464,
+            "country": "Mexico",
+            "lat": 16.95727114,
+            "long": -99.06753635,
+            "search": "admin2"
+        },
+        {
+            "_id": "Santo Anast\u00e1cio",
+            "casecount": 63,
+            "country": "Brazil",
+            "lat": -21.9747,
+            "long": -51.6527,
+            "search": "admin3"
+        },
+        {
+            "_id": "Omaezaki-shi",
+            "casecount": 2,
+            "country": "Japan",
+            "lat": 34.63806,
+            "long": 138.12806,
+            "search": "admin3"
+        },
+        {
+            "_id": "HUANCARQUI",
+            "casecount": 99,
+            "country": "Peru",
+            "lat": -16.0123989265889,
+            "long": -72.3681882063559,
+            "search": "admin3"
+        },
+        {
+            "_id": "Ajmer",
+            "casecount": 19,
+            "country": "India",
+            "lat": 26.45,
+            "long": 74.63333,
+            "search": "admin3"
+        },
+        {
+            "_id": "Pampacolca",
+            "casecount": 9,
+            "country": "Peru",
+            "lat": -15.7146,
+            "long": -72.5736,
+            "search": "admin3"
+        },
+        {
+            "_id": "Capit\u00e3o Le\u00f4nidas Marques",
+            "casecount": 118,
+            "country": "Brazil",
+            "lat": -25.47032129,
+            "long": -53.59298724,
+            "search": "admin2"
+        },
+        {
+            "_id": "PITUMARCA",
+            "casecount": 88,
+            "country": "Peru",
+            "lat": -13.8887915444732,
+            "long": -71.1581667044718,
+            "search": "admin3"
+        },
+        {
+            "_id": "VILLANUEVA",
+            "casecount": 1255,
+            "country": "Colombia",
+            "lat": 4.52830773090375,
+            "long": -72.823142823975,
+            "search": "admin2"
+        },
+        {
+            "_id": "Aizumi-cho",
+            "casecount": 1,
+            "country": "Japan",
+            "lat": 34.127732,
+            "long": 134.499639,
+            "search": "admin3"
+        },
+        {
+            "_id": "PUERTO PE\u00d1ASCO",
+            "casecount": 586,
+            "country": "Mexico",
+            "lat": 31.52942876,
+            "long": -113.29311909999998,
+            "search": "admin2"
+        },
+        {
+            "_id": "MARIA",
+            "casecount": 39,
+            "country": "Peru",
+            "lat": -6.49656553530174,
+            "long": -77.960795954565,
+            "search": "admin3"
+        },
+        {
+            "_id": "ESPERANZA",
+            "casecount": 39,
+            "country": "Mexico",
+            "lat": 18.85903205,
+            "long": -97.36462519999999,
+            "search": "admin2"
+        },
+        {
+            "_id": "Richland",
+            "casecount": 1,
+            "country": "United States",
+            "lat": 43.38,
+            "long": -90.43,
+            "search": "admin2"
+        },
+        {
+            "_id": "COYUCA DE BEN\u00cdTEZ",
+            "casecount": 266,
+            "country": "Mexico",
+            "lat": 17.14254842,
+            "long": -100.05896870000001,
+            "search": "admin2"
+        },
+        {
+            "_id": "Bayeux",
+            "casecount": 2477,
+            "country": "Brazil",
+            "lat": -7.1302,
+            "long": -34.9365,
+            "search": "admin3"
+        },
+        {
+            "_id": "Coxilha",
+            "casecount": 181,
+            "country": "Brazil",
+            "lat": -28.1254,
+            "long": -52.298,
+            "search": "admin3"
+        },
+        {
+            "_id": "Mara Rosa",
+            "casecount": 234,
+            "country": "Brazil",
+            "lat": -14.0148,
+            "long": -49.1777,
+            "search": "admin3"
+        },
+        {
+            "_id": "SAN MIGUEL DE HORCASITAS",
+            "casecount": 20,
+            "country": "Mexico",
+            "lat": 29.46301686,
+            "long": -110.79864009999999,
+            "search": "admin2"
+        },
+        {
+            "_id": "S\u00e3o Jo\u00e3o do Tigre",
+            "casecount": 33,
+            "country": "Brazil",
+            "lat": -8.077,
+            "long": -36.8547,
+            "search": "admin3"
+        }
+    ]
+}

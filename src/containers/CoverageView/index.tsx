@@ -18,7 +18,7 @@ import {
 } from 'redux/CoverageView/selectors';
 import { fetchCompletenessData } from 'redux/CoverageView/thunks';
 import Loader from 'components/Loader';
-import { parseSearchQuery, getCoveragePercentage } from 'utils/helperFunctions';
+import { getCoveragePercentage } from 'utils/helperFunctions';
 import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CoverageViewColors } from 'models/Colors';
 import MapPopup from 'components/MapPopup';
@@ -131,6 +131,8 @@ const CoverageView: React.FC = () => {
                         const coveragePercentage =
                             getCoveragePercentage(countryRow);
 
+                        const country = iso.whereAlpha2(countryRow.code);
+
                         mapRef.setFeatureState(
                             {
                                 source: 'countriesData',
@@ -140,7 +142,10 @@ const CoverageView: React.FC = () => {
                             {
                                 caseCount: countryRow.casecount,
                                 totalCases: countryRow.jhu,
-                                name: countryRow._id,
+                                name: country
+                                    ? country.country
+                                    : countryRow.code,
+                                code: countryRow.code,
                                 lat: countryRow.lat,
                                 long: countryRow.long,
                                 coverage: coveragePercentage,
@@ -154,16 +159,15 @@ const CoverageView: React.FC = () => {
                     }
                 }
             } else {
-                for (const row of Object.keys(completenessData)) {
-                    const country = iso.whereCountry(row.replace('_', ' '));
-                    const countryCode = country?.alpha2;
-
-                    if (countryCode && lookupTableData[countryCode]) {
+                for (const countryCode of Object.keys(completenessData)) {
+                    if (lookupTableData[countryCode]) {
                         const coverage = Math.round(
-                            completenessData[row][
+                            completenessData[countryCode][
                                 chosenCompletenessField
                             ] as number,
                         );
+
+                        const country = iso.whereAlpha2(countryCode);
 
                         mapRef.setFeatureState(
                             {
@@ -172,7 +176,8 @@ const CoverageView: React.FC = () => {
                                 id: lookupTableData[countryCode].feature_id,
                             },
                             {
-                                name: country.country,
+                                name: country ? country.country : countryCode,
+                                code: countryCode,
                                 lat: lookupTableData[countryCode].centroid[1],
                                 long: lookupTableData[countryCode].centroid[0],
                                 coverage,
@@ -206,13 +211,14 @@ const CoverageView: React.FC = () => {
         const countryName = e.features[0].state.name;
         const coverage = e.features[0].state.coverage;
         const lastUploadDate = e.features[0].state.lastUploadDate;
+        const code = e.features[0].state.code;
 
         const lat = e.features[0].state.lat;
         const lng = e.features[0].state.long;
         const bounds = e.features[0].state.bounds;
         const coordinates: mapboxgl.LngLatLike = { lng, lat };
 
-        const searchQuery = `cases?country=${parseSearchQuery(countryName)}`;
+        const searchQuery = `cases?country=${code}`;
         const url = `${dataPortalUrl}/${searchQuery}`;
 
         const popupContent = (

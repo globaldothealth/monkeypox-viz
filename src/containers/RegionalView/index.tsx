@@ -24,6 +24,7 @@ import {
 } from 'redux/App/selectors';
 import { SearchResolution } from 'models/RegionalData';
 import countryLookupTable from 'data/admin0-lookup-table.json';
+import iso from 'iso-3166-1';
 
 const dataLayers: LegendRow[] = [
     { label: '< 100', color: RegionalViewColors['<100'] },
@@ -179,6 +180,9 @@ export const RegionalView: React.FC = () => {
             const country = e.features[0].properties.country;
             const region = e.features[0].properties.region;
 
+            const countryObj = iso.whereAlpha2(country);
+            const countryName = countryObj ? countryObj.country : country;
+
             const geometry = e.features[0].geometry as any;
             const lat = geometry.coordinates[1];
             const lng = geometry.coordinates[0];
@@ -225,8 +229,8 @@ export const RegionalView: React.FC = () => {
 
             const popupTitle =
                 searchResolution !== SearchResolution.Country
-                    ? `${region}, ${country}`
-                    : country;
+                    ? `${region}, ${countryName}`
+                    : countryName;
 
             // This has to be done this way in order to allow for React components as a content of the popup
             const popupElement = document.createElement('div');

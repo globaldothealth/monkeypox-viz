@@ -15,7 +15,6 @@ import { CountryViewColors } from 'models/Colors';
 import mapboxgl, { MapSourceDataEvent, EventData } from 'mapbox-gl';
 import Legend from 'components/Legend';
 import { LegendRow } from 'models/LegendRow';
-import { parseSearchQuery } from 'utils/helperFunctions';
 import MapPopup from 'components/MapPopup';
 
 import { MapContainer } from 'theme/globalStyles';
@@ -187,9 +186,7 @@ const CountryView: React.FC = () => {
             const lng = e.features[0].state.long;
             const coordinates: mapboxgl.LngLatLike = { lng, lat };
 
-            const searchQuery = `cases?country=${parseSearchQuery(
-                countryName,
-            )}`;
+            const searchQuery = `cases?country=${code}`;
             const url = `${dataPortalUrl}/${searchQuery}`;
 
             dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));

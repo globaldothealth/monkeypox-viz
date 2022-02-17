@@ -5,7 +5,6 @@ import { statesList, StatesData, DataStatus } from 'data/statesData';
 import { RegionalData } from 'models/RegionalData';
 import { Feature, FeatureSet } from 'models/FeatureSet';
 import { FreshnessData, ParsedFreshnessData } from 'models/FreshnessData';
-import iso from 'iso-3166-1';
 
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
@@ -36,9 +35,6 @@ export const convertRegionalDataToFeatureSet = (
     const featureSet: FeatureSet = { type: 'FeatureCollection', features: [] };
 
     for (const dataRow of data) {
-        const country = iso.whereCountry(dataRow.country.replace('_', ' '));
-        const countryCode = country?.alpha2;
-
         const feature: Feature = {
             type: 'Feature',
             properties: {
@@ -50,9 +46,8 @@ export const convertRegionalDataToFeatureSet = (
                 admin1: dataRow.admin1,
                 admin2: dataRow.admin2,
                 admin3: dataRow.admin3,
-                lastUploadDate: countryCode
-                    ? freshnessData[countryCode] || 'unknown'
-                    : 'unknown',
+                lastUploadDate:
+                    freshnessData[dataRow.country_code] || 'unknown',
             },
             geometry: {
                 type: 'Point',

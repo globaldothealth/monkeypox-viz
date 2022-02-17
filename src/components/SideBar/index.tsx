@@ -124,42 +124,50 @@ const SideBar = () => {
         ) {
             const sortedCompletenessData = [
                 ...Object.keys(completenessData),
-            ].sort((a, b) =>
-                Number(completenessData[a][chosenCompletenessField]) <
-                Number(completenessData[b][chosenCompletenessField])
-                    ? 1
-                    : -1,
-            );
+            ].sort((a, b) => {
+                const parsedNumA = Number(
+                    completenessData[a][chosenCompletenessField],
+                );
+                const parsedNumB = Number(
+                    completenessData[b][chosenCompletenessField],
+                );
+
+                return parsedNumB - parsedNumA;
+            });
 
             return (
                 <>
-                    {sortedCompletenessData.map((el) => {
-                        const country = iso.whereCountry(el.replace('_', ' '));
-                        if (!country) return;
-
-                        const code = country.alpha2;
+                    {sortedCompletenessData.map((countryCode) => {
                         const percentage = Math.round(
-                            completenessData[el][
+                            completenessData[countryCode][
                                 chosenCompletenessField
                             ] as number,
                         );
 
+                        const country = iso.whereAlpha2(countryCode);
+
                         return (
                             <LocationListItem
-                                key={el}
-                                $barWidth={percentage}
+                                key={countryCode}
+                                $barWidth={percentage ? percentage : 0}
                                 onClick={() =>
                                     handleOnCountryClick({
-                                        _id: country.country,
-                                        code: code,
+                                        _id: country
+                                            ? country.country
+                                            : countryCode,
+                                        code: countryCode,
                                     })
                                 }
                             >
                                 <button>
                                     <span className="label">
-                                        {country.country}
+                                        {country
+                                            ? country.country
+                                            : countryCode}
                                     </span>
-                                    <span className="num">{percentage}%</span>
+                                    <span className="num">
+                                        {percentage ? percentage : 0}%
+                                    </span>
                                 </button>
                                 <div className="country-cases-bar"></div>
                             </LocationListItem>

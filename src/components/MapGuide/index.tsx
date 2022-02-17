@@ -114,18 +114,16 @@ export const MapGuide: React.FC = () => {
                         “Explore Regional Data” to view and download
                         corresponding filtered results of data for that region.
                         Larger, darker circles indicate more available line-list
-                        data. Records that do not include regional metadata are
-                        labeled as “Country, Country” (e.g. “India, India”).
-                        Please see our{' '}
+                        data. Please see our{' '}
                         <a href="https://global.health/faqs/" title="FAQs">
                             FAQs
                         </a>{' '}
                         for more info.
                         <br />
                         <br />
-                        <strong>Coverage Map:</strong> This view illustrates
-                        available line-list COVID-19 case data in the
-                        Global.health database in a given country as a
+                        <strong>Coverage Map:</strong> The default view
+                        illustrates available line-list COVID-19 case data in
+                        the Global.health database in a given country as a
                         percentage of total cumulative case data as indicated by
                         the{' '}
                         <a
@@ -136,10 +134,12 @@ export const MapGuide: React.FC = () => {
                         >
                             Johns Hopkins University COVID Resource Center
                         </a>
-                        . Darker colours indicate more available line-list data.
-                        Totals are updated daily. The availability of
-                        publically-reported line-list data varies substantially
-                        by country. Please see our{' '}
+                        . Darker colours indicate more available line-list data
+                        relative to aggregate JHU case counts. Using the module
+                        on the left, you can also select and visualize the
+                        completeness of individual fields in the G.h schema by
+                        country (i.e. the percentage of cases in a given country
+                        include values for the designated field){' '}
                         <a href="https://global.health/faqs/" title="FAQs">
                             FAQs
                         </a>{' '}
