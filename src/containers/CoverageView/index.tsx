@@ -190,7 +190,13 @@ const CoverageView: React.FC = () => {
 
     const mapClickListener = useCallback((e: any) => {
         const mapRef = map.current;
-        if (!e.features || !e.features[0].properties || !mapRef) return;
+        if (
+            !e.features ||
+            !e.features[0].properties ||
+            !e.features[0].state.code ||
+            !mapRef
+        )
+            return;
 
         const caseCount = e.features[0].state.caseCount || 0;
         const totalCases = e.features[0].state.totalCases;

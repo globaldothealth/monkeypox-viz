@@ -170,7 +170,12 @@ const CountryView: React.FC = () => {
 
         // Add click listener and show popups
         mapRef.on('click', 'countries-join', (e) => {
-            if (!e.features || !e.features[0].properties) return;
+            if (
+                !e.features ||
+                !e.features[0].properties ||
+                !e.features[0].state.code
+            )
+                return;
 
             const caseCount = e.features[0].state.caseCount || 0;
             const code = e.features[0].state.code;
