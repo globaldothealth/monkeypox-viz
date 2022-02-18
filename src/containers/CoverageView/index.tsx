@@ -11,6 +11,7 @@ import {
     selectFreshnessData,
     selectFreshnessLoading,
 } from 'redux/App/selectors';
+import { setSelectedCountryInSidebar } from 'redux/App/slice';
 import {
     selectCompletenessData,
     selectChosenCompletenessField,
@@ -18,13 +19,12 @@ import {
 } from 'redux/CoverageView/selectors';
 import { fetchCompletenessData } from 'redux/CoverageView/thunks';
 import Loader from 'components/Loader';
-import { getCoveragePercentage } from 'utils/helperFunctions';
+import { getCoveragePercentage, getCountryName } from 'utils/helperFunctions';
 import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CoverageViewColors } from 'models/Colors';
 import MapPopup from 'components/MapPopup';
 import { LegendRow } from 'models/LegendRow';
 import Legend from 'components/Legend';
-import iso from 'iso-3166-1';
 
 import { PopupContentText, BorderLinearProgress } from './styled';
 
@@ -131,8 +131,6 @@ const CoverageView: React.FC = () => {
                         const coveragePercentage =
                             getCoveragePercentage(countryRow);
 
-                        const country = iso.whereAlpha2(countryRow.code);
-
                         mapRef.setFeatureState(
                             {
                                 source: 'countriesData',
@@ -142,9 +140,6 @@ const CoverageView: React.FC = () => {
                             {
                                 caseCount: countryRow.casecount,
                                 totalCases: countryRow.jhu,
-                                name: country
-                                    ? country.country
-                                    : countryRow.code,
                                 code: countryRow.code,
                                 lat: countryRow.lat,
                                 long: countryRow.long,
@@ -167,8 +162,6 @@ const CoverageView: React.FC = () => {
                             ] as number,
                         );
 
-                        const country = iso.whereAlpha2(countryCode);
-
                         mapRef.setFeatureState(
                             {
                                 source: 'countriesData',
@@ -176,7 +169,6 @@ const CoverageView: React.FC = () => {
                                 id: lookupTableData[countryCode].feature_id,
                             },
                             {
-                                name: country ? country.country : countryCode,
                                 code: countryCode,
                                 lat: lookupTableData[countryCode].centroid[1],
                                 long: lookupTableData[countryCode].centroid[0],
@@ -198,28 +190,22 @@ const CoverageView: React.FC = () => {
 
     const mapClickListener = useCallback((e: any) => {
         const mapRef = map.current;
-        if (
-            !e.features ||
-            !e.features[0].properties ||
-            !e.features[0].state.name ||
-            !mapRef
-        )
-            return;
+        if (!e.features || !e.features[0].properties || !mapRef) return;
 
         const caseCount = e.features[0].state.caseCount || 0;
         const totalCases = e.features[0].state.totalCases;
-        const countryName = e.features[0].state.name;
         const coverage = e.features[0].state.coverage;
         const lastUploadDate = e.features[0].state.lastUploadDate;
         const code = e.features[0].state.code;
 
         const lat = e.features[0].state.lat;
         const lng = e.features[0].state.long;
-        const bounds = e.features[0].state.bounds;
         const coordinates: mapboxgl.LngLatLike = { lng, lat };
 
         const searchQuery = `cases?country=${code}`;
         const url = `${dataPortalUrl}/${searchQuery}`;
+
+        const countryName = getCountryName(code);
 
         const popupContent = (
             <>
@@ -234,8 +220,7 @@ const CoverageView: React.FC = () => {
             </>
         );
 
-        // Fly to the selected country before showing popup
-        mapRef.fitBounds(bounds);
+        dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));
 
         // This has to be done this way in order to allow for React components as a content of the popup
         const popupElement = document.createElement('div');

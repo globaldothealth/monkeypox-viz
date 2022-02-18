@@ -5,6 +5,7 @@ import { statesList, StatesData, DataStatus } from 'data/statesData';
 import { RegionalData } from 'models/RegionalData';
 import { Feature, FeatureSet } from 'models/FeatureSet';
 import { FreshnessData, ParsedFreshnessData } from 'models/FreshnessData';
+import iso from 'iso-3166-1';
 
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
@@ -370,4 +371,10 @@ export const convertStringDateToDate = (date: string) => {
     }
 
     return finalDate;
+};
+
+export const getCountryName = (countryCode: string): string => {
+    const countryObj = iso.whereAlpha2(countryCode);
+
+    return countryObj ? countryObj.country : countryCode;
 };

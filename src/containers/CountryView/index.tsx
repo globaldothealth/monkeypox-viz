@@ -20,6 +20,7 @@ import MapPopup from 'components/MapPopup';
 import { MapContainer } from 'theme/globalStyles';
 import Loader from 'components/Loader';
 import { PopupContentText } from './styled';
+import { getCountryName } from 'utils/helperFunctions';
 
 const dataLayers: LegendRow[] = [
     { label: '< 10k', color: CountryViewColors['10K'] },
@@ -108,7 +109,6 @@ const CountryView: React.FC = () => {
                     },
                     {
                         caseCount: countryRow.casecount,
-                        name: countryRow._id,
                         lat: countryRow.lat,
                         long: countryRow.long,
                         code: countryRow.code,
@@ -170,15 +170,9 @@ const CountryView: React.FC = () => {
 
         // Add click listener and show popups
         mapRef.on('click', 'countries-join', (e) => {
-            if (
-                !e.features ||
-                !e.features[0].properties ||
-                !e.features[0].state.name
-            )
-                return;
+            if (!e.features || !e.features[0].properties) return;
 
             const caseCount = e.features[0].state.caseCount || 0;
-            const countryName = e.features[0].state.name;
             const code = e.features[0].state.code;
             const lastUploadDate = e.features[0].state.lastUploadDate;
 
@@ -188,6 +182,8 @@ const CountryView: React.FC = () => {
 
             const searchQuery = `cases?country=${code}`;
             const url = `${dataPortalUrl}/${searchQuery}`;
+
+            const countryName = getCountryName(code);
 
             dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));
 

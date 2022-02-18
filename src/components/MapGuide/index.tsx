@@ -137,9 +137,17 @@ export const MapGuide: React.FC = () => {
                         . Darker colours indicate more available line-list data
                         relative to aggregate JHU case counts. Using the module
                         on the left, you can also select and visualize the
-                        completeness of individual fields in the G.h schema by
-                        country (i.e. the percentage of cases in a given country
-                        include values for the designated field){' '}
+                        completeness of individual fields in the{' '}
+                        <a
+                            href="https://raw.githubusercontent.com/globaldothealth/list/main/data-serving/scripts/export-data/data_dictionary.txt"
+                            title="G.h schema"
+                            target="blank"
+                            rel="noopener noreferrer"
+                        >
+                            G.h schema
+                        </a>{' '}
+                        by country (i.e. the percentage of cases in a given
+                        country include values for the designated field){' '}
                         <a href="https://global.health/faqs/" title="FAQs">
                             FAQs
                         </a>{' '}

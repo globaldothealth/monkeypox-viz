@@ -33,8 +33,7 @@ import {
     selectChosenCompletenessField,
     selectIsLoading,
 } from 'redux/CoverageView/selectors';
-import iso from 'iso-3166-1';
-import { convertStringDateToDate } from 'utils/helperFunctions';
+import { convertStringDateToDate, getCountryName } from 'utils/helperFunctions';
 
 const SideBar = () => {
     const [openSidebar, setOpenSidebar] = useState(true);
@@ -97,19 +96,24 @@ const SideBar = () => {
             );
 
             const mappedData: SelectedCountry[] = [];
-            for (const row of sortedCompletenessData) {
-                const country = iso.whereCountry(row.replace('_', ' '));
+            for (const countryCode of sortedCompletenessData) {
+                const countryName = getCountryName(countryCode);
 
-                if (country) {
-                    const code = country.alpha2;
-                    mappedData.push({ _id: country.country, code: code });
-                }
+                mappedData.push({
+                    _id: countryName,
+                    code: countryCode,
+                });
             }
 
             setAutocompleteData(mappedData);
         } else {
             const mappedData = countriesData.map((el) => {
-                return { _id: el._id, code: el.code };
+                const countryName = getCountryName(el.code);
+
+                return {
+                    _id: countryName,
+                    code: el.code,
+                };
             });
 
             setAutocompleteData(mappedData);
@@ -125,49 +129,41 @@ const SideBar = () => {
             const sortedCompletenessData = [
                 ...Object.keys(completenessData),
             ].sort((a, b) => {
-                const parsedNumA = Number(
+                const numberA = Number(
                     completenessData[a][chosenCompletenessField],
                 );
-                const parsedNumB = Number(
+                const numberB = Number(
                     completenessData[b][chosenCompletenessField],
                 );
 
-                return parsedNumB - parsedNumA;
+                return numberB - numberA;
             });
 
             return (
                 <>
                     {sortedCompletenessData.map((countryCode) => {
+                        const countryName = getCountryName(countryCode);
+
                         const percentage = Math.round(
                             completenessData[countryCode][
                                 chosenCompletenessField
                             ] as number,
                         );
 
-                        const country = iso.whereAlpha2(countryCode);
-
                         return (
                             <LocationListItem
                                 key={countryCode}
-                                $barWidth={percentage ? percentage : 0}
+                                $barWidth={percentage}
                                 onClick={() =>
                                     handleOnCountryClick({
-                                        _id: country
-                                            ? country.country
-                                            : countryCode,
+                                        _id: countryName,
                                         code: countryCode,
                                     })
                                 }
                             >
                                 <button>
-                                    <span className="label">
-                                        {country
-                                            ? country.country
-                                            : countryCode}
-                                    </span>
-                                    <span className="num">
-                                        {percentage ? percentage : 0}%
-                                    </span>
+                                    <span className="label">{countryName}</span>
+                                    <span className="num">{percentage}%</span>
                                 </button>
                                 <div className="country-cases-bar"></div>
                             </LocationListItem>
@@ -180,18 +176,25 @@ const SideBar = () => {
         return (
             <>
                 {countriesData.map((row) => {
-                    const { code, _id, casecount } = row;
+                    const { code, casecount } = row;
                     const countryCasesCountPercentage =
                         (casecount / totalCasesCount) * 100;
+
+                    const countryName = getCountryName(code);
                     return (
                         <LocationListItem
-                            key={_id}
+                            key={code}
                             $barWidth={countryCasesCountPercentage}
-                            onClick={() => handleOnCountryClick({ _id, code })}
+                            onClick={() =>
+                                handleOnCountryClick({
+                                    _id: countryName,
+                                    code,
+                                })
+                            }
                             data-cy="listed-country"
                         >
                             <button>
-                                <span className="label">{_id}</span>
+                                <span className="label">{countryName}</span>
                                 <span className="num">
                                     {casecount.toLocaleString()}
                                 </span>

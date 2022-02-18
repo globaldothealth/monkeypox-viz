@@ -8,6 +8,7 @@ import { selectRegionalData } from 'redux/RegionalView/selectors';
 import {
     convertRegionalDataToFeatureSet,
     parseSearchQuery,
+    getCountryName,
 } from 'utils/helperFunctions';
 import { RegionalViewColors } from 'models/Colors';
 import MapPopup from 'components/MapPopup';
@@ -22,9 +23,9 @@ import {
     selectFreshnessData,
     selectFreshnessLoading,
 } from 'redux/App/selectors';
+import { setSelectedCountryInSidebar } from 'redux/App/slice';
 import { SearchResolution } from 'models/RegionalData';
 import countryLookupTable from 'data/admin0-lookup-table.json';
-import iso from 'iso-3166-1';
 
 const dataLayers: LegendRow[] = [
     { label: '< 100', color: RegionalViewColors['<100'] },
@@ -177,11 +178,10 @@ export const RegionalView: React.FC = () => {
             )
                 return;
 
-            const country = e.features[0].properties.country;
+            const code = e.features[0].properties.country;
             const region = e.features[0].properties.region;
 
-            const countryObj = iso.whereAlpha2(country);
-            const countryName = countryObj ? countryObj.country : country;
+            const countryName = getCountryName(code);
 
             const geometry = e.features[0].geometry as any;
             const lat = geometry.coordinates[1];
@@ -209,7 +209,7 @@ export const RegionalView: React.FC = () => {
                 : '';
 
             const searchQuery = `cases?country=${parseSearchQuery(
-                country,
+                code,
             )}${admin1Query}${admin2Query}${admin3Query}`;
 
             const url = `${dataPortalUrl}/${searchQuery}`;
@@ -221,11 +221,7 @@ export const RegionalView: React.FC = () => {
                 </PopupContentText>
             );
 
-            // Fly to the selected country before showing popup
-            mapRef.flyTo({
-                center: [lng, lat] as LngLatLike,
-                zoom: 5,
-            });
+            dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));
 
             const popupTitle =
                 searchResolution !== SearchResolution.Country

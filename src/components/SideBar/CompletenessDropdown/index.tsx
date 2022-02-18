@@ -13,6 +13,8 @@ import {
 import { setChosenCompletenessField } from 'redux/CoverageView/slice';
 import { StyledFormControl } from './styled';
 
+const excludedCompletenessFields = ['SGTF', '_id'];
+
 export const CompletenessDropdown: React.FC = () => {
     const dispatch = useAppDispatch();
 
@@ -29,9 +31,14 @@ export const CompletenessDropdown: React.FC = () => {
         const firstKey = Object.keys(completenessData)[0];
         const fields = Object.keys(completenessData[firstKey]);
 
+        // Filer out chosen fields
+        const allowedFields = fields.filter(
+            (field) => !excludedCompletenessFields.includes(field),
+        );
+
         // Filter out fields without any data in any country
         const filteredFields = [] as string[];
-        for (const key of fields) {
+        for (const key of allowedFields) {
             for (const el of Object.keys(completenessData)) {
                 if (completenessData[el][key] !== 0) {
                     filteredFields.push(key);
