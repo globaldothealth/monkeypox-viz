@@ -147,7 +147,8 @@ export const MapGuide: React.FC = () => {
                             G.h schema
                         </a>{' '}
                         by country (i.e. the percentage of cases in a given
-                        country include values for the designated field){' '}
+                        country that include values for the designated field).
+                        Please see our{' '}
                         <a href="https://global.health/faqs/" title="FAQs">
                             FAQs
                         </a>{' '}
