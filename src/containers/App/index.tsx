@@ -18,6 +18,7 @@ import Loader from 'components/Loader';
 import ErrorAlert from 'components/ErrorAlert';
 import VariantsView from 'containers/VariantsView';
 import ReactGA from 'react-ga';
+import { useCookieBanner } from 'hooks/useCookieBanner';
 
 import { ErrorContainer } from './styled';
 import PopupSmallScreens from 'components/PopupSmallScreens';
@@ -29,6 +30,13 @@ const App = () => {
     if (env === 'production') {
         ReactGA.initialize(gaTrackingId);
     }
+
+    // Init IUBENDA cookie banner
+    const { initCookieBanner } = useCookieBanner();
+
+    useEffect(() => {
+        initCookieBanner();
+    }, []);
 
     const location = useLocation();
     const dispatch = useAppDispatch();
