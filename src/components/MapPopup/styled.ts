@@ -30,3 +30,19 @@ export const Button = styled.button`
 export const ContentContainer = styled.div`
     margin: 1.2rem 0;
 `;
+
+export const UploadDateContainer = styled('div')(() => ({
+    display: 'flex',
+    alignItems: 'center',
+    margin: '1rem 0 2rem 0',
+}));
+
+export const UploadDateLabel = styled('p')(() => ({
+    fontSize: '1.6rem',
+    fontWeight: 'bold',
+}));
+
+export const UploadDate = styled('span')(() => ({
+    fontSize: '1.6rem',
+    fontWeight: 'normal',
+}));

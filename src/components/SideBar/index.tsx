@@ -1,98 +1,217 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import {
-    StyledSideBar,
-    SideBarHeader,
-    LatestGlobal,
-    SearchBar,
-    LocationList,
-    LocationListItem,
-    FlagIcon,
-} from './styled';
-import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import VariantsContent from './VariantsContent';
+import { useState, useEffect, SyntheticEvent } from 'react';
+import { useLocation } from 'react-router-dom';
+import {
+    selectCountriesData,
+    selectLastUpdateDate,
+    selectTotalCases,
+    selectTotalCasesIsLoading,
+} from 'redux/App/selectors';
+import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import ghListLogo from 'assets/images/gh_list_logo.svg';
+import {
+    FlagIcon,
+    LatestGlobal,
+    LocationList,
+    LocationListItem,
+    SearchBar,
+    SideBarHeader,
+    StyledSideBar,
+    SideBarTitlesSkeleton,
+    CountriesListSkeleton,
+    GhListButtonBar,
+} from './styled';
+import { setSelectedCountryInSidebar } from 'redux/App/slice';
+import { selectSelectedCountryInSideBar } from 'redux/App/selectors';
+import { CountryDataRow, SelectedCountry } from 'models/CountryData';
+import { CompletenessDropdown } from './CompletenessDropdown';
+import {
+    selectCompletenessData,
+    selectChosenCompletenessField,
+    selectIsLoading,
+} from 'redux/CoverageView/selectors';
+import { convertStringDateToDate, getCountryName } from 'utils/helperFunctions';
 
 const SideBar = () => {
-    const location = useLocation();
-
     const [openSidebar, setOpenSidebar] = useState(true);
     const [isVariantsView, setIsVariantsView] = useState(false);
+    const [isCoverageView, setIsCoverageView] = useState(false);
 
-    // Sidebar has other content in VariantsView
+    const location = useLocation();
+    const dispatch = useAppDispatch();
+
+    const totalCasesCount = useAppSelector(selectTotalCases);
+    const totalCasesCountIsLoading = useAppSelector(selectTotalCasesIsLoading);
+    const lastUpdateDate = useAppSelector(selectLastUpdateDate);
+    const completenessData = useAppSelector(selectCompletenessData);
+    const chosenCompletenessField = useAppSelector(
+        selectChosenCompletenessField,
+    );
+    const completenessDataLoading = useAppSelector(selectIsLoading);
+    const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
+
+    // Sidebar has other content in VariantsView and CoverageView
     useEffect(() => {
         setIsVariantsView(location.pathname === '/variant-reporting');
+        setIsCoverageView(location.pathname === '/coverage');
     }, [location]);
+
+    const countriesData = useAppSelector(selectCountriesData);
+    const [autocompleteData, setAutocompleteData] = useState<SelectedCountry[]>(
+        [],
+    );
 
     const handleOnClick = () => {
         setOpenSidebar((value) => !value);
     };
 
-    interface ICountries {
-        widthBar: number;
-        countryCode: string;
-        countryName: string;
-        number: number;
-    }
-
-    const countriesList: ICountries[] = [
-        {
-            countryCode: 'US',
-            countryName: 'United States',
-            widthBar: 49,
-            number: 30261846,
-        },
-        {
-            countryCode: 'DE',
-            countryName: 'Germany',
-            widthBar: 60,
-            number: 5077124,
-        },
-        {
-            countryCode: 'IT',
-            countryName: 'Italy',
-            widthBar: 36,
-            number: 5077124,
-        },
-        {
-            countryCode: 'ES',
-            countryName: 'Spain',
-            widthBar: 3,
-            number: 5077124,
-        },
-    ];
-
-    const handleOnCountryClick = (row: React.MouseEvent<HTMLElement>) => {
-        console.log(row);
+    const handleOnCountryClick = (country: SelectedCountry) => {
+        dispatch(setSelectedCountryInSidebar(country));
     };
 
-    const Countries = () => (
-        <>
-            {countriesList.map((row) => {
-                const { widthBar, countryCode, countryName, number } = row;
-                return (
-                    <LocationListItem key={countryCode} $barWidth={widthBar}>
-                        <button
-                            country={countryCode}
-                            onClick={(row) => handleOnCountryClick(row)}
-                        >
-                            <span className="label">{countryName}</span>
-                            <span className="num">
-                                {number.toLocaleString()}
-                            </span>
-                        </button>
-                        <div className="country-cases-bar"></div>
-                    </LocationListItem>
+    const handleAutocompleteCountrySelect = (
+        event: SyntheticEvent<Element, Event>,
+        value: CountryDataRow | SelectedCountry | null,
+    ) => {
+        value !== null && dispatch(setSelectedCountryInSidebar(value));
+    };
+
+    // Parse completeness data in coverage view
+    useEffect(() => {
+        if (
+            isCoverageView &&
+            chosenCompletenessField &&
+            chosenCompletenessField !== 'cases'
+        ) {
+            const sortedCompletenessData = [
+                ...Object.keys(completenessData),
+            ].sort((a, b) =>
+                Number(completenessData[a][chosenCompletenessField]) <
+                Number(completenessData[b][chosenCompletenessField])
+                    ? 1
+                    : -1,
+            );
+
+            const mappedData: SelectedCountry[] = [];
+            for (const countryCode of sortedCompletenessData) {
+                const countryName = getCountryName(countryCode);
+
+                mappedData.push({
+                    _id: countryName,
+                    code: countryCode,
+                });
+            }
+
+            setAutocompleteData(mappedData);
+        } else {
+            const mappedData = countriesData.map((el) => {
+                const countryName = getCountryName(el.code);
+
+                return {
+                    _id: countryName,
+                    code: el.code,
+                };
+            });
+
+            setAutocompleteData(mappedData);
+        }
+    }, [isCoverageView, chosenCompletenessField, countriesData]);
+
+    const Countries = () => {
+        if (
+            isCoverageView &&
+            chosenCompletenessField &&
+            chosenCompletenessField !== 'cases'
+        ) {
+            const sortedCompletenessData = [
+                ...Object.keys(completenessData),
+            ].sort((a, b) => {
+                const numberA = Number(
+                    completenessData[a][chosenCompletenessField],
                 );
-            })}
-        </>
-    );
+                const numberB = Number(
+                    completenessData[b][chosenCompletenessField],
+                );
+
+                return numberB - numberA;
+            });
+
+            return (
+                <>
+                    {sortedCompletenessData.map((countryCode) => {
+                        const countryName = getCountryName(countryCode);
+
+                        const percentage = Math.round(
+                            completenessData[countryCode][
+                                chosenCompletenessField
+                            ] as number,
+                        );
+
+                        return (
+                            <LocationListItem
+                                key={countryCode}
+                                $barWidth={percentage}
+                                onClick={() =>
+                                    handleOnCountryClick({
+                                        _id: countryName,
+                                        code: countryCode,
+                                    })
+                                }
+                            >
+                                <button>
+                                    <span className="label">{countryName}</span>
+                                    <span className="num">{percentage}%</span>
+                                </button>
+                                <div className="country-cases-bar"></div>
+                            </LocationListItem>
+                        );
+                    })}
+                </>
+            );
+        }
+
+        return (
+            <>
+                {countriesData.map((row) => {
+                    const { code, casecount } = row;
+                    const countryCasesCountPercentage =
+                        (casecount / totalCasesCount) * 100;
+
+                    const countryName = getCountryName(code);
+                    return (
+                        <LocationListItem
+                            key={code}
+                            $barWidth={countryCasesCountPercentage}
+                            onClick={() =>
+                                handleOnCountryClick({
+                                    _id: countryName,
+                                    code,
+                                })
+                            }
+                            data-cy="listed-country"
+                        >
+                            <button>
+                                <span className="label">{countryName}</span>
+                                <span className="num">
+                                    {casecount.toLocaleString()}
+                                </span>
+                            </button>
+                            <div className="country-cases-bar"></div>
+                        </LocationListItem>
+                    );
+                })}
+            </>
+        );
+    };
 
     return (
         <StyledSideBar
             $sidebaropen={openSidebar}
             $isVariantsView={isVariantsView}
+            data-cy="sidebar"
         >
             {!isVariantsView ? (
                 <>
@@ -104,23 +223,55 @@ const SideBar = () => {
                         <div id="disease-selector"></div>
                     </SideBarHeader>
                     <LatestGlobal id="latest-global">
-                        <span id="total-cases" className="active">
-                            61,078,740
-                        </span>
-                        <span id="p1-cases">NaN</span>
-                        <span id="b1351-cases">NaN</span>
-                        <span className="reported-cases-label"> cases</span>
+                        {totalCasesCountIsLoading ? (
+                            <SideBarTitlesSkeleton
+                                animation="pulse"
+                                variant="rectangular"
+                                data-cy="loading-skeleton"
+                            />
+                        ) : (
+                            <>
+                                <span id="total-cases" className="active">
+                                    {totalCasesCount.toLocaleString()}
+                                </span>
+                                <span id="p1-cases">NaN</span>
+                                <span id="b1351-cases">NaN</span>
+                                <span className="reported-cases-label">
+                                    {' '}
+                                    cases
+                                </span>
+                            </>
+                        )}
                         <div className="last-updated-date">
                             Updated:{' '}
-                            <span id="last-updated-date">Thu Nov 25 2021</span>
+                            {totalCasesCountIsLoading ? (
+                                <SideBarTitlesSkeleton
+                                    animation="pulse"
+                                    variant="rectangular"
+                                    data-cy="loading-skeleton"
+                                />
+                            ) : (
+                                <span id="last-updated-date">
+                                    {convertStringDateToDate(lastUpdateDate)}
+                                </span>
+                            )}
                         </div>
                     </LatestGlobal>
+
                     <SearchBar className="searchbar">
                         <Autocomplete
                             id="country-select"
-                            options={countriesList}
+                            options={autocompleteData}
                             autoHighlight
-                            getOptionLabel={(option) => option.countryName}
+                            disabled={totalCasesCountIsLoading}
+                            getOptionLabel={(option) => option._id}
+                            onChange={(event, value: SelectedCountry | null) =>
+                                handleAutocompleteCountrySelect(event, value)
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                                option.code === value.code
+                            }
+                            value={selectedCountry || { _id: '', code: '' }}
                             renderOption={(props, option) => (
                                 <Box
                                     component="li"
@@ -130,11 +281,11 @@ const SideBar = () => {
                                     <FlagIcon
                                         loading="lazy"
                                         width="20"
-                                        src={`https://flagcdn.com/w20/${option.countryCode.toLowerCase()}.png`}
-                                        srcSet={`https://flagcdn.com/w40/${option.countryCode.toLowerCase()}.png 2x`}
-                                        alt=""
+                                        src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                        srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                        alt={`${option._id} flag`}
                                     />
-                                    {option.countryName} ({option.countryCode})
+                                    {option._id} ({option.code})
                                 </Box>
                             )}
                             renderInput={(params) => (
@@ -143,13 +294,24 @@ const SideBar = () => {
                                     label="Choose a country"
                                     inputProps={{
                                         ...params.inputProps,
+                                        'data-cy': 'autocomplete-input',
                                     }}
                                 />
                             )}
                         />
                     </SearchBar>
+                    {isCoverageView && <CompletenessDropdown />}
                     <LocationList>
-                        <Countries />
+                        {totalCasesCountIsLoading ||
+                        (isCoverageView && completenessDataLoading) ? (
+                            <CountriesListSkeleton
+                                animation="pulse"
+                                variant="rectangular"
+                                data-cy="loading-skeleton"
+                            />
+                        ) : (
+                            <Countries />
+                        )}
                     </LocationList>
                 </>
             ) : (
@@ -158,6 +320,14 @@ const SideBar = () => {
             <div id="sidebar-tab" onClick={handleOnClick}>
                 <span id="sidebar-tab-icon">{openSidebar ? '◀' : '▶'}</span>
             </div>
+            <GhListButtonBar
+                id="ghlist"
+                as="a"
+                href={process.env.REACT_APP_DATA_PORTAL_URL || ''}
+            >
+                See all cases <img src={ghListLogo} />
+                <span>Data</span>
+            </GhListButtonBar>
         </StyledSideBar>
     );
 };

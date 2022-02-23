@@ -9,6 +9,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import { theme } from 'theme/theme';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl';
+
+/* eslint @typescript-eslint/no-var-requires: "off" */
+// This has to be done in order to avoid transpilation errors after build
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 ReactDOM.render(
     <StrictMode>

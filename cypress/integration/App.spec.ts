@@ -3,7 +3,7 @@ describe('<App />', () => {
         cy.intercept(
             'GET',
             'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/country/latest.json',
-            { fixture: 'countriesData.json' },
+            { fixture: 'countriesData.json', delay: 1000 },
         ).as('fetchCountriesData');
 
         cy.visit('/');

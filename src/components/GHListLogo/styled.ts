@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 export const LogoStyles = styled.div`
-    height: '6ex';
-    left: '1ex';
-    top: '1ex';
+    height: 6ex;
+    left: 1ex;
+    top: 1ex;
     z-index: 999;
-    display: 'flex';
-    align-items: 'center';
-    margin-right: '3rem';
+    display: flex;
+    align-items: center;
+    margin-right: 3rem;
 `;
 
 export const LogoImage = styled.img`

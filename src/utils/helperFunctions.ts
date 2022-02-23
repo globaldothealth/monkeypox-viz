@@ -1,7 +1,11 @@
-import { parse, isAfter } from 'date-fns';
+import { parse, isAfter, format, parseISO } from 'date-fns';
 import { CountryDataRow } from 'models/CountryData';
 import { VariantsDataRow, VariantsLabels } from 'models/VariantsData';
 import { statesList, StatesData, DataStatus } from 'data/statesData';
+import { RegionalData } from 'models/RegionalData';
+import { Feature, FeatureSet } from 'models/FeatureSet';
+import { FreshnessData, ParsedFreshnessData } from 'models/FreshnessData';
+import iso from 'iso-3166-1';
 
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
@@ -22,6 +26,40 @@ export const getCoveragePercentage = (countryData: CountryDataRow): number => {
     );
 
     return percentage > 100 ? 100 : percentage;
+};
+
+// Regional data has to be converted to GeoJson type in order to be displayed on the map
+export const convertRegionalDataToFeatureSet = (
+    data: RegionalData[],
+    freshnessData: ParsedFreshnessData,
+): FeatureSet => {
+    const featureSet: FeatureSet = { type: 'FeatureCollection', features: [] };
+
+    for (const dataRow of data) {
+        const feature: Feature = {
+            type: 'Feature',
+            properties: {
+                id: dataRow._id,
+                caseCount: dataRow.casecount,
+                country: dataRow.country_code,
+                region: dataRow._id,
+                search: dataRow.search,
+                admin1: dataRow.admin1,
+                admin2: dataRow.admin2,
+                admin3: dataRow.admin3,
+                lastUploadDate:
+                    freshnessData[dataRow.country_code] || 'unknown',
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: [dataRow.long, dataRow.lat],
+            },
+        };
+
+        featureSet.features.push(feature);
+    }
+
+    return featureSet;
 };
 
 /**
@@ -290,4 +328,53 @@ export const parseVariantData = (
     });
 
     return { vocList, voiList };
+};
+
+export const parseFreshnessData = (
+    freshnessData: FreshnessData,
+): ParsedFreshnessData => {
+    const countries = Object.keys(freshnessData);
+    const parsedData: ParsedFreshnessData = {};
+
+    for (const country of countries) {
+        const uploads = freshnessData[country];
+        const filteredUploads = uploads.filter((el) => el.last_upload !== null);
+
+        if (filteredUploads.length !== 0) {
+            // Find the most recent uload date for each country
+            let mostRecentDate = Date.parse(
+                filteredUploads[0].last_upload || '',
+            );
+
+            for (const upload of filteredUploads) {
+                const parsedDate = Date.parse(upload.last_upload || '');
+
+                if (isAfter(parsedDate, mostRecentDate)) {
+                    mostRecentDate = parsedDate;
+                }
+            }
+
+            parsedData[country] = format(mostRecentDate, 'dd MMM yyyy');
+        }
+    }
+
+    return parsedData;
+};
+
+export const convertStringDateToDate = (date: string) => {
+    let finalDate;
+    try {
+        finalDate = JSON.parse(date);
+        finalDate = format(parseISO(finalDate), 'E LLL d yyyy');
+    } catch (e) {
+        finalDate = 'loading date';
+    }
+
+    return finalDate;
+};
+
+export const getCountryName = (countryCode: string): string => {
+    const countryObj = iso.whereAlpha2(countryCode);
+
+    return countryObj ? countryObj.country : countryCode;
 };
