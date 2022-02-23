@@ -38,7 +38,7 @@ describe('<SideBar />', () => {
         cy.wait('@fetchCountriesData');
 
         cy.get('[data-cy="loading-skeleton"]').should('not.exist');
-        cy.contains(/United States/i);
+        cy.contains(/United States of America/i);
     });
 
     it('Countries list dropdown opens', () => {
@@ -86,11 +86,11 @@ describe('<SideBar />', () => {
 
         cy.wait(100);
 
-        cy.contains(/United States/i).click();
+        cy.contains(/United States of America/i).click();
 
         cy.get('[data-cy="autocomplete-input"').should(
             'have.value',
-            'United States',
+            'United States of America',
         );
     });
 
@@ -114,8 +114,8 @@ describe('<SideBar />', () => {
         cy.wait(1000);
 
         cy.get('#completeness-field-select').click();
-        cy.get('[data-value="_id"]').scrollIntoView();
-        cy.contains('_id').click();
+        cy.get('[data-value="location.country"]').scrollIntoView();
+        cy.contains('location.country').click();
 
         cy.contains(/United States/i).should('not.exist');
         cy.contains(/Afghanistan/i);
