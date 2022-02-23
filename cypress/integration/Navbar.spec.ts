@@ -41,7 +41,7 @@ describe('<Navbar />', () => {
         cy.visit('/');
 
         cy.get('.popup-small-screens').contains(
-            'For a better experience please visit this website using a device with a bigger screen',
+            'For a better experience please visit this website using a device with a larger screen',
         );
 
         cy.get('.small-screens-popup-close-btn').click();

@@ -29,7 +29,12 @@ const PopupSmallScreens = () => {
     };
 
     return (
-        <Dialog open={dialogOpen} onClose={handleClose} sx={{ height: '40%' }} className="popup-small-screens">
+        <Dialog
+            open={dialogOpen}
+            onClose={handleClose}
+            sx={{ height: '40%' }}
+            className="popup-small-screens"
+        >
             <DialogTitle
                 sx={{
                     display: 'flex',
@@ -52,7 +57,7 @@ const PopupSmallScreens = () => {
             <DialogContent dividers>
                 <Typography gutterBottom>
                     For a better experience please visit this website using a
-                    device with a bigger screen
+                    device with a larger screen
                 </Typography>
             </DialogContent>
         </Dialog>
