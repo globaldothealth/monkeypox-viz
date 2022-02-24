@@ -40,7 +40,7 @@ export const CompletenessDropdown: React.FC = () => {
         const filteredFields = [] as string[];
         for (const key of allowedFields) {
             for (const el of Object.keys(completenessData)) {
-                if (completenessData[el][key] !== 0) {
+                if (completenessData[el] && completenessData[el][key] !== 0) {
                     filteredFields.push(key);
                     break;
                 }

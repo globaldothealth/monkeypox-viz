@@ -17,7 +17,17 @@ export const fetchCompletenessData = createAsyncThunk<
 
         const jsonResponse = (await response.json()) as CompletenessData;
 
-        return jsonResponse;
+        //Parse completeness data and filter out broken ones
+        const completenessData: CompletenessData = {};
+        const keys = Object.keys(jsonResponse);
+
+        for (const key of keys) {
+            if (jsonResponse[key] !== null) {
+                completenessData[key] = jsonResponse[key];
+            }
+        }
+
+        return completenessData;
     } catch (error: any) {
         if (error.response) return rejectWithValue(error.response.message);
 
