@@ -96,7 +96,13 @@ const SideBar = () => {
             );
 
             const mappedData: SelectedCountry[] = [];
-            for (const countryCode of sortedCompletenessData) {
+
+            // Filter out second Congo result with iso code CDs
+            const filteredCompletenessData = sortedCompletenessData.filter(
+                (el) => el !== 'CD',
+            );
+
+            for (const countryCode of filteredCompletenessData) {
                 const countryName = getCountryName(countryCode);
 
                 mappedData.push({
@@ -139,9 +145,14 @@ const SideBar = () => {
                 return numberB - numberA;
             });
 
+            // Filter out second Congo result with iso code CDs
+            const filteredCompletenessData = sortedCompletenessData.filter(
+                (el) => el !== 'CD',
+            );
+
             return (
                 <>
-                    {sortedCompletenessData.map((countryCode) => {
+                    {filteredCompletenessData.map((countryCode) => {
                         const countryName = getCountryName(countryCode);
 
                         const percentage = Math.round(
@@ -153,7 +164,7 @@ const SideBar = () => {
                         return (
                             <LocationListItem
                                 key={countryCode}
-                                $barWidth={percentage}
+                                $barWidth={percentage ? percentage : 0}
                                 onClick={() =>
                                     handleOnCountryClick({
                                         _id: countryName,
@@ -163,7 +174,9 @@ const SideBar = () => {
                             >
                                 <button>
                                     <span className="label">{countryName}</span>
-                                    <span className="num">{percentage}%</span>
+                                    <span className="num">
+                                        {percentage ? percentage : 0}%
+                                    </span>
                                 </button>
                                 <div className="country-cases-bar"></div>
                             </LocationListItem>
