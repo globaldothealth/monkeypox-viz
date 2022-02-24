@@ -20,7 +20,7 @@ const TopBar = () => {
                             }
                         >
                             <Typography variant="navbarlink" gutterBottom>
-                                Country view
+                                Country View
                             </Typography>
                         </NavLink>
                         <NavLink
@@ -31,7 +31,7 @@ const TopBar = () => {
                             }
                         >
                             <Typography variant="navbarlink" gutterBottom>
-                                Regional view
+                                Regional View
                             </Typography>
                         </NavLink>
                         <NavLink
@@ -41,7 +41,7 @@ const TopBar = () => {
                             }
                         >
                             <Typography variant="navbarlink" gutterBottom>
-                                Coverage view
+                                Coverage View
                             </Typography>
                         </NavLink>
                         {env !== 'production' && (
