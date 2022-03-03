@@ -181,7 +181,10 @@ export const RegionalView: React.FC = () => {
             const code = e.features[0].properties.country;
             const region = e.features[0].properties.region;
 
-            const countryName = getCountryName(code);
+            let countryName = getCountryName(code);
+            if (countryName === 'Taiwan, Province of China') {
+                countryName = 'Taiwan';
+            }
 
             const geometry = e.features[0].geometry as any;
             const lat = geometry.coordinates[1];
