@@ -1,16 +1,29 @@
-import logo from 'assets/images/gh_logo.svg';
-import { LogoStyles, LogoImage } from './styled';
+import logo from 'assets/images/ukraine_logo.svg';
+import { LogoStyles, LogoImage, LogoText } from './styled';
+import { Link } from 'react-router-dom';
 import MapGuide from 'components/MapGuide';
 
 export default function GHListLogo(): JSX.Element {
+    const env = process.env.NODE_ENV;
+
     return (
         <LogoStyles id="logo">
-            <a href="https://global.health/">
-                <div id="logo-container">
+            <div id="logo-container">
+                <a
+                    href={
+                        env === 'production'
+                            ? 'https://global.health/'
+                            : 'http://dev-globalhealth.pantheonsite.io/'
+                    }
+                >
                     <LogoImage src={logo} />
-                    <span className="logoText">Map</span>
-                </div>
-            </a>
+                </a>
+
+                <Link to="/country">
+                    <LogoText className="logoText">Map</LogoText>
+                </Link>
+            </div>
+
             <MapGuide />
         </LogoStyles>
     );
