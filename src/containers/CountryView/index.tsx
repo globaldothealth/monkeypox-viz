@@ -188,7 +188,11 @@ const CountryView: React.FC = () => {
             const searchQuery = `cases?country=${code}`;
             const url = `${dataPortalUrl}/${searchQuery}`;
 
-            const countryName = getCountryName(code);
+            let countryName = getCountryName(code);
+
+            if (countryName === 'Taiwan, Province of China') {
+                countryName = 'Taiwan';
+            }
 
             dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));
 

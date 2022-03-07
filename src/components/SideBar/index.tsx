@@ -33,7 +33,11 @@ import {
     selectChosenCompletenessField,
     selectIsLoading,
 } from 'redux/CoverageView/selectors';
-import { convertStringDateToDate, getCountryName } from 'utils/helperFunctions';
+import {
+    convertStringDateToDate,
+    getCountryName,
+    getCoveragePercentage,
+} from 'utils/helperFunctions';
 
 const SideBar = () => {
     const [openSidebar, setOpenSidebar] = useState(true);
@@ -103,7 +107,10 @@ const SideBar = () => {
             );
 
             for (const countryCode of filteredCompletenessData) {
-                const countryName = getCountryName(countryCode);
+                let countryName = getCountryName(countryCode);
+                if (countryName === 'Taiwan, Province of China') {
+                    countryName = 'Taiwan';
+                }
 
                 mappedData.push({
                     _id: countryName,
@@ -114,7 +121,10 @@ const SideBar = () => {
             setAutocompleteData(mappedData);
         } else {
             const mappedData = countriesData.map((el) => {
-                const countryName = getCountryName(el.code);
+                let countryName = getCountryName(el.code);
+                if (countryName === 'Taiwan, Province of China') {
+                    countryName = 'Taiwan';
+                }
 
                 return {
                     _id: countryName,
@@ -153,7 +163,10 @@ const SideBar = () => {
             return (
                 <>
                     {filteredCompletenessData.map((countryCode) => {
-                        const countryName = getCountryName(countryCode);
+                        let countryName = getCountryName(countryCode);
+                        if (countryName === 'Taiwan, Province of China') {
+                            countryName = 'Taiwan';
+                        }
 
                         const percentage = Math.round(
                             completenessData[countryCode][
@@ -184,6 +197,46 @@ const SideBar = () => {
                     })}
                 </>
             );
+        } else if (isCoverageView && chosenCompletenessField === 'cases') {
+            const sortedCountriesData = [...countriesData].sort((a, b) => {
+                const coverageA = getCoveragePercentage(a);
+                const coverageB = getCoveragePercentage(b);
+
+                return coverageB - coverageA;
+            });
+
+            return (
+                <>
+                    {sortedCountriesData.map((row) => {
+                        const coverage = getCoveragePercentage(row);
+                        const { code } = row;
+
+                        let countryName = getCountryName(code);
+                        if (countryName === 'Taiwan, Province of China') {
+                            countryName = 'Taiwan';
+                        }
+                        return (
+                            <LocationListItem
+                                key={code}
+                                $barWidth={coverage}
+                                onClick={() =>
+                                    handleOnCountryClick({
+                                        _id: countryName,
+                                        code,
+                                    })
+                                }
+                                data-cy="listed-country"
+                            >
+                                <button>
+                                    <span className="label">{countryName}</span>
+                                    <span className="num">{coverage}%</span>
+                                </button>
+                                <div className="country-cases-bar"></div>
+                            </LocationListItem>
+                        );
+                    })}
+                </>
+            );
         }
 
         return (
@@ -193,7 +246,10 @@ const SideBar = () => {
                     const countryCasesCountPercentage =
                         (casecount / totalCasesCount) * 100;
 
-                    const countryName = getCountryName(code);
+                    let countryName = getCountryName(code);
+                    if (countryName === 'Taiwan, Province of China') {
+                        countryName = 'Taiwan';
+                    }
                     return (
                         <LocationListItem
                             key={code}

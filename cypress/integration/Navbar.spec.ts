@@ -8,9 +8,9 @@ describe('<Navbar />', () => {
 
         cy.get('.navbar').should('be.visible');
         cy.get('#logo').should('be.visible');
-        cy.contains('Country view').should('be.visible');
-        cy.contains('Regional view').should('be.visible');
-        cy.contains('Coverage').should('be.visible');
+        cy.contains('Country View').should('be.visible');
+        cy.contains('Regional View').should('be.visible');
+        cy.contains('Coverage View').should('be.visible');
 
         cy.url().should('include', '/country');
 
