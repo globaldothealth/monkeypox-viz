@@ -17,7 +17,7 @@ import { selectIsRegionalViewLoading } from 'redux/RegionalView/selectors';
 import Loader from 'components/Loader';
 import ErrorAlert from 'components/ErrorAlert';
 import VariantsView from 'containers/VariantsView';
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 import { useCookieBanner } from 'hooks/useCookieBanner';
 
 import { ErrorContainer } from './styled';
@@ -27,9 +27,11 @@ const App = () => {
     const env = process.env.NODE_ENV;
     const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID || '';
 
-    if (env === 'production') {
+    useEffect(() => {
+        if (env !== 'production') return;
+
         ReactGA.initialize(gaTrackingId);
-    }
+    }, [env, gaTrackingId]);
 
     // Init IUBENDA cookie banner
     const { initCookieBanner } = useCookieBanner();
@@ -56,8 +58,7 @@ const App = () => {
     useEffect(() => {
         if (env !== 'production') return;
 
-        ReactGA.set({ page: location.pathname });
-        ReactGA.pageview(location.pathname);
+        ReactGA.send({ hitType: 'pageview', page: location.pathname });
     }, [env, location]);
 
     return (
