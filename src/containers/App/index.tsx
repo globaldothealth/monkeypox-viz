@@ -19,6 +19,8 @@ import ErrorAlert from 'components/ErrorAlert';
 import VariantsView from 'containers/VariantsView';
 import ReactGA from 'react-ga4';
 import { useCookieBanner } from 'hooks/useCookieBanner';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from 'components/ErrorFallback';
 
 import { ErrorContainer } from './styled';
 import PopupSmallScreens from 'components/PopupSmallScreens';
@@ -69,30 +71,39 @@ const App = () => {
 
             <TopBar />
             <PopupSmallScreens />
-            <SideBar />
 
-            <Routes>
-                <Route path="/" element={<Navigate replace to="/country" />} />
-                <Route path="/country" element={<CountryView />} />
-                <Route path="/region" element={<RegionalView />} />
-                <Route path="/coverage" element={<CoverageView />} />
-                <Route
-                    path="/variant-reporting"
-                    element={
-                        env === 'development' ? (
-                            <VariantsView />
-                        ) : (
-                            <Navigate replace to="/country" />
-                        )
-                    }
-                />
-            </Routes>
+            <ErrorBoundary
+                FallbackComponent={ErrorFallback}
+                onReset={() => window.location.reload()}
+            >
+                <SideBar />
 
-            {error && (
-                <ErrorContainer>
-                    <ErrorAlert errorMessage={error} />
-                </ErrorContainer>
-            )}
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<Navigate replace to="/country" />}
+                    />
+                    <Route path="/country" element={<CountryView />} />
+                    <Route path="/region" element={<RegionalView />} />
+                    <Route path="/coverage" element={<CoverageView />} />
+                    <Route
+                        path="/variant-reporting"
+                        element={
+                            env === 'development' ? (
+                                <VariantsView />
+                            ) : (
+                                <Navigate replace to="/country" />
+                            )
+                        }
+                    />
+                </Routes>
+
+                {error && (
+                    <ErrorContainer>
+                        <ErrorAlert errorMessage={error} />
+                    </ErrorContainer>
+                )}
+            </ErrorBoundary>
         </div>
     );
 };
