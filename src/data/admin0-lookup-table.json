@@ -3967,6 +3967,70 @@
                 }
             },
             "all": {
+                "HK": {
+                    "feature_id": 66064479,
+                    "wikidata_id": "Q8646",
+                    "worldview": "IN",
+                    "unit_code": "HK",
+                    "name": "香港",
+                    "name_en": "Hong Kong",
+                    "names": {
+                        "ar": ["هونغ كونغ"],
+                        "de": ["Hongkong"],
+                        "en": [
+                            "China Hong Kong",
+                            "HK",
+                            "HKG",
+                            "HKSAR",
+                            "Hong Kong",
+                            "Hong Kong SAR",
+                            "Hong Kong SAR, China",
+                            "Hong Kong Special Administrative Region",
+                            "Hong Kong, China",
+                            "hk",
+                            "🇭🇰"
+                        ],
+                        "es": ["Hong Kong"],
+                        "fr": ["Hong Kong"],
+                        "it": ["Hong Kong"],
+                        "ja": ["香港"],
+                        "ko": ["홍콩"],
+                        "pt": ["Hong Kong"],
+                        "ru": ["Гонконг"],
+                        "vi": ["Hồng Kông"],
+                        "yue": [
+                            "中國香港",
+                            "香港",
+                            "香港特別行政區",
+                            "香港特區"
+                        ],
+                        "zh-Hans": ["香港", "香港特别行政区"],
+                        "zh-Hant": ["香港"],
+                        "zh-hant": [
+                            "中國香港",
+                            "香港",
+                            "香港特別行政區",
+                            "香港特區"
+                        ]
+                    },
+                    "description": "state",
+                    "unit_code_description": "",
+                    "source_date": "2016",
+                    "iso_3166_1_alpha_3": "HKG",
+                    "iso_3166_1": "HK",
+                    "grouping_attributes": {
+                        "UN M49 Region": ["Asia"],
+                        "UN M49 Sub-region": ["Eastern Asia"]
+                    },
+                    "join_attributes": {
+                        "UN M49 Sub-region code": "030",
+                        "UN M49 Region code": "142"
+                    },
+                    "z_min": 0,
+                    "centroid": [114.0599, 22.4114],
+                    "bounds": [113.8351, 22.1539, 114.4417, 22.562],
+                    "area_sqkm": 1214
+                },
                 "RS": {
                     "feature_id": 13045950,
                     "wikidata_id": "Q403",
