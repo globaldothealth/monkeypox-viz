@@ -17,8 +17,10 @@ import { selectIsRegionalViewLoading } from 'redux/RegionalView/selectors';
 import Loader from 'components/Loader';
 import ErrorAlert from 'components/ErrorAlert';
 import VariantsView from 'containers/VariantsView';
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 import { useCookieBanner } from 'hooks/useCookieBanner';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from 'components/ErrorFallback';
 
 import { ErrorContainer } from './styled';
 import PopupSmallScreens from 'components/PopupSmallScreens';
@@ -27,9 +29,11 @@ const App = () => {
     const env = process.env.NODE_ENV;
     const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID || '';
 
-    if (env === 'production') {
+    useEffect(() => {
+        if (env !== 'production') return;
+
         ReactGA.initialize(gaTrackingId);
-    }
+    }, [env, gaTrackingId]);
 
     // Init IUBENDA cookie banner
     const { initCookieBanner } = useCookieBanner();
@@ -56,8 +60,7 @@ const App = () => {
     useEffect(() => {
         if (env !== 'production') return;
 
-        ReactGA.set({ page: location.pathname });
-        ReactGA.pageview(location.pathname);
+        ReactGA.send({ hitType: 'pageview', page: location.pathname });
     }, [env, location]);
 
     return (
@@ -68,30 +71,39 @@ const App = () => {
 
             <TopBar />
             <PopupSmallScreens />
-            <SideBar />
 
-            <Routes>
-                <Route path="/" element={<Navigate replace to="/country" />} />
-                <Route path="/country" element={<CountryView />} />
-                <Route path="/region" element={<RegionalView />} />
-                <Route path="/coverage" element={<CoverageView />} />
-                <Route
-                    path="/variant-reporting"
-                    element={
-                        env === 'development' ? (
-                            <VariantsView />
-                        ) : (
-                            <Navigate replace to="/country" />
-                        )
-                    }
-                />
-            </Routes>
+            <ErrorBoundary
+                FallbackComponent={ErrorFallback}
+                onReset={() => window.location.reload()}
+            >
+                <SideBar />
 
-            {error && (
-                <ErrorContainer>
-                    <ErrorAlert errorMessage={error} />
-                </ErrorContainer>
-            )}
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<Navigate replace to="/country" />}
+                    />
+                    <Route path="/country" element={<CountryView />} />
+                    <Route path="/region" element={<RegionalView />} />
+                    <Route path="/coverage" element={<CoverageView />} />
+                    <Route
+                        path="/variant-reporting"
+                        element={
+                            env === 'development' ? (
+                                <VariantsView />
+                            ) : (
+                                <Navigate replace to="/country" />
+                            )
+                        }
+                    />
+                </Routes>
+
+                {error && (
+                    <ErrorContainer>
+                        <ErrorAlert errorMessage={error} />
+                    </ErrorContainer>
+                )}
+            </ErrorBoundary>
         </div>
     );
 };
