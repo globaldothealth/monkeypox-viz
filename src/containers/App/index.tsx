@@ -18,7 +18,7 @@ import Loader from 'components/Loader';
 import ErrorAlert from 'components/ErrorAlert';
 import VariantsView from 'containers/VariantsView';
 import ReactGA from 'react-ga4';
-// import { useCookieBanner } from 'hooks/useCookieBanner';
+import { useCookieBanner } from 'hooks/useCookieBanner';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from 'components/ErrorFallback';
 
@@ -36,11 +36,11 @@ const App = () => {
     }, [env, gaTrackingId]);
 
     // Init IUBENDA cookie banner
-    // const { initCookieBanner } = useCookieBanner();
+    const { initCookieBanner } = useCookieBanner();
 
-    // useEffect(() => {
-    //     initCookieBanner();
-    // }, []);
+    useEffect(() => {
+        initCookieBanner();
+    }, []);
 
     const location = useLocation();
     const dispatch = useAppDispatch();
