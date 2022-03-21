@@ -371,8 +371,7 @@ const SideBar = () => {
                     </SearchBar>
                     {isCoverageView && <CompletenessDropdown />}
                     <LocationList>
-                        {totalCasesCountIsLoading ||
-                        (isCoverageView && completenessDataLoading) ? (
+                        {totalCasesCountIsLoading || completenessDataLoading ? (
                             <CountriesListSkeleton
                                 animation="pulse"
                                 variant="rectangular"
