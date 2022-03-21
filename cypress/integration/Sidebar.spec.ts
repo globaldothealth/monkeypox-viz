@@ -119,8 +119,6 @@ describe('<SideBar />', () => {
 
         cy.wait(1000);
 
-        cy.get('button.iubenda-cs-accept-btn').click();
-
         cy.get('#completeness-field-select').click();
         cy.get('[data-value="location.country"]').scrollIntoView();
         cy.contains('location.country').click();
