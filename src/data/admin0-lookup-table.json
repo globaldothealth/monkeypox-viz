@@ -3967,6 +3967,60 @@
                 }
             },
             "all": {
+                "XK": {
+                    "feature_id": 7934197,
+                    "wikidata_id": "Q1246",
+                    "worldview": "IN",
+                    "unit_code": "XK",
+                    "name": "Kosovo",
+                    "names": {
+                        "ar": ["كوسوفو"],
+                        "de": ["Kosovo"],
+                        "en": [
+                            "KOS",
+                            "KV",
+                            "Kosovo",
+                            "Republic of Kosovo",
+                            "XK",
+                            "XKX",
+                            "🇽🇰"
+                        ],
+                        "es": ["Kosovo"],
+                        "fr": ["Kosovo"],
+                        "it": ["Kosovo"],
+                        "ja": ["コソボ", "コソボ共和国"],
+                        "ko": ["코소보"],
+                        "pt": ["Kosovo"],
+                        "ru": ["Косово"],
+                        "sq": [
+                            "KS",
+                            "Kosova",
+                            "Kosovë",
+                            "RKS",
+                            "Republika e Kosovës"
+                        ],
+                        "vi": ["Kosovo"],
+                        "zh-Hans": ["科索沃"],
+                        "zh-Hant": ["科索沃"]
+                    },
+                    "description": "state",
+                    "unit_code_description": "",
+                    "source_date": "2016",
+                    "iso_3166_1_alpha_3": "XKS",
+                    "iso_3166_1": "XK",
+                    "grouping_attributes": {
+                        "UN M49 Region": ["Europe"],
+                        "UN M49 Sub-region": ["Southern Europe"]
+                    },
+                    "join_attributes": {
+                        "UN M49 Sub-region code": "039",
+                        "UN M49 Region code": "150"
+                    },
+                    "z_min": 0,
+                    "centroid": [20.9131, 42.5637],
+                    "bounds": [20.0164, 41.8511, 21.7907, 43.2681],
+                    "area_sqkm": 14823
+                },
                 "HK": {
                     "feature_id": 66064479,
                     "wikidata_id": "Q8646",

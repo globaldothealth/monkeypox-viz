@@ -376,5 +376,8 @@ export const convertStringDateToDate = (date: string) => {
 export const getCountryName = (countryCode: string): string => {
     const countryObj = iso.whereAlpha2(countryCode);
 
+    // Kosovo is not available in the library
+    if (countryCode === 'XK') return 'Kosovo';
+
     return countryObj ? countryObj.country : countryCode;
 };

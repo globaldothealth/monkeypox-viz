@@ -28,14 +28,20 @@ describe('<SideBar />', () => {
         cy.intercept(
             'GET',
             'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/country/latest.json',
-            { fixture: 'countriesData.json', statusCode: 200, delay: 1000 },
+            { fixture: 'countriesData.json', statusCode: 200, delay: 3000 },
         ).as('fetchCountriesData');
+        cy.intercept(
+            'GET',
+            'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/total/latest.json',
+            { fixture: 'totalCasesData.json', statusCode: 200, delay: 3000 },
+        ).as('fetchTotalCasesData');
 
         cy.visit('/');
 
         cy.get('[data-cy="loading-skeleton"]').should('have.length', 3);
 
         cy.wait('@fetchCountriesData');
+        cy.wait('@fetchTotalCasesData');
 
         cy.get('[data-cy="loading-skeleton"]').should('not.exist');
         cy.contains(/United States of America/i);

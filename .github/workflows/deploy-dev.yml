@@ -48,4 +48,4 @@ jobs:
                   aws-region: us-east-2
 
             - name: Deploy to AWS S3
-              run: aws s3 sync ./build s3://dev-react-map.covid-19.global.health --delete
+              run: aws s3 sync ./build s3://dev-map.covid-19.global.health --delete
