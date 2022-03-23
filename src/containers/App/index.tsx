@@ -30,7 +30,7 @@ const App = () => {
     const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID || '';
 
     useEffect(() => {
-        if (env !== 'production') return;
+        if (env !== 'production' || gaTrackingId === '') return;
 
         ReactGA.initialize(gaTrackingId);
     }, [env, gaTrackingId]);
