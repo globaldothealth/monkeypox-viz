@@ -16,3 +16,4 @@ export const selectFreshnessData = (state: RootState) =>
     state.app.freshnessData;
 export const selectFreshnessLoading = (state: RootState) =>
     state.app.freshnessLoading;
+export const selectPopupData = (state: RootState) => state.app.popup;

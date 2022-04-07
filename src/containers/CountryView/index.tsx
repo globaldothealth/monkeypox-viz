@@ -8,8 +8,9 @@ import {
     selectSelectedCountryInSideBar,
     selectFreshnessData,
     selectFreshnessLoading,
+    selectPopupData,
 } from 'redux/App/selectors';
-import { setSelectedCountryInSidebar } from 'redux/App/slice';
+import { setSelectedCountryInSidebar, setPopup } from 'redux/App/slice';
 import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CountryViewColors } from 'models/Colors';
 import mapboxgl, { MapSourceDataEvent, EventData } from 'mapbox-gl';
@@ -42,8 +43,10 @@ const CountryView: React.FC = () => {
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const freshnessData = useAppSelector(selectFreshnessData);
     const freshnessLoading = useAppSelector(selectFreshnessLoading);
+    const popupData = useAppSelector(selectPopupData);
 
     const [mapLoaded, setMapLoaded] = useState(false);
+    const [currentPopup, setCurrentPopup] = useState<mapboxgl.Popup>();
 
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useMapboxMap(mapboxAccessToken, mapContainer);
@@ -94,6 +97,60 @@ const CountryView: React.FC = () => {
         });
     }, [isLoading, freshnessLoading]);
 
+    // Display popup on the map
+    useEffect(() => {
+        const { isOpen, countryCode } = popupData;
+        const mapRef = map.current;
+        if (!isOpen || !countryCode || countryCode === '' || !mapRef) return;
+
+        // Close previous popup if it exists
+        if (currentPopup) currentPopup.remove();
+
+        const country = countriesData.filter(
+            (country) => country.code === countryCode,
+        )[0];
+
+        const caseCount = country.casecount;
+        const lastUploadDate = freshnessData[countryCode] || 'unknown';
+        const lat = country.lat;
+        const lng = country.long;
+        const coordinates: mapboxgl.LngLatLike = { lng, lat };
+        const searchQuery = `cases?country=${countryCode}`;
+        const url = `${dataPortalUrl}/${searchQuery}`;
+
+        const countryName = getCountryName(countryCode);
+
+        const popupContent = (
+            <PopupContentText>
+                {caseCount.toLocaleString()} line list case
+                {caseCount > 1 ? 's' : ''}
+            </PopupContentText>
+        );
+
+        // This has to be done this way in order to allow for React components as a content of the popup
+        const popupElement = document.createElement('div');
+        ReactDOM.render(
+            <MapPopup
+                title={countryName}
+                content={popupContent}
+                lastUploadDate={lastUploadDate}
+                buttonText="Explore Country Data"
+                buttonUrl={url}
+            />,
+            popupElement,
+        );
+
+        const popup = new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setDOMContent(popupElement)
+            .addTo(mapRef)
+            .on('close', () =>
+                dispatch(setPopup({ isOpen: false, countryCode: '' })),
+            );
+
+        setCurrentPopup(popup);
+    }, [popupData]);
+
     // Display countries data on the map
     const displayCountriesOnMap = () => {
         const mapRef = map.current;
@@ -109,11 +166,7 @@ const CountryView: React.FC = () => {
                     },
                     {
                         caseCount: countryRow.casecount,
-                        lat: countryRow.lat,
-                        long: countryRow.long,
                         code: countryRow.code,
-                        lastUploadDate:
-                            freshnessData[countryRow.code] || 'unknown',
                     },
                 );
             }
@@ -170,56 +223,13 @@ const CountryView: React.FC = () => {
 
         // Add click listener and show popups
         mapRef.on('click', 'countries-join', (e) => {
-            if (
-                !e.features ||
-                !e.features[0].properties ||
-                !e.features[0].state.code
-            )
-                return;
+            if (!e.features || !e.features[0].state.code) return;
 
-            const caseCount = e.features[0].state.caseCount || 0;
             const code = e.features[0].state.code;
-            const lastUploadDate = e.features[0].state.lastUploadDate;
-
-            const lat = e.features[0].state.lat;
-            const lng = e.features[0].state.long;
-            const coordinates: mapboxgl.LngLatLike = { lng, lat };
-
-            const searchQuery = `cases?country=${code}`;
-            const url = `${dataPortalUrl}/${searchQuery}`;
-
-            let countryName = getCountryName(code);
-
-            if (countryName === 'Taiwan, Province of China') {
-                countryName = 'Taiwan';
-            }
+            const countryName = getCountryName(code);
 
             dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));
-
-            const popupContent = (
-                <PopupContentText>
-                    {caseCount.toLocaleString()} line list case
-                    {caseCount > 1 ? 's' : ''}
-                </PopupContentText>
-            );
-
-            // This has to be done this way in order to allow for React components as a content of the popup
-            const popupElement = document.createElement('div');
-            ReactDOM.render(
-                <MapPopup
-                    title={countryName}
-                    content={popupContent}
-                    lastUploadDate={lastUploadDate}
-                    buttonText="Explore Country Data"
-                    buttonUrl={url}
-                />,
-                popupElement,
-            );
-
-            new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setDOMContent(popupElement)
-                .addTo(mapRef);
+            dispatch(setPopup({ isOpen: true, countryCode: code }));
         });
     };
 

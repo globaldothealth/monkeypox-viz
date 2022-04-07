@@ -10,8 +10,9 @@ import {
     selectSelectedCountryInSideBar,
     selectFreshnessData,
     selectFreshnessLoading,
+    selectPopupData,
 } from 'redux/App/selectors';
-import { setSelectedCountryInSidebar } from 'redux/App/slice';
+import { setSelectedCountryInSidebar, setPopup } from 'redux/App/slice';
 import {
     selectCompletenessData,
     selectChosenCompletenessField,
@@ -51,9 +52,11 @@ const CoverageView: React.FC = () => {
     );
     const freshnessData = useAppSelector(selectFreshnessData);
     const freshnessLoading = useAppSelector(selectFreshnessLoading);
+    const popupData = useAppSelector(selectPopupData);
 
     const [mapLoaded, setMapLoaded] = useState(false);
     const [featureIds, setFeatureIds] = useState<number[]>([]);
+    const [currentPopup, setCurrentPopup] = useState<mapboxgl.Popup>();
 
     const chosenCompletenessFieldRef = useRef('cases');
     const mapContainer = useRef<HTMLDivElement>(null);
@@ -109,6 +112,84 @@ const CoverageView: React.FC = () => {
         });
     }, [isLoading, freshnessLoading]);
 
+    // Display popup on the map
+    useEffect(() => {
+        const { isOpen, countryCode } = popupData;
+        const mapRef = map.current;
+        if (!isOpen || !countryCode || countryCode === '' || !mapRef) return;
+
+        // Close previous popup if it exists
+        if (currentPopup) currentPopup.remove();
+
+        const country = countriesData.filter(
+            (country) => country.code === countryCode,
+        )[0];
+
+        const caseCount = country.casecount;
+        const totalCases = country.jhu;
+        const coverage =
+            chosenCompletenessField === 'cases'
+                ? getCoveragePercentage(country)
+                : Math.round(
+                      completenessData[countryCode][
+                          chosenCompletenessField
+                      ] as number,
+                  );
+        const lastUploadDate = freshnessData[country.code] || 'unknown';
+        const code = country.code;
+
+        const lat =
+            chosenCompletenessField === 'cases'
+                ? country.lat
+                : lookupTableData[countryCode].centroid[1];
+        const lng =
+            chosenCompletenessField === 'cases'
+                ? country.long
+                : lookupTableData[countryCode].centroid[0];
+        const coordinates: mapboxgl.LngLatLike = { lng, lat };
+
+        const searchQuery = `cases?country=${code}`;
+        const url = `${dataPortalUrl}/${searchQuery}`;
+
+        const countryName = getCountryName(code);
+
+        const popupContent = (
+            <>
+                {chosenCompletenessFieldRef.current === 'cases' && (
+                    <PopupContentText>
+                        ({caseCount.toLocaleString()} out of{' '}
+                        {totalCases.toLocaleString()})
+                    </PopupContentText>
+                )}
+
+                <BorderLinearProgress variant="determinate" value={coverage} />
+            </>
+        );
+
+        // This has to be done this way in order to allow for React components as a content of the popup
+        const popupElement = document.createElement('div');
+        ReactDOM.render(
+            <MapPopup
+                title={`${countryName} ${coverage}%`}
+                content={popupContent}
+                lastUploadDate={lastUploadDate}
+                buttonText="Explore Country Data"
+                buttonUrl={url}
+            />,
+            popupElement,
+        );
+
+        const popup = new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setDOMContent(popupElement)
+            .addTo(mapRef)
+            .on('close', () =>
+                dispatch(setPopup({ isOpen: false, countryCode: '' })),
+            );
+
+        setCurrentPopup(popup);
+    }, [popupData]);
+
     const setMapState = () => {
         const mapRef = map.current;
         if (!mapRef) return;
@@ -128,8 +209,7 @@ const CoverageView: React.FC = () => {
             if (chosenCompletenessField === 'cases') {
                 for (const countryRow of countriesData) {
                     if (lookupTableData[countryRow.code]) {
-                        const coveragePercentage =
-                            getCoveragePercentage(countryRow);
+                        const coverage = getCoveragePercentage(countryRow);
 
                         mapRef.setFeatureState(
                             {
@@ -138,15 +218,9 @@ const CoverageView: React.FC = () => {
                                 id: lookupTableData[countryRow.code].feature_id,
                             },
                             {
-                                caseCount: countryRow.casecount,
-                                totalCases: countryRow.jhu,
                                 code: countryRow.code,
-                                lat: countryRow.lat,
-                                long: countryRow.long,
-                                coverage: coveragePercentage,
                                 bounds: lookupTableData[countryRow.code].bounds,
-                                lastUploadDate:
-                                    freshnessData[countryRow.code] || 'unknown',
+                                coverage,
                             },
                         );
 
@@ -170,12 +244,8 @@ const CoverageView: React.FC = () => {
                             },
                             {
                                 code: countryCode,
-                                lat: lookupTableData[countryCode].centroid[1],
-                                long: lookupTableData[countryCode].centroid[0],
-                                coverage,
                                 bounds: lookupTableData[countryCode].bounds,
-                                lastUploadDate:
-                                    freshnessData[countryCode] || 'unknown',
+                                coverage,
                             },
                         );
 
@@ -190,65 +260,13 @@ const CoverageView: React.FC = () => {
 
     const mapClickListener = useCallback((e: any) => {
         const mapRef = map.current;
-        if (
-            !e.features ||
-            !e.features[0].properties ||
-            !e.features[0].state.code ||
-            !mapRef
-        )
-            return;
+        if (!e.features || !e.features[0].state.code || !mapRef) return;
 
-        const caseCount = e.features[0].state.caseCount || 0;
-        const totalCases = e.features[0].state.totalCases;
-        const coverage = e.features[0].state.coverage;
-        const lastUploadDate = e.features[0].state.lastUploadDate;
         const code = e.features[0].state.code;
-
-        const lat = e.features[0].state.lat;
-        const lng = e.features[0].state.long;
-        const coordinates: mapboxgl.LngLatLike = { lng, lat };
-
-        const searchQuery = `cases?country=${code}`;
-        const url = `${dataPortalUrl}/${searchQuery}`;
-
-        let countryName = getCountryName(code);
-
-        if (countryName === 'Taiwan, Province of China') {
-            countryName = 'Taiwan';
-        }
-
-        const popupContent = (
-            <>
-                {chosenCompletenessFieldRef.current === 'cases' && (
-                    <PopupContentText>
-                        ({caseCount.toLocaleString()} out of{' '}
-                        {totalCases.toLocaleString()})
-                    </PopupContentText>
-                )}
-
-                <BorderLinearProgress variant="determinate" value={coverage} />
-            </>
-        );
+        const countryName = getCountryName(code);
 
         dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));
-
-        // This has to be done this way in order to allow for React components as a content of the popup
-        const popupElement = document.createElement('div');
-        ReactDOM.render(
-            <MapPopup
-                title={`${countryName} ${coverage}%`}
-                content={popupContent}
-                lastUploadDate={lastUploadDate}
-                buttonText="Explore Country Data"
-                buttonUrl={url}
-            />,
-            popupElement,
-        );
-
-        new mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setDOMContent(popupElement)
-            .addTo(mapRef);
+        dispatch(setPopup({ isOpen: true, countryCode: code }));
     }, []);
 
     const mouseEnterHandler = useCallback(() => {

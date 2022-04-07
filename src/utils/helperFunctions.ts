@@ -378,6 +378,7 @@ export const getCountryName = (countryCode: string): string => {
 
     // Kosovo is not available in the library
     if (countryCode === 'XK') return 'Kosovo';
+    if (countryCode === 'TW') return 'Taiwan';
 
     return countryObj ? countryObj.country : countryCode;
 };
