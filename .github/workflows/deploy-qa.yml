@@ -21,9 +21,10 @@ jobs:
             - name: Install dependecies
               run: npm install
 
-            - name: Create test build
+            - name: Create qa build
               run: npm run build
               env:
+                  REACT_APP_ENV: qa
                   REACT_APP_MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}
                   REACT_APP_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
                   REACT_APP_GA_TRACKING_ID: ''

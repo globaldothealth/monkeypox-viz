@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
     selectChosenVariantType,
     selectChosenVariant,
+    selectIsLoading,
 } from 'redux/VariantsView/selectors';
 import {
     setChosenVariant,
@@ -32,6 +33,7 @@ const VariantsContent: React.FC = () => {
 
     const chosenVariantType = useAppSelector(selectChosenVariantType);
     const chosenVariant = useAppSelector(selectChosenVariant);
+    const isLoading = useAppSelector(selectIsLoading);
 
     const [vocArray, setVocArray] = useState<
         { pango: string; whoLabel: string }[]
@@ -130,7 +132,7 @@ const VariantsContent: React.FC = () => {
 
             <SelectContainer>
                 <SelectTitle>
-                    {loading ? (
+                    {isLoading ? (
                         <SelectTitleSkeleton
                             variant="text"
                             animation="pulse"
@@ -145,7 +147,7 @@ const VariantsContent: React.FC = () => {
                     }`
                     )}
                 </SelectTitle>
-                {loading ? (
+                {isLoading ? (
                     <SelectSkeleton
                         animation="pulse"
                         variant="rectangular"

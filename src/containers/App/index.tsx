@@ -10,6 +10,7 @@ import {
     fetchCountriesData,
     fetchTotalCases,
     fetchFreshnessData,
+    fetchAppVersion,
 } from 'redux/App/thunks';
 import { selectIsLoading, selectError } from 'redux/App/selectors';
 import { selectIsLoading as selectVariantsViewLoading } from 'redux/VariantsView/selectors';
@@ -54,7 +55,8 @@ const App = () => {
         dispatch(fetchCountriesData());
         dispatch(fetchTotalCases());
         dispatch(fetchFreshnessData());
-    }, []);
+        dispatch(fetchAppVersion());
+    }, [dispatch]);
 
     // Track page views
     useEffect(() => {

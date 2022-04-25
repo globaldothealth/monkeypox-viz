@@ -191,3 +191,16 @@ export const SideBarTitlesSkeleton = styled(Skeleton)(() => ({
     width: '100%',
     height: '2.1rem',
 }));
+
+export const VersionNumber = styled('a')(() => ({
+    fontSize: '1.2rem',
+    color: '#999',
+    marginTop: '2rem',
+    overflow: 'hidden',
+    cursor: 'pointer',
+    textDecoration: 'none',
+
+    '&:hover': {
+        textDecoration: 'underline',
+    },
+}));

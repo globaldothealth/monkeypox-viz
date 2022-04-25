@@ -3,6 +3,7 @@ import {
     fetchCountriesData,
     fetchTotalCases,
     fetchFreshnessData,
+    fetchAppVersion,
 } from './thunks';
 import { fetchVariantsData } from 'redux/VariantsView/thunks';
 import { fetchRegionalData } from 'redux/RegionalView/thunks';
@@ -25,6 +26,7 @@ interface AppState {
     lastUpdateDate: string;
     freshnessData: ParsedFreshnessData;
     freshnessLoading: boolean;
+    appVersion: string | undefined;
     popup: IPopup;
 }
 
@@ -38,6 +40,7 @@ const initialState: AppState = {
     lastUpdateDate: '',
     freshnessData: {},
     freshnessLoading: true,
+    appVersion: undefined,
     popup: {
         isOpen: false,
         countryCode: '',
@@ -140,6 +143,10 @@ export const appSlice = createSlice({
             state.error = action.payload
                 ? action.payload
                 : action.error.message;
+        });
+
+        builder.addCase(fetchAppVersion.fulfilled, (state, action) => {
+            state.appVersion = action.payload;
         });
     },
 });

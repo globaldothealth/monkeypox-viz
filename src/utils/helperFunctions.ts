@@ -382,3 +382,26 @@ export const getCountryName = (countryCode: string): string => {
 
     return countryObj ? countryObj.country : countryCode;
 };
+
+export enum Env {
+    Local = 'local',
+    Dev = 'dev',
+    Prod = 'prod',
+    Qa = 'qa',
+}
+
+// Get data portal url based on current env
+export const getDataPortalUrl = (env: Env) => {
+    switch (env) {
+        case Env.Local:
+            return 'http://localhost:3002';
+        case Env.Dev:
+            return 'https://dev-data.covid-19.global.health';
+        case Env.Qa:
+            return 'https://qa-data.covid-19.global.health';
+        case Env.Prod:
+            return 'https://data.covid-19.global.health';
+        default:
+            return 'https://data.covid-19.global.health';
+    }
+};

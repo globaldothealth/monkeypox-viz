@@ -3,7 +3,7 @@ describe('<VariantsView />', () => {
         cy.intercept(
             'GET',
             'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/variant-reporting-data.json',
-            { fixture: 'variantsData.json' },
+            { fixture: 'variantsData.json', delay: 2000 },
         ).as('fetchVariantsData');
     });
 
