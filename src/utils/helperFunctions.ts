@@ -401,7 +401,5 @@ export const getDataPortalUrl = (env: Env) => {
             return 'https://qa-data.covid-19.global.health';
         case Env.Prod:
             return 'https://data.covid-19.global.health';
-        default:
-            return 'https://data.covid-19.global.health';
     }
 };
