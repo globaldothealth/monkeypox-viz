@@ -22,7 +22,7 @@ jobs:
               with:
                   browser: chrome
                   headless: true
-                  record: false
+                  record: true
                   start: npm start
                   wait-on: http://localhost:3000
               env:
