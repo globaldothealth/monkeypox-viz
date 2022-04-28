@@ -26,6 +26,7 @@ jobs:
                   start: npm start
                   wait-on: http://localhost:3000
               env:
+                  REACT_APP_ENV: dev
                   REACT_APP_MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}
                   REACT_APP_GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
                   CYPRESS_RECORD_KEY: ce3ef329-58af-44a3-83d7-acbf381e3646

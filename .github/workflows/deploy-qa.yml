@@ -31,7 +31,7 @@ jobs:
                   REACT_APP_MAP_THEME_URL: mapbox://styles/healthmap/cknr3ycvx03i917nw4gk1um66
                   REACT_APP_SHEETS_ID: 15-2lbrYHHL0zFYc9kzS7_m6CCV5BkBCUeg9ifTHbRos
                   REACT_APP_SHEET_NAME: Variants
-                  REACT_APP_DATA_PORTAL_URL: https://data.covid-19.global.health
+                  REACT_APP_DATA_PORTAL_URL: https://qa-data.covid-19.global.health
                   REACT_APP_COUNTRY_VIEW_DATA_URL: https://covid-19-aggregates-eu.s3.amazonaws.com/country/latest.json
                   REACT_APP_VARIANT_DATA_URL: https://covid-19-aggregates-eu.s3.amazonaws.com/variant-reporting-data.json
                   REACT_APP_REGIONAL_VIEW_DATA_URL: https://covid-19-aggregates-eu.s3.amazonaws.com/regional/latest.json
