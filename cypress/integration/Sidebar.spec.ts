@@ -90,14 +90,9 @@ describe('<SideBar />', () => {
         const listedCountries = cy.get('[data-cy="listed-country"]');
         listedCountries.should('have.length.gte', 5);
 
-        cy.wait(100);
+        cy.contains(/Germany/i).click();
 
-        cy.contains(/United States of America/i).click();
-
-        cy.get('[data-cy="autocomplete-input"').should(
-            'have.value',
-            'United States of America',
-        );
+        cy.get('[data-cy="autocomplete-input"').should('have.value', 'Germany');
     });
 
     it('Changes countries list after choosing completeness field', () => {
@@ -116,8 +111,6 @@ describe('<SideBar />', () => {
         cy.visit('/coverage');
         cy.wait('@fetchCompletenessData');
         cy.wait('@fetchCountriesData');
-
-        cy.get('button.iubenda-cs-accept-btn').click();
 
         cy.get('#completeness-field-select').click();
         cy.get('[data-value="location.country"]').scrollIntoView();
