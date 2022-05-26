@@ -1,31 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-    fetchCountriesData,
-    fetchTotalCases,
-    fetchFreshnessData,
-    fetchAppVersion,
-} from './thunks';
-import { fetchVariantsData } from 'redux/VariantsView/thunks';
-import { fetchRegionalData } from 'redux/RegionalView/thunks';
-import { fetchCompletenessData } from 'redux/CoverageView/thunks';
-import { CountryDataRow, SelectedCountry } from 'models/CountryData';
-import { ParsedFreshnessData } from 'models/FreshnessData';
+import { fetchCountriesData, fetchTotalCases, fetchAppVersion } from './thunks';
+import { SelectedCountry, ParsedCountryDataRow } from 'models/CountryData';
 
 interface IPopup {
     isOpen: boolean;
-    countryCode: string;
+    countryName: string;
 }
 
 interface AppState {
     isLoading: boolean;
     isMapLoading: boolean;
     error: string | undefined;
-    countriesData: CountryDataRow[];
+    countriesData: ParsedCountryDataRow[];
     totalNumberOfCases: number;
     selectedCountryInSideBar: SelectedCountry | undefined;
     lastUpdateDate: string;
-    freshnessData: ParsedFreshnessData;
-    freshnessLoading: boolean;
     appVersion: string | undefined;
     popup: IPopup;
 }
@@ -38,12 +27,10 @@ const initialState: AppState = {
     totalNumberOfCases: 0,
     selectedCountryInSideBar: undefined,
     lastUpdateDate: '',
-    freshnessData: {},
-    freshnessLoading: true,
     appVersion: undefined,
     popup: {
         isOpen: false,
-        countryCode: '',
+        countryName: '',
     },
 };
 
@@ -68,6 +55,7 @@ export const appSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
+        // Country view data
         builder.addCase(fetchCountriesData.pending, (state) => {
             state.isLoading = true;
             state.error = undefined;
@@ -78,16 +66,6 @@ export const appSlice = createSlice({
         });
         builder.addCase(fetchCountriesData.rejected, (state, action) => {
             state.isLoading = false;
-            state.error = action.payload
-                ? action.payload
-                : action.error.message;
-        });
-
-        // Variants view (error handling)
-        builder.addCase(fetchVariantsData.pending, (state) => {
-            state.error = undefined;
-        });
-        builder.addCase(fetchVariantsData.rejected, (state, action) => {
             state.error = action.payload
                 ? action.payload
                 : action.error.message;
@@ -109,42 +87,7 @@ export const appSlice = createSlice({
                 : action.error.message;
         });
 
-        // Freshness data
-        builder.addCase(fetchFreshnessData.pending, (state) => {
-            state.freshnessLoading = true;
-            state.error = undefined;
-        });
-        builder.addCase(fetchFreshnessData.fulfilled, (state, { payload }) => {
-            state.freshnessLoading = false;
-            state.freshnessData = payload;
-        });
-        builder.addCase(fetchFreshnessData.rejected, (state, action) => {
-            state.freshnessLoading = false;
-            state.error = action.payload
-                ? action.payload
-                : action.error.message;
-        });
-
-        // Regional view (error handling)
-        builder.addCase(fetchRegionalData.pending, (state) => {
-            state.error = undefined;
-        });
-        builder.addCase(fetchRegionalData.rejected, (state, action) => {
-            state.error = action.payload
-                ? action.payload
-                : action.error.message;
-        });
-
-        // Variants view (error handling)
-        builder.addCase(fetchCompletenessData.pending, (state) => {
-            state.error = undefined;
-        });
-        builder.addCase(fetchCompletenessData.rejected, (state, action) => {
-            state.error = action.payload
-                ? action.payload
-                : action.error.message;
-        });
-
+        // App version
         builder.addCase(fetchAppVersion.fulfilled, (state, action) => {
             state.appVersion = action.payload;
         });

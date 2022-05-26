@@ -2,7 +2,7 @@ describe('<App />', () => {
     it('Shows loading indicator while fetching data', () => {
         cy.intercept(
             'GET',
-            'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/country/latest.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json',
             { fixture: 'countriesData.json', delay: 1000 },
         ).as('fetchCountriesData');
 
@@ -20,7 +20,7 @@ describe('<App />', () => {
     it('Shows error alert when fetching fails', () => {
         cy.intercept(
             'GET',
-            'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/country/latest.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json',
             { statusCode: 403 },
         ).as('fetchCountriesData');
 
@@ -36,16 +36,13 @@ describe('<App />', () => {
         cy.visit('/');
 
         cy.contains(/Country view/i).should('be.visible');
-        cy.contains(/Regional view/i).should('be.visible');
-        cy.contains(/Coverage/i).should('be.visible');
-        cy.contains(/Variant Reporting/i).should('be.visible');
-        cy.contains(/G.h Data/i).should('be.visible');
+        cy.contains(/Monkeypox Dataset/i).should('be.visible');
     });
 
     it('Navigates to different views', () => {
         cy.intercept(
             'GET',
-            'https://covid-19-aggregates-dev.s3.eu-central-1.amazonaws.com/country/latest.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json',
             { fixture: 'countriesData.json' },
         ).as('fetchCountriesData');
 
@@ -56,20 +53,8 @@ describe('<App />', () => {
         cy.contains(/Line List Cases/i).should('be.visible');
         cy.url().should('eq', 'http://localhost:3000/country');
 
-        cy.contains(/Regional View/i).click();
-        cy.contains(/Regional view/i).should('be.visible');
-        cy.url().should('eq', 'http://localhost:3000/region');
-
-        cy.contains(/Coverage/i).click();
-        cy.contains(/Coverage/i).should('be.visible');
-        cy.url().should('eq', 'http://localhost:3000/coverage');
-
-        cy.contains(/Variant Reporting/i).click();
-        cy.contains(/Variant reporting/i).should('be.visible');
-        cy.url().should('eq', 'http://localhost:3000/variant-reporting');
-
-        cy.contains(/G.h Data/i)
+        cy.contains(/Monkeypox Dataset/i)
             .should('have.attr', 'href')
-            .and('eq', 'https://dev-data.covid-19.global.health');
+            .and('eq', 'https://github.com/globaldothealth/monkeypox');
     });
 });

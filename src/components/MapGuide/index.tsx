@@ -85,74 +85,14 @@ export const MapGuide: React.FC = () => {
                         tabIndex={-1}
                     >
                         These geospatial data visualisations allow you to
-                        explore our COVID-19 line-list dataset through a few
-                        different views:
+                        explore our Monkeypox line-list dataset.
                         <br />
                         <br />
                         <strong>Country View:</strong> Click on a country to see
-                        available line-list data in that country, and click
-                        “Explore Country Data” to view and download
-                        corresponding filtered results of data for that country.
-                        You can also use the left-hand navigation to search or
-                        select a country. Darker colours indicate more available
-                        line-list data. (Please see our{' '}
-                        <a href="https://global.health/faqs/" title="FAQs">
-                            FAQs
-                        </a>{' '}
-                        and{' '}
-                        <a
-                            href="https://global.health/acknowledgement/"
-                            title="Data Acknowledgments"
-                        >
-                            Data Acknowledgments
-                        </a>{' '}
-                        for more info.)
-                        <br />
-                        <br />
-                        <strong>Regional View:</strong> Click on a circle to see
-                        available line-list data in that region, and click
-                        “Explore Regional Data” to view and download
-                        corresponding filtered results of data for that region.
-                        Larger, darker circles indicate more available line-list
-                        data. Please see our{' '}
-                        <a href="https://global.health/faqs/" title="FAQs">
-                            FAQs
-                        </a>{' '}
-                        for more info.
-                        <br />
-                        <br />
-                        <strong>Coverage Map:</strong> The default view
-                        illustrates available line-list COVID-19 case data in
-                        the Global.health database in a given country as a
-                        percentage of total cumulative case data as indicated by
-                        the{' '}
-                        <a
-                            href="https://coronavirus.jhu.edu/map.html"
-                            title="Johns Hopkins University COVID Resource Center"
-                            target="blank"
-                            rel="noopener noreferrer"
-                        >
-                            Johns Hopkins University COVID Resource Center
-                        </a>
-                        . Darker colours indicate more available line-list data
-                        relative to aggregate JHU case counts. Using the module
-                        on the left, you can also select and visualize the
-                        completeness of individual fields in the{' '}
-                        <a
-                            href="https://raw.githubusercontent.com/globaldothealth/list/main/data-serving/scripts/export-data/data_dictionary.txt"
-                            title="G.h schema"
-                            target="blank"
-                            rel="noopener noreferrer"
-                        >
-                            G.h schema
-                        </a>{' '}
-                        by country (i.e. the percentage of cases in a given
-                        country that include values for the designated field).
-                        Please see our{' '}
-                        <a href="https://global.health/faqs/" title="FAQs">
-                            FAQs
-                        </a>{' '}
-                        for more info.
+                        available line-list data in that country. You can also
+                        use the left-hand navigation to search or select a
+                        country. Darker colours indicate more available
+                        line-list data.
                     </DialogContentText>
                 </DialogContent>
             </StyledMapGuideDialog>

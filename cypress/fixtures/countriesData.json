@@ -1,44 +1,34 @@
 {
     "11-18-2021": [
         {
-            "_id": "United States",
-            "casecount": 20966759,
-            "jhu": 47420114,
-            "code": "US",
-            "lat": 37.09024,
-            "long": -95.712891
+            "Spain": {
+                "confirmed": 58,
+                "suspected": 61
+            }
         },
         {
-            "_id": "Germany",
-            "casecount": 4801628,
-            "jhu": 5213193,
-            "code": "DE",
-            "lat": 51.165691,
-            "long": 10.451526
+            "Portugal": {
+                "confirmed": 48,
+                "suspected": 15
+            }
         },
         {
-            "_id": "Brazil",
-            "casecount": 3446950,
-            "jhu": 21977661,
-            "code": "BR",
-            "lat": -14.235004,
-            "long": -51.92528
+            "Canada": {
+                "confirmed": 14,
+                "suspected": 1
+            }
         },
         {
-            "_id": "Colombia",
-            "casecount": 3294193,
-            "jhu": 5038544,
-            "code": "CO",
-            "lat": 4.570868,
-            "long": -74.297333
+            "Netherlands": {
+                "confirmed": 11,
+                "suspected": 0
+            }
         },
         {
-            "_id": "Peru",
-            "casecount": 2898041,
-            "jhu": 2218202,
-            "code": "PE",
-            "lat": -9.189967,
-            "long": -75.015152
+            "Germany": {
+                "confirmed": 11,
+                "suspected": 0
+            }
         }
     ]
 }

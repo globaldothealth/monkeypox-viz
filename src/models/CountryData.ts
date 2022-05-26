@@ -1,10 +1,14 @@
 export interface CountryDataRow {
-    _id: string;
-    casecount: number;
-    jhu: number;
-    code: string;
-    lat: number;
-    long: number;
+    [key: string]: {
+        suspected: number;
+        confirmed: number;
+    };
+}
+
+export interface ParsedCountryDataRow {
+    name: string;
+    suspected: number;
+    confirmed: number;
 }
 
 export interface TotalCasesValues {
@@ -13,6 +17,5 @@ export interface TotalCasesValues {
 
 // Used by Autocomplete in the Sidebar
 export interface SelectedCountry {
-    _id: string;
-    code: string;
+    name: string;
 }

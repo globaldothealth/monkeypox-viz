@@ -5,8 +5,6 @@ import Typography from '@mui/material/Typography';
 import { AppBarStyle, NavBar, StyledTooolbar } from './styled';
 
 const TopBar = () => {
-    const env = process.env.NODE_ENV;
-
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBarStyle position="static" className="navbar">
@@ -23,46 +21,13 @@ const TopBar = () => {
                                 Country View
                             </Typography>
                         </NavLink>
-                        <NavLink
-                            to="/region"
-                            className={({ isActive }) =>
-                                'nav-link regionalViewNavButton' +
-                                (isActive ? ' activated' : '')
-                            }
-                        >
-                            <Typography variant="navbarlink" gutterBottom>
-                                Regional View
-                            </Typography>
-                        </NavLink>
-                        <NavLink
-                            to="/coverage"
-                            className={({ isActive }) =>
-                                'nav-link' + (isActive ? ' activated' : '')
-                            }
-                        >
-                            <Typography variant="navbarlink" gutterBottom>
-                                Coverage View
-                            </Typography>
-                        </NavLink>
-                        {env !== 'production' && (
-                            <NavLink
-                                to="/variant-reporting"
-                                className={({ isActive }) =>
-                                    'nav-link' + (isActive ? ' activated' : '')
-                                }
-                            >
-                                <Typography variant="navbarlink" gutterBottom>
-                                    Variant Reporting
-                                </Typography>
-                            </NavLink>
-                        )}
                         <a
-                            href={process.env.REACT_APP_DATA_PORTAL_URL || ''}
+                            href="https://github.com/globaldothealth/monkeypox"
                             rel="noopener noreferrer"
                             target="_blank"
                         >
                             <Typography variant="navbarlink" gutterBottom>
-                                G.h Data
+                                Monkeypox Dataset
                             </Typography>
                         </a>
 

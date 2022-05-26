@@ -6,8 +6,6 @@ import {
     selectIsLoading,
     selectCountriesData,
     selectSelectedCountryInSideBar,
-    selectFreshnessData,
-    selectFreshnessLoading,
     selectPopupData,
 } from 'redux/App/selectors';
 import { setSelectedCountryInSidebar, setPopup } from 'redux/App/slice';
@@ -21,28 +19,26 @@ import MapPopup from 'components/MapPopup';
 import { MapContainer } from 'theme/globalStyles';
 import Loader from 'components/Loader';
 import { PopupContentText } from './styled';
-import { getCountryName } from 'utils/helperFunctions';
+import { getCountryCode } from 'utils/helperFunctions';
 
 const dataLayers: LegendRow[] = [
-    { label: '< 10k', color: CountryViewColors['10K'] },
-    { label: '10k-100k', color: CountryViewColors['100K'] },
-    { label: '100k-500k', color: CountryViewColors['500K'] },
-    { label: '500k-2M', color: CountryViewColors['2M'] },
-    { label: '2M-10M', color: CountryViewColors['10M'] },
-    { label: '> 10M', color: CountryViewColors['10M+'] },
+    { label: '0 or no data', color: CountryViewColors['NoData'] },
+    { label: '<10', color: CountryViewColors['<10'] },
+    { label: '10-20', color: CountryViewColors['10-20'] },
+    { label: '21-30', color: CountryViewColors['21-30'] },
+    { label: '31-40', color: CountryViewColors['31-40'] },
+    { label: '41-50', color: CountryViewColors['41-50'] },
+    { label: '>50', color: CountryViewColors['>50'] },
 ];
 
 const CountryView: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const mapboxAccessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || '';
-    const dataPortalUrl = process.env.REACT_APP_DATA_PORTAL_URL;
 
     const isLoading = useAppSelector(selectIsLoading);
     const countriesData = useAppSelector(selectCountriesData);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
-    const freshnessData = useAppSelector(selectFreshnessData);
-    const freshnessLoading = useAppSelector(selectFreshnessLoading);
     const popupData = useAppSelector(selectPopupData);
 
     const [mapLoaded, setMapLoaded] = useState(false);
@@ -59,14 +55,16 @@ const CountryView: React.FC = () => {
     useEffect(() => {
         if (!selectedCountry) return;
 
-        const bounds = lookupTableData[selectedCountry.code].bounds;
+        const countryCode = getCountryCode(selectedCountry.name);
+
+        const bounds = lookupTableData[countryCode].bounds;
         map.current?.fitBounds(bounds);
     }, [selectedCountry]);
 
     // Setup map
     useEffect(() => {
         const mapRef = map.current;
-        if (!mapRef || isLoading || freshnessLoading) return;
+        if (!mapRef || isLoading) return;
 
         mapRef.on('load', () => {
             if (mapRef.getSource('countriesData')) {
@@ -95,48 +93,50 @@ const CountryView: React.FC = () => {
                 mapRef.on('sourcedata', setAfterSourceLoaded);
             }
         });
-    }, [isLoading, freshnessLoading]);
+    }, [isLoading]);
 
-    // Display popup on the map
+    // // Display popup on the map
     useEffect(() => {
-        const { isOpen, countryCode } = popupData;
+        const { isOpen, countryName } = popupData;
         const mapRef = map.current;
-        if (!isOpen || !countryCode || countryCode === '' || !mapRef) return;
+        if (!isOpen || !countryName || countryName === '' || !mapRef) return;
 
         // Close previous popup if it exists
         if (currentPopup) currentPopup.remove();
 
         const country = countriesData.filter(
-            (country) => country.code === countryCode,
+            (country) => country.name === countryName,
         )[0];
 
-        const caseCount = country.casecount;
-        const lastUploadDate = freshnessData[countryCode] || 'unknown';
-        const lat = country.lat;
-        const lng = country.long;
-        const coordinates: mapboxgl.LngLatLike = { lng, lat };
-        const searchQuery = `cases?country=${countryCode}`;
-        const url = `${dataPortalUrl}/${searchQuery}`;
+        const countryCode = getCountryCode(country.name);
 
-        const countryName = getCountryName(countryCode);
+        const countryDetails = lookupTableData[countryCode];
+        if (!countryDetails) return;
+
+        const confirmedCases = country.confirmed;
+        const suspectedCases = country.suspected;
+        const lat = countryDetails.centroid[1];
+        const lng = countryDetails.centroid[0];
+        const coordinates: mapboxgl.LngLatLike = { lng, lat };
 
         const popupContent = (
-            <PopupContentText>
-                {caseCount.toLocaleString()} line list case
-                {caseCount > 1 ? 's' : ''}
-            </PopupContentText>
+            <>
+                <PopupContentText>
+                    {confirmedCases.toLocaleString()} confirmed
+                    {confirmedCases > 1 ? ' cases' : ' case'}
+                </PopupContentText>
+
+                <PopupContentText>
+                    {suspectedCases.toLocaleString()} suspected
+                    {suspectedCases > 1 ? ' cases' : ' case'}
+                </PopupContentText>
+            </>
         );
 
         // This has to be done this way in order to allow for React components as a content of the popup
         const popupElement = document.createElement('div');
         ReactDOM.render(
-            <MapPopup
-                title={countryName}
-                content={popupContent}
-                lastUploadDate={lastUploadDate}
-                buttonText="Explore Country Data"
-                buttonUrl={url}
-            />,
+            <MapPopup title={countryName} content={popupContent} />,
             popupElement,
         );
 
@@ -145,7 +145,7 @@ const CountryView: React.FC = () => {
             .setDOMContent(popupElement)
             .addTo(mapRef)
             .on('close', () =>
-                dispatch(setPopup({ isOpen: false, countryCode: '' })),
+                dispatch(setPopup({ isOpen: false, countryName: '' })),
             );
 
         setCurrentPopup(popup);
@@ -157,16 +157,20 @@ const CountryView: React.FC = () => {
         if (!countriesData || countriesData.length === 0 || !mapRef) return;
 
         for (const countryRow of countriesData) {
-            if (lookupTableData[countryRow.code]) {
+            const { name, confirmed } = countryRow;
+
+            const countryCode = getCountryCode(name);
+
+            if (lookupTableData[countryCode]) {
                 mapRef.setFeatureState(
                     {
                         source: 'countriesData',
                         sourceLayer: 'country_boundaries',
-                        id: lookupTableData[countryRow.code].feature_id,
+                        id: lookupTableData[countryCode].feature_id,
                     },
                     {
-                        caseCount: countryRow.casecount,
-                        code: countryRow.code,
+                        caseCount: confirmed,
+                        name,
                     },
                 );
             }
@@ -189,18 +193,18 @@ const CountryView: React.FC = () => {
                         ['!=', ['feature-state', 'caseCount'], null],
                         [
                             'case',
-                            ['<', ['feature-state', 'caseCount'], 10000],
-                            CountryViewColors['10K'],
-                            ['<', ['feature-state', 'caseCount'], 100000],
-                            CountryViewColors['100K'],
-                            ['<', ['feature-state', 'caseCount'], 500000],
-                            CountryViewColors['500K'],
-                            ['<', ['feature-state', 'caseCount'], 2000000],
-                            CountryViewColors['2M'],
-                            ['<', ['feature-state', 'caseCount'], 10000000],
-                            CountryViewColors['10M'],
-                            ['>=', ['feature-state', 'caseCount'], 10000000],
-                            CountryViewColors['10M+'],
+                            ['<', ['feature-state', 'caseCount'], 10],
+                            CountryViewColors['<10'],
+                            ['<=', ['feature-state', 'caseCount'], 20],
+                            CountryViewColors['10-20'],
+                            ['<=', ['feature-state', 'caseCount'], 30],
+                            CountryViewColors['21-30'],
+                            ['<=', ['feature-state', 'caseCount'], 40],
+                            CountryViewColors['31-40'],
+                            ['<=', ['feature-state', 'caseCount'], 50],
+                            CountryViewColors['41-50'],
+                            ['>', ['feature-state', 'caseCount'], 50],
+                            CountryViewColors['>50'],
                             CountryViewColors.Fallback,
                         ],
                         CountryViewColors.Fallback,
@@ -208,7 +212,7 @@ const CountryView: React.FC = () => {
                     'fill-outline-color': CountryViewColors.Outline,
                 },
             },
-            'waterway-label',
+            'admin-1-boundary',
         );
 
         // Change the mouse cursor to pointer when hovering above this layer
@@ -223,13 +227,12 @@ const CountryView: React.FC = () => {
 
         // Add click listener and show popups
         mapRef.on('click', 'countries-join', (e) => {
-            if (!e.features || !e.features[0].state.code) return;
+            if (!e.features || !e.features[0].state.name) return;
 
-            const code = e.features[0].state.code;
-            const countryName = getCountryName(code);
+            const countryName = e.features[0].state.name;
 
-            dispatch(setSelectedCountryInSidebar({ _id: countryName, code }));
-            dispatch(setPopup({ isOpen: true, countryCode: code }));
+            dispatch(setSelectedCountryInSidebar({ name: countryName }));
+            dispatch(setPopup({ isOpen: true, countryName }));
         });
     };
 

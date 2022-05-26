@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material/styles';
 
 export const theme = createTheme({
     typography: {
-        fontFamily: 'Mabry Pro, sans-serif',
+        fontFamily: 'Inter',
         htmlFontSize: 10,
         navbarlink: {
             fontWeight: 500,

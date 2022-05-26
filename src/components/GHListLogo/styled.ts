@@ -21,6 +21,5 @@ export const LogoImage = styled.img`
         color: #0094e2;
         font-size: 5ex;
         vertical-align: middle;
-        font-family: 'Mabry Pro';
     }
 `;

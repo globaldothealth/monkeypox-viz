@@ -1,17 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { CountryDataRow, TotalCasesValues } from 'models/CountryData';
-import { FreshnessData, ParsedFreshnessData } from 'models/FreshnessData';
-import { setLastUpdateDate } from './slice';
 import {
-    parseFreshnessData,
-    getDataPortalUrl,
-    Env,
-} from 'utils/helperFunctions';
-import { parse } from 'date-fns';
+    CountryDataRow,
+    TotalCasesValues,
+    ParsedCountryDataRow,
+} from 'models/CountryData';
+import { setLastUpdateDate } from './slice';
+import { getDataPortalUrl, Env } from 'utils/helperFunctions';
+import { format } from 'date-fns';
 
 // Fetch countries data from AWS S3 JSON file
 export const fetchCountriesData = createAsyncThunk<
-    CountryDataRow[],
+    ParsedCountryDataRow[],
     void,
     { rejectValue: string }
 >('app/fetchCountriesData', async (_, { rejectWithValue, dispatch }) => {
@@ -26,20 +25,66 @@ export const fetchCountriesData = createAsyncThunk<
 
         const jsonResponse = await response.json();
 
-        const lastUpdateDate = Object.keys(jsonResponse)[0];
-        const parsedDate = parse(lastUpdateDate, 'MM-dd-yyyy', new Date());
-        dispatch(setLastUpdateDate(JSON.stringify(parsedDate)));
-
         const keys = Object.keys(jsonResponse);
         if (keys.length === 0) throw new Error('Wrong data format');
+
+        const lastUpdateDate = new Date(keys[0]);
+        const parsedDate = format(lastUpdateDate, 'E LLL d yyyy');
+        dispatch(setLastUpdateDate(parsedDate));
+
         const latestKey = keys[0];
 
         const countriesData = jsonResponse[latestKey] as CountryDataRow[];
-        const countriesDataSorted = countriesData
-            .filter(
-                (item) => item._id != null && item.code && item.code !== 'ZZ',
-            )
-            .sort((a, b) => (a.casecount < b.casecount ? 1 : -1));
+
+        // parse json that comes from S3 to a better format
+        let parsedCountriesData: ParsedCountryDataRow[] = countriesData.map(
+            (row) => {
+                const countryName = Object.keys(row)[0];
+
+                return {
+                    name: countryName,
+                    suspected: row[countryName].suspected,
+                    confirmed: row[countryName].confirmed,
+                };
+            },
+        );
+
+        // combine England and Scotland cases together as United Kingdom
+        // this has to be done this way, as Mapbox source files that we use
+        // doesn't differentiate Scotland and England
+        const englandIdx = parsedCountriesData.findIndex(
+            (country) => country.name === 'England',
+        );
+        const scotlandIdx = parsedCountriesData.findIndex(
+            (country) => country.name === 'Scotland',
+        );
+
+        if (englandIdx !== -1 && scotlandIdx !== -1) {
+            const combinedConfirmedCases =
+                parsedCountriesData[englandIdx].confirmed +
+                parsedCountriesData[scotlandIdx].confirmed;
+            const combinedSuspectedCases =
+                parsedCountriesData[englandIdx].suspected +
+                parsedCountriesData[scotlandIdx].suspected;
+
+            parsedCountriesData.push({
+                name: 'United Kingdom',
+                confirmed: combinedConfirmedCases,
+                suspected: combinedSuspectedCases,
+            });
+
+            // delete England and Scotland from the array
+            parsedCountriesData = parsedCountriesData.filter(
+                (country) =>
+                    country.name !== 'England' && country.name !== 'Scotland',
+            );
+        }
+
+        // sort the data based on confirmed cases
+        const countriesDataSorted = parsedCountriesData.sort((a, b) =>
+            a.confirmed < b.confirmed ? 1 : -1,
+        );
+
         return countriesDataSorted;
     } catch (err: any) {
         if (err.response) return rejectWithValue(err.response.message);
@@ -65,32 +110,6 @@ export const fetchTotalCases = createAsyncThunk<
         const jsonResponse = await response.json();
 
         return jsonResponse;
-    } catch (err: any) {
-        if (err.response) return rejectWithValue(err.response.message);
-
-        throw err;
-    }
-});
-
-export const fetchFreshnessData = createAsyncThunk<
-    ParsedFreshnessData,
-    void,
-    { rejectValue: string }
->('app/fetchFreshnessData', async (_, { rejectWithValue }) => {
-    const dataUrl = process.env.REACT_APP_FRESHNESS_DATA_URL;
-
-    try {
-        if (!dataUrl) throw new Error('Data url missing');
-
-        const response = await fetch(dataUrl);
-        if (response.status !== 200)
-            throw new Error('Fetching freshness data failed');
-
-        const freshnessData = (await response.json()) as FreshnessData;
-
-        const parsedFreshnessData = parseFreshnessData(freshnessData);
-
-        return parsedFreshnessData;
     } catch (err: any) {
         if (err.response) return rejectWithValue(err.response.message);
 

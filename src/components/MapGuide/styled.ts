@@ -14,7 +14,6 @@ export const StyledMapGuideButton = styled('div')`
         display: flex;
         min-width: 6.4rem;
         box-sizing: border-box;
-        font-family: 'Mabry Pro', sans-serif;
         font-weight: 500;
         border-radius: 0.4rem;
         text-transform: uppercase;
@@ -40,7 +39,6 @@ export const StyledMapGuideButton = styled('div')`
 export const StyledMapGuideDialog = styled(Dialog)`
     .MuiDialog-paperScrollPaper {
         background: #0094e2;
-        font-family: 'Mabry Pro';
         color: #fff;
     }
     h1,

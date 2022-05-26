@@ -9,14 +9,8 @@ describe('<Navbar />', () => {
         cy.get('.navbar').should('be.visible');
         cy.get('#logo').should('be.visible');
         cy.contains('Country View').should('be.visible');
-        cy.contains('Regional View').should('be.visible');
-        cy.contains('Coverage View').should('be.visible');
 
         cy.url().should('include', '/country');
-
-        cy.get('.regionalViewNavButton').click();
-        cy.url().should('include', '/region');
-        cy.url().should('not.include', '/country');
     });
 
     it('Opens and closes the MapGuide', () => {
