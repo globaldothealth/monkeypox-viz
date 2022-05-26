@@ -156,32 +156,6 @@ export const LocationListItem = styled('div')<{ $barWidth: number }>(
     }),
 );
 
-export const GhListButtonBar = styled('div')`
-    background: #edf3f1;
-    border-radius: 1ex;
-    color: #575c5f;
-    cursor: pointer;
-    height: 5ex;
-    margin-top: 1.5rem;
-    padding-top: 0.8rem;
-    text-align: center;
-    text-decoration: none;
-    img {
-        order-right: o.1rem solid #555;
-        height: 3ex;
-        margin-left: 3ex;
-        margin-right: 0.6ex;
-        object-fit: contain;
-        padding-right: 0.6ex;
-        vertical-align: middle;
-    }
-    span {
-        color: #137564;
-        font-size: 3ex;
-        vertical-align: middle;
-    }
-`;
-
 export const CountriesListSkeleton = styled(Skeleton)(() => ({
     width: '100%',
     height: '100%',

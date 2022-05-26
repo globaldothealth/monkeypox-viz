@@ -10,7 +10,6 @@ import {
     selectAppVersion,
 } from 'redux/App/selectors';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
-import ghListLogo from 'assets/images/gh_list_logo.svg';
 import {
     FlagIcon,
     LatestGlobal,
@@ -21,7 +20,6 @@ import {
     StyledSideBar,
     SideBarTitlesSkeleton,
     CountriesListSkeleton,
-    GhListButtonBar,
     VersionNumber,
 } from './styled';
 import { setSelectedCountryInSidebar, setPopup } from 'redux/App/slice';
@@ -207,14 +205,6 @@ const SideBar = () => {
             <div id="sidebar-tab" onClick={handleOnClick}>
                 <span id="sidebar-tab-icon">{openSidebar ? '◀' : '▶'}</span>
             </div>
-            <GhListButtonBar
-                id="ghlist"
-                as="a"
-                href={process.env.REACT_APP_DATA_PORTAL_URL || ''}
-            >
-                See all cases <img src={ghListLogo} />
-                <span>Data</span>
-            </GhListButtonBar>
 
             {appVersion && (
                 <VersionNumber
