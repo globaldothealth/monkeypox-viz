@@ -243,7 +243,7 @@ const CountryView: React.FC = () => {
                 ref={mapContainer}
                 isLoading={isLoading || !mapLoaded}
             />
-            <Legend title="Line List Cases" legendRows={dataLayers} />
+            <Legend title="Confirmed Cases" legendRows={dataLayers} />
         </>
     );
 };
