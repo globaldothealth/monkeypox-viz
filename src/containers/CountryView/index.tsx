@@ -64,7 +64,7 @@ const CountryView: React.FC = () => {
     // Setup map
     useEffect(() => {
         const mapRef = map.current;
-        if (!mapRef || isLoading) return;
+        if (!mapRef || isLoading || countriesData.length === 0) return;
 
         mapRef.on('load', () => {
             if (mapRef.getSource('countriesData')) {
@@ -86,14 +86,14 @@ const CountryView: React.FC = () => {
                 mapRef.off('sourcedata', setAfterSourceLoaded);
             };
 
-            if (mapRef.isSourceLoaded('countriesData')) {
+            if (!mapRef.isSourceLoaded('countriesData')) {
                 displayCountriesOnMap();
                 setMapLoaded(true);
             } else {
                 mapRef.on('sourcedata', setAfterSourceLoaded);
             }
         });
-    }, [isLoading]);
+    }, [isLoading, countriesData]);
 
     // // Display popup on the map
     useEffect(() => {
@@ -154,7 +154,10 @@ const CountryView: React.FC = () => {
     // Display countries data on the map
     const displayCountriesOnMap = () => {
         const mapRef = map.current;
+        console.log(countriesData.length, mapRef);
         if (!countriesData || countriesData.length === 0 || !mapRef) return;
+
+        console.log('display countries after return');
 
         for (const countryRow of countriesData) {
             const { name, confirmed } = countryRow;
