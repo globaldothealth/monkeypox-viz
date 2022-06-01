@@ -3,6 +3,6 @@ describe('<CountryView />', () => {
         cy.visit('/');
 
         cy.get('.mapboxgl-canvas').should('be.visible');
-        cy.contains('Line List Cases').should('be.visible');
+        cy.contains('Confirmed Cases').should('be.visible');
     });
 });

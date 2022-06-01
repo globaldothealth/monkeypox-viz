@@ -7,16 +7,22 @@ interface IPopup {
     countryName: string;
 }
 
+export enum DataType {
+    Confirmed,
+    Suspected,
+}
+
 interface AppState {
     isLoading: boolean;
     isMapLoading: boolean;
     error: string | undefined;
     countriesData: ParsedCountryDataRow[];
     totalNumberOfCases: number;
-    selectedCountryInSideBar: SelectedCountry | undefined;
+    selectedCountryInSideBar: SelectedCountry | null;
     lastUpdateDate: string;
     appVersion: string | undefined;
     popup: IPopup;
+    dataType: DataType;
 }
 
 const initialState: AppState = {
@@ -25,13 +31,14 @@ const initialState: AppState = {
     error: undefined,
     countriesData: [],
     totalNumberOfCases: 0,
-    selectedCountryInSideBar: undefined,
+    selectedCountryInSideBar: null,
     lastUpdateDate: '',
     appVersion: undefined,
     popup: {
         isOpen: false,
         countryName: '',
     },
+    dataType: DataType.Confirmed,
 };
 
 export const appSlice = createSlice({
@@ -43,7 +50,7 @@ export const appSlice = createSlice({
         },
         setSelectedCountryInSidebar: (
             state,
-            action: PayloadAction<SelectedCountry>,
+            action: PayloadAction<SelectedCountry | null>,
         ) => {
             state.selectedCountryInSideBar = action.payload;
         },
@@ -52,6 +59,15 @@ export const appSlice = createSlice({
         },
         setPopup: (state, action: PayloadAction<IPopup>) => {
             state.popup = action.payload;
+        },
+        setDataType: (state, action: PayloadAction<DataType>) => {
+            state.dataType = action.payload;
+        },
+        setCountriesData: (
+            state,
+            action: PayloadAction<ParsedCountryDataRow[]>,
+        ) => {
+            state.countriesData = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -99,6 +115,8 @@ export const {
     setSelectedCountryInSidebar,
     setLastUpdateDate,
     setPopup,
+    setDataType,
+    setCountriesData,
 } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -7,8 +7,14 @@ import {
     selectCountriesData,
     selectSelectedCountryInSideBar,
     selectPopupData,
+    selectDataType,
 } from 'redux/App/selectors';
-import { setSelectedCountryInSidebar, setPopup } from 'redux/App/slice';
+import {
+    setSelectedCountryInSidebar,
+    setPopup,
+    DataType,
+} from 'redux/App/slice';
+
 import countryLookupTable from 'data/admin0-lookup-table.json';
 import { CountryViewColors } from 'models/Colors';
 import mapboxgl, { MapSourceDataEvent, EventData } from 'mapbox-gl';
@@ -40,6 +46,7 @@ const CountryView: React.FC = () => {
     const countriesData = useAppSelector(selectCountriesData);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const popupData = useAppSelector(selectPopupData);
+    const dataType = useAppSelector(selectDataType);
 
     const [mapLoaded, setMapLoaded] = useState(false);
     const [currentPopup, setCurrentPopup] = useState<mapboxgl.Popup>();
@@ -94,6 +101,14 @@ const CountryView: React.FC = () => {
             }
         });
     }, [isLoading, countriesData]);
+
+    // Refresh map when data type changes
+    useEffect(() => {
+        if (!mapLoaded) return;
+
+        displayCountriesOnMap();
+        // eslint-disable-next-line
+    }, [dataType]);
 
     // // Display popup on the map
     useEffect(() => {
@@ -154,13 +169,10 @@ const CountryView: React.FC = () => {
     // Display countries data on the map
     const displayCountriesOnMap = () => {
         const mapRef = map.current;
-        console.log(countriesData.length, mapRef);
         if (!countriesData || countriesData.length === 0 || !mapRef) return;
 
-        console.log('display countries after return');
-
         for (const countryRow of countriesData) {
-            const { name, confirmed } = countryRow;
+            const { name, confirmed, suspected } = countryRow;
 
             const countryCode = getCountryCode(name);
 
@@ -172,7 +184,10 @@ const CountryView: React.FC = () => {
                         id: lookupTableData[countryCode].feature_id,
                     },
                     {
-                        caseCount: confirmed,
+                        caseCount:
+                            dataType === DataType.Confirmed
+                                ? confirmed
+                                : suspected,
                         name,
                     },
                 );
@@ -196,6 +211,8 @@ const CountryView: React.FC = () => {
                         ['!=', ['feature-state', 'caseCount'], null],
                         [
                             'case',
+                            ['==', ['feature-state', 'caseCount'], 0],
+                            CountryViewColors.Fallback,
                             ['<', ['feature-state', 'caseCount'], 10],
                             CountryViewColors['<10'],
                             ['<=', ['feature-state', 'caseCount'], 20],
@@ -246,7 +263,14 @@ const CountryView: React.FC = () => {
                 ref={mapContainer}
                 isLoading={isLoading || !mapLoaded}
             />
-            <Legend title="Confirmed Cases" legendRows={dataLayers} />
+            <Legend
+                title={
+                    dataType === DataType.Confirmed
+                        ? 'Confirmed Cases'
+                        : 'Suspected Cases'
+                }
+                legendRows={dataLayers}
+            />
         </>
     );
 };

@@ -27,9 +27,11 @@ declare module '@mui/material/styles' {
 
     interface Palette {
         dark: Palette['primary'];
+        gray: Palette['primary'];
     }
     interface PaletteOptions {
         dark: PaletteOptions['primary'];
+        gray: PaletteOptions['primary'];
     }
 
     interface TypographyVariants {
