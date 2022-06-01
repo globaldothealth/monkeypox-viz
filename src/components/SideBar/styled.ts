@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import Skeleton from '@mui/material/Skeleton';
+import Button from '@mui/material/Button';
 
 interface StyledSideBarProps {
     $sidebaropen: boolean;
@@ -47,7 +48,6 @@ export const StyledSideBar = styled('aside')<StyledSideBarProps>`
             align-items: center;
         }
     }
-    //
 `;
 
 export const FlagIcon = styled('img')(() => ({
@@ -60,13 +60,9 @@ export const SideBarHeader = styled('div')(({ theme }) => ({
     height: 'auto',
     position: 'relative',
     h1: {
-        borderRadius: '.4rem',
         display: 'inline-block',
         fontSize: '1.2rem',
-        margin: 0,
-        padding: '0.7ex 2ex',
-        background: theme.primary.main,
-        color: theme.primary.contrastText,
+        color: theme.palette.dark.main,
     },
 }));
 
@@ -178,3 +174,27 @@ export const VersionNumber = styled('a')(() => ({
         textDecoration: 'underline',
     },
 }));
+
+interface DataTypeButtonProps {
+    $selected: boolean;
+}
+
+export const DataTypeButton = styled(Button)<DataTypeButtonProps>(
+    ({ $selected, theme }) => ({
+        width: '100%',
+
+        '&:hover': {
+            backgroundColor: theme.palette.primary.main,
+        },
+
+        ...(!$selected && {
+            color: theme.palette.gray.main,
+            borderColor: theme.palette.gray[200],
+
+            '&:hover': {
+                borderColor: theme.palette.gray[200],
+                backgroundColor: theme.palette.gray[100],
+            },
+        }),
+    }),
+);

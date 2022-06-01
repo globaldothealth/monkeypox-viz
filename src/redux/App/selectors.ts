@@ -14,3 +14,4 @@ export const selectLastUpdateDate = (state: RootState) =>
     state.app.lastUpdateDate;
 export const selectAppVersion = (state: RootState) => state.app.appVersion;
 export const selectPopupData = (state: RootState) => state.app.popup;
+export const selectDataType = (state: RootState) => state.app.dataType;

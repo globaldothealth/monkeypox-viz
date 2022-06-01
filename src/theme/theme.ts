@@ -18,11 +18,20 @@ export const theme = createTheme({
         },
     },
     palette: {
+        primary: {
+            main: '#0094e2',
+            contrastText: '#fff',
+        },
         background: {
             default: '#edf3f1',
         },
         dark: {
             main: '#333333',
+        },
+        gray: {
+            main: '#8796A5',
+            [100]: '#F5F5F5',
+            [200]: '#E0E3E7',
         },
     },
     primary: {

@@ -8,6 +8,7 @@ import {
     selectTotalCases,
     selectTotalCasesIsLoading,
     selectAppVersion,
+    selectDataType,
 } from 'redux/App/selectors';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
@@ -22,10 +23,16 @@ import {
     CountriesListSkeleton,
     VersionNumber,
 } from './styled';
-import { setSelectedCountryInSidebar, setPopup } from 'redux/App/slice';
+import {
+    setSelectedCountryInSidebar,
+    setPopup,
+    DataType,
+    setCountriesData,
+} from 'redux/App/slice';
 import { selectSelectedCountryInSideBar } from 'redux/App/selectors';
 import { SelectedCountry } from 'models/CountryData';
 import { getCountryCode } from 'utils/helperFunctions';
+import { DataTypeButtons } from './DataTypeButtons';
 
 const SideBar = () => {
     const dispatch = useAppDispatch();
@@ -37,6 +44,7 @@ const SideBar = () => {
     const lastUpdateDate = useAppSelector(selectLastUpdateDate);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const appVersion = useAppSelector(selectAppVersion);
+    const dataType = useAppSelector(selectDataType);
 
     const countriesData = useAppSelector(selectCountriesData);
     const [autocompleteData, setAutocompleteData] = useState<SelectedCountry[]>(
@@ -52,6 +60,20 @@ const SideBar = () => {
         setAutocompleteData(mappedData);
     }, [countriesData]);
 
+    // Sort countries based on number of cases
+    useEffect(() => {
+        if (!countriesData || countriesData.length === 0) return;
+
+        const sortBy =
+            dataType === DataType.Confirmed ? 'confirmed' : 'suspected';
+
+        const sortedCountries = [...countriesData].sort((a, b) =>
+            a[sortBy] < b[sortBy] ? 1 : -1,
+        );
+        dispatch(setCountriesData(sortedCountries));
+        // eslint-disable-next-line
+    }, [dataType]);
+
     const handleOnClick = () => {
         setOpenSidebar((value) => !value);
     };
@@ -65,19 +87,24 @@ const SideBar = () => {
         event: SyntheticEvent<Element, Event>,
         value: string | null,
     ) => {
-        if (value === null) return;
-
-        dispatch(setSelectedCountryInSidebar({ name: value }));
-        dispatch(setPopup({ isOpen: true, countryName: value }));
+        if (value === null) {
+            dispatch(setSelectedCountryInSidebar(null));
+        } else {
+            dispatch(setSelectedCountryInSidebar({ name: value }));
+            dispatch(setPopup({ isOpen: true, countryName: value }));
+        }
     };
 
     const Countries = () => {
         return (
             <>
                 {countriesData.map((row) => {
-                    const { name, confirmed } = row;
+                    const { name, confirmed, suspected } = row;
+
+                    const value =
+                        dataType === DataType.Confirmed ? confirmed : suspected;
                     const countryCasesCountPercentage =
-                        (confirmed / totalCasesCount) * 100;
+                        (value / totalCasesCount) * 100;
 
                     return (
                         <LocationListItem
@@ -89,7 +116,7 @@ const SideBar = () => {
                             <button>
                                 <span className="label">{name}</span>
                                 <span className="num">
-                                    {confirmed.toLocaleString()}
+                                    {value.toLocaleString()}
                                 </span>
                             </button>
                             <div className="country-cases-bar"></div>
@@ -104,12 +131,11 @@ const SideBar = () => {
         <StyledSideBar $sidebaropen={openSidebar} data-cy="sidebar">
             <>
                 <SideBarHeader id="sidebar-header">
-                    <h1 id="total" className="sidebar-title total">
-                        MONKEYPOX LINE LIST CASES
-                    </h1>
-                    <br />
-                    <div id="disease-selector"></div>
+                    <h1 id="total">MONKEYPOX LINE LIST CASES</h1>
                 </SideBarHeader>
+
+                <DataTypeButtons />
+
                 <LatestGlobal id="latest-global">
                     {totalCasesCountIsLoading ? (
                         <SideBarTitlesSkeleton
@@ -122,7 +148,9 @@ const SideBar = () => {
                             <span id="total-cases" className="active">
                                 {totalCasesCount.toLocaleString()}
                             </span>
-                            <span className="reported-cases-label"> cases</span>
+                            <span className="reported-cases-label">
+                                total cases
+                            </span>
                         </>
                     )}
                     <div className="last-updated-date">
