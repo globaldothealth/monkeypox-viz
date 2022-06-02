@@ -9,7 +9,7 @@ interface IPopup {
 
 export enum DataType {
     Confirmed,
-    Suspected,
+    Combined,
 }
 
 interface AppState {

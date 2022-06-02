@@ -11,7 +11,12 @@ export const DataTypeButtons = () => {
     const dataType = useAppSelector(selectDataType);
 
     return (
-        <ButtonGroup size="small" disableElevation sx={{ marginTop: '2rem' }}>
+        <ButtonGroup
+            size="small"
+            disableElevation
+            sx={{ marginTop: '2rem' }}
+            orientation="vertical"
+        >
             <DataTypeButton
                 variant={
                     dataType === DataType.Confirmed ? 'contained' : 'outlined'
@@ -23,12 +28,12 @@ export const DataTypeButtons = () => {
             </DataTypeButton>
             <DataTypeButton
                 variant={
-                    dataType === DataType.Suspected ? 'contained' : 'outlined'
+                    dataType === DataType.Combined ? 'contained' : 'outlined'
                 }
-                $selected={dataType === DataType.Suspected}
-                onClick={() => dispatch(setDataType(DataType.Suspected))}
+                $selected={dataType === DataType.Combined}
+                onClick={() => dispatch(setDataType(DataType.Combined))}
             >
-                Suspected
+                Confirmed and Suspected
             </DataTypeButton>
         </ButtonGroup>
     );

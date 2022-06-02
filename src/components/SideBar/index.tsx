@@ -65,7 +65,7 @@ const SideBar = () => {
         if (!countriesData || countriesData.length === 0) return;
 
         const sortBy =
-            dataType === DataType.Confirmed ? 'confirmed' : 'suspected';
+            dataType === DataType.Confirmed ? 'confirmed' : 'combined';
 
         const sortedCountries = [...countriesData].sort((a, b) =>
             a[sortBy] < b[sortBy] ? 1 : -1,
@@ -99,10 +99,10 @@ const SideBar = () => {
         return (
             <>
                 {countriesData.map((row) => {
-                    const { name, confirmed, suspected } = row;
+                    const { name, confirmed, combined } = row;
 
                     const value =
-                        dataType === DataType.Confirmed ? confirmed : suspected;
+                        dataType === DataType.Confirmed ? confirmed : combined;
                     const countryCasesCountPercentage =
                         (value / totalCasesCount) * 100;
 

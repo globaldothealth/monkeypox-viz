@@ -9,6 +9,7 @@ export interface ParsedCountryDataRow {
     name: string;
     suspected: number;
     confirmed: number;
+    combined: number;
 }
 
 export interface TotalCasesValues {

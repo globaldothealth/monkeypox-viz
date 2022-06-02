@@ -45,8 +45,15 @@ export const fetchCountriesData = createAsyncThunk<
                     name: countryName,
                     suspected: row[countryName].suspected,
                     confirmed: row[countryName].confirmed,
+                    combined:
+                        row[countryName].confirmed + row[countryName].suspected,
                 };
             },
+        );
+
+        // remove duplicated United Kingdom
+        parsedCountriesData = parsedCountriesData.filter(
+            (countryData) => countryData.name !== 'United Kingdom',
         );
 
         // combine England and Scotland cases together as United Kingdom
@@ -71,6 +78,7 @@ export const fetchCountriesData = createAsyncThunk<
                 name: 'United Kingdom',
                 confirmed: combinedConfirmedCases,
                 suspected: combinedSuspectedCases,
+                combined: combinedConfirmedCases + combinedSuspectedCases,
             });
 
             // delete England and Scotland from the array

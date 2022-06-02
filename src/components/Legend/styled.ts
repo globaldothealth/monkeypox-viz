@@ -11,6 +11,8 @@ export const LegendContainer = styled('div')`
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid #ececec;
     color: #333;
+
+    max-width: 13rem;
 `;
 
 export const Title = styled('p')`
