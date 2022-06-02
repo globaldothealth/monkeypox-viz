@@ -172,7 +172,7 @@ const CountryView: React.FC = () => {
         if (!countriesData || countriesData.length === 0 || !mapRef) return;
 
         for (const countryRow of countriesData) {
-            const { name, confirmed, suspected } = countryRow;
+            const { name, confirmed, combined } = countryRow;
 
             const countryCode = getCountryCode(name);
 
@@ -187,7 +187,7 @@ const CountryView: React.FC = () => {
                         caseCount:
                             dataType === DataType.Confirmed
                                 ? confirmed
-                                : suspected,
+                                : combined,
                         name,
                     },
                 );
@@ -267,7 +267,7 @@ const CountryView: React.FC = () => {
                 title={
                     dataType === DataType.Confirmed
                         ? 'Confirmed Cases'
-                        : 'Suspected Cases'
+                        : 'Confirmed and Suspected Cases'
                 }
                 legendRows={dataLayers}
             />
