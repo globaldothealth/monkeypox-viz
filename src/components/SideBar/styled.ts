@@ -86,6 +86,10 @@ export const LatestGlobal = styled('aside')<{ $sidebaropen: boolean }>`
         color: #999;
         margin-top: 2rem;
     }
+    .reported-cases-label {
+        display: block;
+        font-size: 1.4rem;
+    }
 `;
 
 export const SearchBar = styled('div')`

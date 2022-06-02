@@ -149,7 +149,7 @@ const SideBar = () => {
                                 {totalCasesCount.toLocaleString()}
                             </span>
                             <span className="reported-cases-label">
-                                total cases
+                                confirmed and suspected cases
                             </span>
                         </>
                     )}
