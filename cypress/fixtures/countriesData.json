@@ -3,13 +3,13 @@
         {
             "Spain": {
                 "confirmed": 58,
-                "suspected": 0
+                "suspected": 10
             }
         },
         {
             "Portugal": {
                 "confirmed": 48,
-                "suspected": 15
+                "suspected": 25
             }
         },
         {

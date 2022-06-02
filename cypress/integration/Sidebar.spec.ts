@@ -68,4 +68,37 @@ describe('<SideBar />', () => {
 
         cy.get('[data-cy="autocomplete-input"').should('have.value', 'Germany');
     });
+
+    it('Can switch between confirmed and combined views', () => {
+        cy.visit('/');
+
+        cy.wait('@fetchCountriesData');
+
+        cy.contains(/Confirmed/i);
+        cy.contains(/Confirmed and Suspected/i);
+
+        cy.get('[data-cy="listed-country"]')
+            .first()
+            .contains('Spain')
+            .contains('58');
+
+        cy.get('[data-cy="listed-country"]')
+            .eq(1)
+            .contains('Portugal')
+            .contains('48');
+
+        cy.get('button')
+            .contains(/Confirmed and Suspected/i)
+            .click();
+
+        cy.get('[data-cy="listed-country"]')
+            .first()
+            .contains('Portugal')
+            .contains('73');
+
+        cy.get('[data-cy="listed-country"]')
+            .eq(1)
+            .contains('Spain')
+            .contains('68');
+    });
 });
