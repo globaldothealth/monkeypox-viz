@@ -5,7 +5,7 @@ import { useState, SyntheticEvent, useEffect } from 'react';
 import {
     selectCountriesData,
     selectLastUpdateDate,
-    selectTotalCases,
+    selectTotalCasesNumber,
     selectTotalCasesIsLoading,
     selectAppVersion,
     selectDataType,
@@ -39,7 +39,7 @@ const SideBar = () => {
 
     const [openSidebar, setOpenSidebar] = useState(true);
 
-    const totalCasesCount = useAppSelector(selectTotalCases);
+    const totalCasesNumber = useAppSelector(selectTotalCasesNumber);
     const totalCasesCountIsLoading = useAppSelector(selectTotalCasesIsLoading);
     const lastUpdateDate = useAppSelector(selectLastUpdateDate);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
@@ -103,8 +103,12 @@ const SideBar = () => {
 
                     const value =
                         dataType === DataType.Confirmed ? confirmed : combined;
+                    const totalValue = DataType.Confirmed
+                        ? totalCasesNumber.confirmed
+                        : totalCasesNumber.total;
+
                     const countryCasesCountPercentage =
-                        (value / totalCasesCount) * 100;
+                        (value / totalValue) * 100;
 
                     return (
                         <LocationListItem
@@ -146,10 +150,14 @@ const SideBar = () => {
                     ) : (
                         <>
                             <span id="total-cases" className="active">
-                                {totalCasesCount.toLocaleString()}
+                                {dataType === DataType.Confirmed
+                                    ? totalCasesNumber.confirmed.toLocaleString()
+                                    : totalCasesNumber.total.toLocaleString()}
                             </span>
                             <span className="reported-cases-label">
-                                confirmed and suspected cases
+                                {dataType === DataType.Confirmed
+                                    ? 'confirmed cases'
+                                    : 'confirmed and suspected cases'}
                             </span>
                         </>
                     )}

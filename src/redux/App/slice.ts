@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchCountriesData, fetchTotalCases, fetchAppVersion } from './thunks';
-import { SelectedCountry, ParsedCountryDataRow } from 'models/CountryData';
+import {
+    SelectedCountry,
+    ParsedCountryDataRow,
+    TotalCasesValues,
+} from 'models/CountryData';
 
 interface IPopup {
     isOpen: boolean;
@@ -17,7 +21,7 @@ interface AppState {
     isMapLoading: boolean;
     error: string | undefined;
     countriesData: ParsedCountryDataRow[];
-    totalNumberOfCases: number;
+    totalCasesNumber: TotalCasesValues;
     selectedCountryInSideBar: SelectedCountry | null;
     lastUpdateDate: string;
     appVersion: string | undefined;
@@ -30,7 +34,7 @@ const initialState: AppState = {
     isMapLoading: false,
     error: undefined,
     countriesData: [],
-    totalNumberOfCases: 0,
+    totalCasesNumber: { total: 0, confirmed: 0 },
     selectedCountryInSideBar: null,
     lastUpdateDate: '',
     appVersion: undefined,
@@ -94,7 +98,7 @@ export const appSlice = createSlice({
         });
         builder.addCase(fetchTotalCases.fulfilled, (state, { payload }) => {
             state.isLoading = false;
-            state.totalNumberOfCases = payload.total;
+            state.totalCasesNumber = payload;
         });
         builder.addCase(fetchTotalCases.rejected, (state, action) => {
             state.isLoading = false;
