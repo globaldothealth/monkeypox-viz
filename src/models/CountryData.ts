@@ -14,6 +14,7 @@ export interface ParsedCountryDataRow {
 
 export interface TotalCasesValues {
     total: number;
+    confirmed: number;
 }
 
 // Used by Autocomplete in the Sidebar
