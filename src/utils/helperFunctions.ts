@@ -14,10 +14,15 @@ export const parseSearchQuery = (searchQuery: string): string => {
 export const getCountryCode = (countryName: string): string => {
     const countryObj = iso.whereCountry(countryName);
 
+    // Manual overrides
     if (countryName === 'United Kingdom') return 'GB';
     if (countryName === 'England') return 'GB';
     if (countryName === 'Scotland') return 'GB';
+    if (countryName === 'Wales') return 'GB';
+    if (countryName === 'Northern Ireland') return 'GB';
     if (countryName === 'United States') return 'US';
+    if (countryName === 'Kosovo') return 'XK';
+    if (countryName === 'Iran') return 'IR';
 
     return countryObj ? countryObj.alpha2 : 'N/A';
 };

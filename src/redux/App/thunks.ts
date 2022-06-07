@@ -64,37 +64,48 @@ export const fetchCountriesData = createAsyncThunk<
             (countryData) => countryData.name !== 'United Kingdom',
         );
 
-        // combine England and Scotland cases together as United Kingdom
+        // combine England, Scotland, Wales and Northern Ireland cases together as United Kingdom
         // this has to be done this way, as Mapbox source files that we use
-        // doesn't differentiate Scotland and England
-        const englandIdx = parsedCountriesData.findIndex(
-            (country) => country.name === 'England',
+        // doesn't differentiate those places
+        let ukConfirmedCases = 0;
+        let ukSuspectedCases = 0;
+        let ukCombinedCases = 0;
+
+        ['England', 'Scotland', 'Wales', 'Northern Ireland'].forEach(
+            (country) => {
+                const countryIdx = parsedCountriesData.findIndex(
+                    (row) => row.name === country,
+                );
+
+                const countryCases = {
+                    confirmed:
+                        countryIdx !== -1
+                            ? parsedCountriesData[countryIdx].confirmed
+                            : 0,
+                    suspected:
+                        countryIdx !== -1
+                            ? parsedCountriesData[countryIdx].suspected
+                            : 0,
+                };
+
+                ukConfirmedCases += countryCases.confirmed;
+                ukSuspectedCases += countryCases.suspected;
+                ukCombinedCases +=
+                    countryCases.confirmed + countryCases.suspected;
+
+                // delete country from the array
+                parsedCountriesData = parsedCountriesData.filter(
+                    (row) => row.name !== country,
+                );
+            },
         );
-        const scotlandIdx = parsedCountriesData.findIndex(
-            (country) => country.name === 'Scotland',
-        );
 
-        if (englandIdx !== -1 && scotlandIdx !== -1) {
-            const combinedConfirmedCases =
-                parsedCountriesData[englandIdx].confirmed +
-                parsedCountriesData[scotlandIdx].confirmed;
-            const combinedSuspectedCases =
-                parsedCountriesData[englandIdx].suspected +
-                parsedCountriesData[scotlandIdx].suspected;
-
-            parsedCountriesData.push({
-                name: 'United Kingdom',
-                confirmed: combinedConfirmedCases,
-                suspected: combinedSuspectedCases,
-                combined: combinedConfirmedCases + combinedSuspectedCases,
-            });
-
-            // delete England and Scotland from the array
-            parsedCountriesData = parsedCountriesData.filter(
-                (country) =>
-                    country.name !== 'England' && country.name !== 'Scotland',
-            );
-        }
+        parsedCountriesData.push({
+            name: 'United Kingdom',
+            confirmed: ukConfirmedCases,
+            suspected: ukSuspectedCases,
+            combined: ukCombinedCases,
+        });
 
         // sort the data based on confirmed cases
         const countriesDataSorted = parsedCountriesData.sort((a, b) =>
