@@ -6,7 +6,8 @@ import {
 } from 'models/CountryData';
 import { setLastUpdateDate } from './slice';
 import { getDataPortalUrl, Env } from 'utils/helperFunctions';
-import { format } from 'date-fns';
+import enUSLocale from 'date-fns/locale/en-US';
+import { formatInTimeZone } from 'date-fns-tz';
 
 // Fetch countries data from AWS S3 JSON file
 export const fetchCountriesData = createAsyncThunk<
@@ -29,7 +30,14 @@ export const fetchCountriesData = createAsyncThunk<
         if (keys.length === 0) throw new Error('Wrong data format');
 
         const lastUpdateDate = new Date(keys[0]);
-        const parsedDate = format(lastUpdateDate, 'E LLL d yyyy');
+        const parsedDate = formatInTimeZone(
+            lastUpdateDate,
+            'Europe/Berlin',
+            'E LLL d yyyy',
+            {
+                locale: enUSLocale,
+            },
+        );
         dispatch(setLastUpdateDate(parsedDate));
 
         const latestKey = keys[0];
