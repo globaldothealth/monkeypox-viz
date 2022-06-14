@@ -16,6 +16,7 @@ import ReactGA from 'react-ga4';
 import { useCookieBanner } from 'hooks/useCookieBanner';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from 'components/ErrorFallback';
+import Timeseries from 'components/Timeseries';
 
 import { ErrorContainer } from './styled';
 import PopupSmallScreens from 'components/PopupSmallScreens';
@@ -76,6 +77,8 @@ const App = () => {
                     />
                     <Route path="/country" element={<CountryView />} />
                 </Routes>
+
+                <Timeseries />
 
                 {error && (
                     <ErrorContainer>
