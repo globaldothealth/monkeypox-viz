@@ -26,6 +26,7 @@ import { MapContainer } from 'theme/globalStyles';
 import Loader from 'components/Loader';
 import { PopupContentText } from './styled';
 import { getCountryCode } from 'utils/helperFunctions';
+import CaseChart from 'components/CaseChart';
 
 const dataLayers: LegendRow[] = [
     { label: '0 or no data', color: CountryViewColors['NoData'] },
@@ -145,6 +146,8 @@ const CountryView: React.FC = () => {
                     {suspectedCases.toLocaleString()} suspected
                     {suspectedCases > 1 ? ' cases' : ' case'}
                 </PopupContentText>
+
+                <CaseChart />
             </>
         );
 
