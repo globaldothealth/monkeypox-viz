@@ -27,6 +27,7 @@ import Loader from 'components/Loader';
 import { PopupContentText } from './styled';
 import { getCountryCode } from 'utils/helperFunctions';
 import CaseChart from 'components/CaseChart';
+import { Box } from '@mui/material';
 
 const dataLayers: LegendRow[] = [
     { label: '0 or no data', color: CountryViewColors['NoData'] },
@@ -147,7 +148,9 @@ const CountryView: React.FC = () => {
                     {suspectedCases > 1 ? ' cases' : ' case'}
                 </PopupContentText>
 
-                <CaseChart />
+                <Box sx={{ margin: '4rem 2rem 0 -2rem' }}>
+                    <CaseChart />
+                </Box>
             </>
         );
 
