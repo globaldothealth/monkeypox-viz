@@ -87,7 +87,7 @@ const SideBar = () => {
         event: SyntheticEvent<Element, Event>,
         value: string | null,
     ) => {
-        if (value === null) {
+        if (value === null || value === '') {
             dispatch(setSelectedCountryInSidebar(null));
         } else {
             dispatch(setSelectedCountryInSidebar({ name: value }));
@@ -191,7 +191,7 @@ const SideBar = () => {
                         isOptionEqualToValue={(option, value) =>
                             option.name === value.name
                         }
-                        value={selectedCountry || { name: '' }}
+                        value={selectedCountry}
                         renderOption={(props, option) => (
                             <Box
                                 component="li"

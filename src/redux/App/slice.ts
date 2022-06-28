@@ -1,9 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchCountriesData, fetchTotalCases, fetchAppVersion } from './thunks';
+import {
+    fetchCountriesData,
+    fetchTotalCases,
+    fetchAppVersion,
+    fetchTimeseriesData,
+} from './thunks';
 import {
     SelectedCountry,
     ParsedCountryDataRow,
     TotalCasesValues,
+    TimeseriesCountryDataRow,
 } from 'models/CountryData';
 
 interface IPopup {
@@ -21,6 +27,10 @@ interface AppState {
     isMapLoading: boolean;
     error: string | undefined;
     countriesData: ParsedCountryDataRow[];
+    initialCountriesData: ParsedCountryDataRow[];
+    timeseriesCountryData: TimeseriesCountryDataRow[];
+    timeseriesDates: Date[];
+    currentDate: Date | undefined;
     totalCasesNumber: TotalCasesValues;
     selectedCountryInSideBar: SelectedCountry | null;
     lastUpdateDate: string;
@@ -34,6 +44,10 @@ const initialState: AppState = {
     isMapLoading: false,
     error: undefined,
     countriesData: [],
+    initialCountriesData: [],
+    timeseriesCountryData: [],
+    timeseriesDates: [],
+    currentDate: undefined,
     totalCasesNumber: { total: 0, confirmed: 0 },
     selectedCountryInSideBar: null,
     lastUpdateDate: '',
@@ -73,6 +87,9 @@ export const appSlice = createSlice({
         ) => {
             state.countriesData = action.payload;
         },
+        setCurrentDate: (state, action: PayloadAction<Date>) => {
+            state.currentDate = action.payload;
+        },
     },
     extraReducers: (builder) => {
         // Country view data
@@ -83,6 +100,7 @@ export const appSlice = createSlice({
         builder.addCase(fetchCountriesData.fulfilled, (state, { payload }) => {
             state.isLoading = false;
             state.countriesData = payload;
+            state.initialCountriesData = payload;
         });
         builder.addCase(fetchCountriesData.rejected, (state, action) => {
             state.isLoading = false;
@@ -111,6 +129,23 @@ export const appSlice = createSlice({
         builder.addCase(fetchAppVersion.fulfilled, (state, action) => {
             state.appVersion = action.payload;
         });
+
+        // Timeseries country data
+        builder.addCase(fetchTimeseriesData.pending, (state) => {
+            state.isLoading = true;
+            state.error = undefined;
+        });
+        builder.addCase(fetchTimeseriesData.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.timeseriesCountryData = payload.data;
+            state.timeseriesDates = payload.dates;
+        });
+        builder.addCase(fetchTimeseriesData.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload
+                ? action.payload
+                : action.error.message;
+        });
     },
 });
 
@@ -121,6 +156,7 @@ export const {
     setPopup,
     setDataType,
     setCountriesData,
+    setCurrentDate,
 } = appSlice.actions;
 
 export default appSlice.reducer;
