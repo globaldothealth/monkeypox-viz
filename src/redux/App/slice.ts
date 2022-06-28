@@ -4,12 +4,14 @@ import {
     fetchTotalCases,
     fetchAppVersion,
     fetchTimeseriesData,
+    fetchTimeseriesCountData,
 } from './thunks';
 import {
     SelectedCountry,
     ParsedCountryDataRow,
     TotalCasesValues,
     TimeseriesCountryDataRow,
+    TimeseriesCaseCountsDataRow,
 } from 'models/CountryData';
 
 interface IPopup {
@@ -30,6 +32,7 @@ interface AppState {
     initialCountriesData: ParsedCountryDataRow[];
     timeseriesCountryData: TimeseriesCountryDataRow[];
     timeseriesDates: Date[];
+    timeseriesCaseCounts: TimeseriesCaseCountsDataRow[];
     currentDate: Date | undefined;
     totalCasesNumber: TotalCasesValues;
     selectedCountryInSideBar: SelectedCountry | null;
@@ -47,6 +50,7 @@ const initialState: AppState = {
     initialCountriesData: [],
     timeseriesCountryData: [],
     timeseriesDates: [],
+    timeseriesCaseCounts: [],
     currentDate: undefined,
     totalCasesNumber: { total: 0, confirmed: 0 },
     selectedCountryInSideBar: null,
@@ -141,6 +145,25 @@ export const appSlice = createSlice({
             state.timeseriesDates = payload.dates;
         });
         builder.addCase(fetchTimeseriesData.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload
+                ? action.payload
+                : action.error.message;
+        });
+
+        // Timeseries case counts data
+        builder.addCase(fetchTimeseriesCountData.pending, (state) => {
+            state.isLoading = true;
+            state.error = undefined;
+        });
+        builder.addCase(
+            fetchTimeseriesCountData.fulfilled,
+            (state, { payload }) => {
+                state.isLoading = false;
+                state.timeseriesCaseCounts = payload;
+            },
+        );
+        builder.addCase(fetchTimeseriesCountData.rejected, (state, action) => {
             state.isLoading = false;
             state.error = action.payload
                 ? action.payload

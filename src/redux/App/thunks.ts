@@ -4,6 +4,7 @@ import {
     TotalCasesValues,
     ParsedCountryDataRow,
     TimeseriesCountryDataRow,
+    TimeseriesCaseCountsDataRow,
 } from 'models/CountryData';
 import { setLastUpdateDate } from './slice';
 import { getDataPortalUrl, Env } from 'utils/helperFunctions';
@@ -179,6 +180,12 @@ interface TimeseriesDataRow {
     Country: string;
 }
 
+interface TimeseriesCountsDataRow {
+    Date: string;
+    Cases: number;
+    Cumulative_cases: number;
+}
+
 export const fetchTimeseriesData = createAsyncThunk<
     { data: TimeseriesCountryDataRow[]; dates: Date[] },
     void,
@@ -187,7 +194,7 @@ export const fetchTimeseriesData = createAsyncThunk<
     const dataUrl = process.env.REACT_APP_TIMESERIES_COUNTRY_DATA;
 
     try {
-        if (!dataUrl) throw new Error('Timeseries conutry data url missing');
+        if (!dataUrl) throw new Error('Timeseries data url missing');
 
         const response = await fetch(dataUrl);
         if (response.status !== 200)
@@ -214,6 +221,40 @@ export const fetchTimeseriesData = createAsyncThunk<
             });
 
         return { data: parsedTimeseriesData, dates };
+    } catch (err: any) {
+        if (err.response) return rejectWithValue(err.response.message);
+
+        throw err;
+    }
+});
+
+export const fetchTimeseriesCountData = createAsyncThunk<
+    TimeseriesCaseCountsDataRow[],
+    void,
+    { rejectValue: string }
+>('app/fetchTimeseriesCountData', async (_, { rejectWithValue }) => {
+    const dataUrl = process.env.REACT_APP_TIMESERIES_COUNT_DATA;
+
+    try {
+        if (!dataUrl) throw new Error('Timeseries count data url missing');
+
+        const response = await fetch(dataUrl);
+        if (response.status !== 200)
+            throw new Error('Fetching timeseries case counts data failed');
+
+        const jsonResponse =
+            (await response.json()) as TimeseriesCountsDataRow[];
+
+        const parsedTimeseriesData: TimeseriesCaseCountsDataRow[] =
+            jsonResponse.map((row) => {
+                return {
+                    date: new Date(row.Date),
+                    cases: row.Cases,
+                    cumulativeCases: row.Cumulative_cases,
+                };
+            });
+
+        return parsedTimeseriesData;
     } catch (err: any) {
         if (err.response) return rejectWithValue(err.response.message);
 

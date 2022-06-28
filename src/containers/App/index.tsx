@@ -9,6 +9,7 @@ import {
     fetchTotalCases,
     fetchAppVersion,
     fetchTimeseriesData,
+    fetchTimeseriesCountData,
 } from 'redux/App/thunks';
 import { DataType, setCountriesData } from 'redux/App/slice';
 import {
@@ -53,11 +54,13 @@ const App = () => {
     const dataType = useAppSelector(selectDataType);
     const initialCountriesData = useAppSelector(selectInitialCountriesData);
 
+    // Fetch data from AWS S3
     useEffect(() => {
         dispatch(fetchCountriesData());
         dispatch(fetchTotalCases());
         dispatch(fetchAppVersion());
         dispatch(fetchTimeseriesData());
+        dispatch(fetchTimeseriesCountData());
     }, [dispatch]);
 
     // When a user switches to "combined" view reset initial countries data

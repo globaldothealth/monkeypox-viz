@@ -31,3 +31,9 @@ export interface TimeseriesCountryDataRow {
     cumulativeCases: number;
     country: string;
 }
+
+export interface TimeseriesCaseCountsDataRow {
+    date: Date;
+    cases: number;
+    cumulativeCases: number;
+}

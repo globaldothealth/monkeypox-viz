@@ -9,6 +9,8 @@ import {
     selectTotalCasesIsLoading,
     selectAppVersion,
     selectDataType,
+    selectCurrentDate,
+    selectTimeseriesCaseCounts,
 } from 'redux/App/selectors';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
@@ -31,13 +33,14 @@ import {
 } from 'redux/App/slice';
 import { selectSelectedCountryInSideBar } from 'redux/App/selectors';
 import { SelectedCountry } from 'models/CountryData';
-import { getCountryCode } from 'utils/helperFunctions';
+import { getCountryCode, getTotalCasesByDate } from 'utils/helperFunctions';
 import { DataTypeButtons } from './DataTypeButtons';
 
 const SideBar = () => {
     const dispatch = useAppDispatch();
 
     const [openSidebar, setOpenSidebar] = useState(true);
+    const [timeseriesTotalCases, setTimeseriesTotalCases] = useState(0);
 
     const totalCasesNumber = useAppSelector(selectTotalCasesNumber);
     const totalCasesCountIsLoading = useAppSelector(selectTotalCasesIsLoading);
@@ -45,6 +48,8 @@ const SideBar = () => {
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const appVersion = useAppSelector(selectAppVersion);
     const dataType = useAppSelector(selectDataType);
+    const currentDate = useAppSelector(selectCurrentDate);
+    const timeseriesCaseCounts = useAppSelector(selectTimeseriesCaseCounts);
 
     const countriesData = useAppSelector(selectCountriesData);
     const [autocompleteData, setAutocompleteData] = useState<SelectedCountry[]>(
@@ -73,6 +78,15 @@ const SideBar = () => {
         dispatch(setCountriesData(sortedCountries));
         // eslint-disable-next-line
     }, [dataType]);
+
+    // Update total cases count whenever current date in timeseries changes
+    useEffect(() => {
+        if (!currentDate || !timeseriesCaseCounts) return;
+
+        setTimeseriesTotalCases(
+            getTotalCasesByDate(timeseriesCaseCounts, currentDate),
+        );
+    }, [currentDate, timeseriesCaseCounts]);
 
     const handleOnClick = () => {
         setOpenSidebar((value) => !value);
@@ -104,7 +118,7 @@ const SideBar = () => {
                     const value =
                         dataType === DataType.Confirmed ? confirmed : combined;
                     const totalValue = DataType.Confirmed
-                        ? totalCasesNumber.confirmed
+                        ? timeseriesTotalCases
                         : totalCasesNumber.total;
 
                     const countryCasesCountPercentage =
@@ -151,7 +165,7 @@ const SideBar = () => {
                         <>
                             <span id="total-cases" className="active">
                                 {dataType === DataType.Confirmed
-                                    ? totalCasesNumber.confirmed.toLocaleString()
+                                    ? timeseriesTotalCases.toLocaleString()
                                     : totalCasesNumber.total.toLocaleString()}
                             </span>
                             <span className="reported-cases-label">

@@ -22,3 +22,5 @@ export const selectTimeseriesCountryData = (state: RootState) =>
 export const selectTimeseriesDates = (state: RootState) =>
     state.app.timeseriesDates;
 export const selectCurrentDate = (state: RootState) => state.app.currentDate;
+export const selectTimeseriesCaseCounts = (state: RootState) =>
+    state.app.timeseriesCaseCounts;

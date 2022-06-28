@@ -2,6 +2,7 @@ import iso from 'iso-3166-1';
 import {
     TimeseriesCountryDataRow,
     ParsedCountryDataRow,
+    TimeseriesCaseCountsDataRow,
 } from 'models/CountryData';
 import { ChartDataFormat } from 'components/CaseChart';
 import { isEqual, format, compareAsc } from 'date-fns';
@@ -82,8 +83,15 @@ export const getChartDataFromTimeseriesData = (
     country: string,
     endDate: Date | undefined,
 ): ChartDataFormat[] => {
+    let chosenCountry = country;
+
+    // Manual override this for now until timeseries data changes
+    if (country === 'United Kingdom') chosenCountry = 'England';
+
     // Get only data belonging to chosen country
-    let countryData = timeseriesData.filter((data) => data.country === country);
+    let countryData = timeseriesData.filter(
+        (data) => data.country === chosenCountry,
+    );
 
     // Get only data before or at a chosen date
     if (endDate) {
@@ -106,4 +114,15 @@ export const getChartDataFromTimeseriesData = (
     });
 
     return chartData;
+};
+
+export const getTotalCasesByDate = (
+    timeseriesCaseCountsData: TimeseriesCaseCountsDataRow[],
+    date: Date,
+): number => {
+    const dataRow = timeseriesCaseCountsData.find((data) =>
+        isEqual(data.date, date),
+    );
+
+    return dataRow?.cumulativeCases || 0;
 };

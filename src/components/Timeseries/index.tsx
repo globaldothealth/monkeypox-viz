@@ -91,11 +91,12 @@ export default function Timeseries() {
 
     // Stop animation and delete interval when completed
     useEffect(() => {
-        if (!animationInterval || selectedDate < timeseriesDates.length - 1)
-            return;
+        if (selectedDate < timeseriesDates.length - 1) return;
 
-        clearInterval(animationInterval);
-        setAnimationInterval(undefined);
+        if (animationInterval) {
+            clearInterval(animationInterval);
+            setAnimationInterval(undefined);
+        }
         dispatch(setCountriesData(initialCountriesData));
         // eslint-disable-next-line
     }, [selectedDate]);
