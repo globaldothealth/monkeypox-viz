@@ -23,6 +23,7 @@ export const getCountryCode = (countryName: string): string => {
     if (countryName === 'United States') return 'US';
     if (countryName === 'Kosovo') return 'XK';
     if (countryName === 'Iran') return 'IR';
+    if (countryName === 'South Korea') return 'KR';
 
     return countryObj ? countryObj.alpha2 : 'N/A';
 };
