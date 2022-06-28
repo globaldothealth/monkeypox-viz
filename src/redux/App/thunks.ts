@@ -3,11 +3,14 @@ import {
     CountryDataRow,
     TotalCasesValues,
     ParsedCountryDataRow,
+    TimeseriesCountryDataRow,
+    TimeseriesCaseCountsDataRow,
 } from 'models/CountryData';
 import { setLastUpdateDate } from './slice';
 import { getDataPortalUrl, Env } from 'utils/helperFunctions';
 import enUSLocale from 'date-fns/locale/en-US';
 import { formatInTimeZone } from 'date-fns-tz';
+import { isBefore } from 'date-fns';
 
 // Fetch countries data from AWS S3 JSON file
 export const fetchCountriesData = createAsyncThunk<
@@ -159,6 +162,99 @@ export const fetchAppVersion = createAsyncThunk<
         const version = await versionBlob.text();
 
         return version;
+    } catch (err: any) {
+        if (err.response) return rejectWithValue(err.response.message);
+
+        throw err;
+    }
+});
+
+// Timesries data
+
+// This is how the data is structured in json file
+// it will be parsed to another format
+interface TimeseriesDataRow {
+    Date: string;
+    Cases: number;
+    Cumulative_cases: number;
+    Country: string;
+}
+
+interface TimeseriesCountsDataRow {
+    Date: string;
+    Cases: number;
+    Cumulative_cases: number;
+}
+
+export const fetchTimeseriesData = createAsyncThunk<
+    { data: TimeseriesCountryDataRow[]; dates: Date[] },
+    void,
+    { rejectValue: string }
+>('app/fetchTimeseriesData', async (_, { rejectWithValue }) => {
+    const dataUrl = process.env.REACT_APP_TIMESERIES_COUNTRY_DATA;
+
+    try {
+        if (!dataUrl) throw new Error('Timeseries data url missing');
+
+        const response = await fetch(dataUrl);
+        if (response.status !== 200)
+            throw new Error('Fetching timeseries country data failed');
+
+        const jsonResponse = (await response.json()) as TimeseriesDataRow[];
+
+        const allDates = jsonResponse.map((row) => row.Date);
+        // get only unique dates
+        let dates: string[] | Date[] = [...new Set(allDates)];
+        // convert to array of dates
+        dates = dates.map((date) => new Date(date));
+        // sort dates
+        dates.sort((date1, date2) => (isBefore(date1, date2) ? -1 : 1));
+
+        const parsedTimeseriesData: TimeseriesCountryDataRow[] =
+            jsonResponse.map((row) => {
+                return {
+                    date: new Date(row.Date),
+                    country: row.Country,
+                    cases: row.Cases,
+                    cumulativeCases: row.Cumulative_cases,
+                };
+            });
+
+        return { data: parsedTimeseriesData, dates };
+    } catch (err: any) {
+        if (err.response) return rejectWithValue(err.response.message);
+
+        throw err;
+    }
+});
+
+export const fetchTimeseriesCountData = createAsyncThunk<
+    TimeseriesCaseCountsDataRow[],
+    void,
+    { rejectValue: string }
+>('app/fetchTimeseriesCountData', async (_, { rejectWithValue }) => {
+    const dataUrl = process.env.REACT_APP_TIMESERIES_COUNT_DATA;
+
+    try {
+        if (!dataUrl) throw new Error('Timeseries count data url missing');
+
+        const response = await fetch(dataUrl);
+        if (response.status !== 200)
+            throw new Error('Fetching timeseries case counts data failed');
+
+        const jsonResponse =
+            (await response.json()) as TimeseriesCountsDataRow[];
+
+        const parsedTimeseriesData: TimeseriesCaseCountsDataRow[] =
+            jsonResponse.map((row) => {
+                return {
+                    date: new Date(row.Date),
+                    cases: row.Cases,
+                    cumulativeCases: row.Cumulative_cases,
+                };
+            });
+
+        return parsedTimeseriesData;
     } catch (err: any) {
         if (err.response) return rejectWithValue(err.response.message);
 
