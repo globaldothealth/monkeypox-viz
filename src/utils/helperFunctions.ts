@@ -84,15 +84,8 @@ export const getChartDataFromTimeseriesData = (
     country: string,
     endDate: Date | undefined,
 ): ChartDataFormat[] => {
-    let chosenCountry = country;
-
-    // Manual override this for now until timeseries data changes
-    if (country === 'United Kingdom') chosenCountry = 'England';
-
     // Get only data belonging to chosen country
-    let countryData = timeseriesData.filter(
-        (data) => data.country === chosenCountry,
-    );
+    let countryData = timeseriesData.filter((data) => data.country === country);
 
     // Get only data before or at a chosen date
     if (endDate) {

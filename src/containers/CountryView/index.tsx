@@ -34,6 +34,7 @@ import {
 } from 'utils/helperFunctions';
 import CaseChart from 'components/CaseChart';
 import { Box } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const dataLayers: LegendRow[] = [
     { label: '0 or no data', color: CountryViewColors['NoData'] },
@@ -65,6 +66,8 @@ const CountryView: React.FC = () => {
 
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useMapboxMap(mapboxAccessToken, mapContainer);
+
+    const smallScreen = useMediaQuery('(max-width:1400px)');
 
     const lookupTableData = countryLookupTable.adm0.data.all as {
         [key: string]: any;
@@ -127,21 +130,13 @@ const CountryView: React.FC = () => {
         if (!mapLoaded) return;
 
         updateFeatureState();
-
         // eslint-disable-next-line
     }, [countriesData]);
 
     // Display popup on the map
     useEffect(() => {
-        const { isOpen, countryName } = popupData;
+        const { countryName } = popupData;
         const mapRef = map.current;
-
-        // Close popup if it exists
-        if (!isOpen && currentPopup) {
-            currentPopup.remove();
-            setCurrentPopup(undefined);
-            return;
-        }
 
         if (!countryName || countryName === '' || !mapRef) return;
 
@@ -196,7 +191,9 @@ const CountryView: React.FC = () => {
             popupElement,
         );
 
-        const popup = new mapboxgl.Popup()
+        const popup = new mapboxgl.Popup({
+            anchor: smallScreen ? 'center' : undefined,
+        })
             .setLngLat(coordinates)
             .setDOMContent(popupElement)
             .addTo(mapRef)

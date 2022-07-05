@@ -172,7 +172,7 @@ export default function Timeseries() {
                             <IconButton
                                 sx={(theme) => ({
                                     marginRight: '1rem',
-                                    color: theme.palette.gray.main,
+                                    color: theme.palette.primary.main,
                                 })}
                                 onClick={
                                     animationInterval
