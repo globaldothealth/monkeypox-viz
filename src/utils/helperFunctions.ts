@@ -4,6 +4,7 @@ import {
     ParsedCountryDataRow,
     TimeseriesCaseCountsDataRow,
 } from 'models/CountryData';
+import { DataType } from 'redux/App/slice';
 import { ChartDataFormat } from 'components/CaseChart';
 import { isEqual, format, compareAsc } from 'date-fns';
 
@@ -119,4 +120,19 @@ export const getTotalCasesByDate = (
     );
 
     return dataRow?.cumulativeCases || 0;
+};
+
+export const sortCountriesData = (
+    countriesData: ParsedCountryDataRow[],
+    sortBy: DataType,
+) => {
+    if (sortBy === DataType.Confirmed) {
+        return [...countriesData].sort((a, b) =>
+            a.confirmed < b.confirmed ? 1 : -1,
+        );
+    } else {
+        return [...countriesData].sort((a, b) =>
+            a.combined < b.combined ? 1 : -1,
+        );
+    }
 };

@@ -25,6 +25,7 @@ import { useCookieBanner } from 'hooks/useCookieBanner';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from 'components/ErrorFallback';
 import Timeseries from 'components/Timeseries';
+import { sortCountriesData } from 'utils/helperFunctions';
 
 import { ErrorContainer } from './styled';
 import PopupSmallScreens from 'components/PopupSmallScreens';
@@ -67,7 +68,13 @@ const App = () => {
     useEffect(() => {
         if (dataType !== DataType.Combined) return;
 
-        dispatch(setCountriesData(initialCountriesData));
+        // sort data by combined cases
+        const sortedCountriesData = sortCountriesData(
+            initialCountriesData,
+            DataType.Combined,
+        );
+
+        dispatch(setCountriesData(sortedCountriesData));
     }, [dataType]);
 
     // Track page views

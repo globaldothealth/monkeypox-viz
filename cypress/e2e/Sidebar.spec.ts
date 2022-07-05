@@ -5,6 +5,16 @@ describe('<SideBar />', () => {
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json',
             { fixture: 'countriesData.json', statusCode: 200 },
         ).as('fetchCountriesData');
+        cy.intercept(
+            'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
+            { statusCode: 200 },
+        ).as('fetchTimeseriesData');
+        cy.intercept(
+            'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
+            { statusCode: 200 },
+        ).as('fetchTimeseriesCountData');
     });
 
     it('Displays navbar, hides navbar', () => {
@@ -34,6 +44,16 @@ describe('<SideBar />', () => {
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/total/latest.json',
             { fixture: 'totalCasesData.json', statusCode: 200, delay: 3000 },
         ).as('fetchTotalCasesData');
+        cy.intercept(
+            'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
+            { statusCode: 200, delay: 3000 },
+        ).as('fetchTimeseriesData');
+        cy.intercept(
+            'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
+            { statusCode: 200, delay: 3000 },
+        ).as('fetchTimeseriesCountData');
 
         cy.visit('/');
 
@@ -41,6 +61,8 @@ describe('<SideBar />', () => {
 
         cy.wait('@fetchCountriesData');
         cy.wait('@fetchTotalCasesData');
+        cy.wait('@fetchTimeseriesData');
+        cy.wait('@fetchTimeseriesCountData');
 
         cy.get('[data-cy="loading-skeleton"]').should('not.exist');
         cy.contains(/Spain/i);
@@ -59,6 +81,8 @@ describe('<SideBar />', () => {
         cy.visit('/');
 
         cy.wait('@fetchCountriesData');
+        cy.wait('@fetchTimeseriesData');
+        cy.wait('@fetchTimeseriesCountData');
 
         cy.get('[data-cy="autocomplete-input"').should('have.value', '');
         const listedCountries = cy.get('[data-cy="listed-country"]');

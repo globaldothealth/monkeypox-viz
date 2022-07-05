@@ -6,8 +6,12 @@ import {
     TimeseriesCountryDataRow,
     TimeseriesCaseCountsDataRow,
 } from 'models/CountryData';
-import { setLastUpdateDate } from './slice';
-import { getDataPortalUrl, Env } from 'utils/helperFunctions';
+import { DataType, setLastUpdateDate } from './slice';
+import {
+    getDataPortalUrl,
+    Env,
+    sortCountriesData,
+} from 'utils/helperFunctions';
 import enUSLocale from 'date-fns/locale/en-US';
 import { formatInTimeZone } from 'date-fns-tz';
 import { isBefore } from 'date-fns';
@@ -110,9 +114,10 @@ export const fetchCountriesData = createAsyncThunk<
             combined: ukCombinedCases,
         });
 
-        // sort the data based on confirmed cases
-        const countriesDataSorted = parsedCountriesData.sort((a, b) =>
-            a.confirmed < b.confirmed ? 1 : -1,
+        // sort the data based on confirmed cases by default
+        const countriesDataSorted = sortCountriesData(
+            parsedCountriesData,
+            DataType.Confirmed,
         );
 
         return countriesDataSorted;
