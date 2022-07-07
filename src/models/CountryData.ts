@@ -21,3 +21,19 @@ export interface TotalCasesValues {
 export interface SelectedCountry {
     name: string;
 }
+
+/**
+ * Timeseries
+ */
+export interface TimeseriesCountryDataRow {
+    date: Date;
+    cases: number;
+    cumulativeCases: number;
+    country: string;
+}
+
+export interface TimeseriesCaseCountsDataRow {
+    date: Date;
+    cases: number;
+    cumulativeCases: number;
+}

@@ -23,6 +23,13 @@ export const GlobalStyle = createGlobalStyle`
     z-index: 999;    
     max-width: 50rem !important;
   }
+
+  .mapboxgl-popup-close-button {
+    font-size: 2.4rem;
+    color: #8796A5;
+    top: 1rem;
+    right: 1rem;
+  }
 `;
 
 interface MapContainerProps {

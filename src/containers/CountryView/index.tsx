@@ -8,6 +8,9 @@ import {
     selectSelectedCountryInSideBar,
     selectPopupData,
     selectDataType,
+    selectTimeseriesCountryData,
+    selectCurrentDate,
+    selectInitialCountriesData,
 } from 'redux/App/selectors';
 import {
     setSelectedCountryInSidebar,
@@ -25,7 +28,13 @@ import MapPopup from 'components/MapPopup';
 import { MapContainer } from 'theme/globalStyles';
 import Loader from 'components/Loader';
 import { PopupContentText } from './styled';
-import { getCountryCode } from 'utils/helperFunctions';
+import {
+    getCountryCode,
+    getChartDataFromTimeseriesData,
+} from 'utils/helperFunctions';
+import CaseChart from 'components/CaseChart';
+import { Box } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const dataLayers: LegendRow[] = [
     { label: '0 or no data', color: CountryViewColors['NoData'] },
@@ -47,12 +56,18 @@ const CountryView: React.FC = () => {
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const popupData = useAppSelector(selectPopupData);
     const dataType = useAppSelector(selectDataType);
+    const timeseriesData = useAppSelector(selectTimeseriesCountryData);
+    const currentTimeseriesDate = useAppSelector(selectCurrentDate);
+    const initialCountriesData = useAppSelector(selectInitialCountriesData);
 
     const [mapLoaded, setMapLoaded] = useState(false);
     const [currentPopup, setCurrentPopup] = useState<mapboxgl.Popup>();
+    const [featureStateIds, setFeatureStateIds] = useState<number[]>([]);
 
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useMapboxMap(mapboxAccessToken, mapContainer);
+
+    const smallScreen = useMediaQuery('(max-width:1400px)');
 
     const lookupTableData = countryLookupTable.adm0.data.all as {
         [key: string]: any;
@@ -71,7 +86,7 @@ const CountryView: React.FC = () => {
     // Setup map
     useEffect(() => {
         const mapRef = map.current;
-        if (!mapRef || isLoading || countriesData.length === 0) return;
+        if (!mapRef || isLoading || initialCountriesData.length === 0) return;
 
         mapRef.on('load', () => {
             if (mapRef.getSource('countriesData')) {
@@ -100,7 +115,7 @@ const CountryView: React.FC = () => {
                 mapRef.on('sourcedata', setAfterSourceLoaded);
             }
         });
-    }, [isLoading, countriesData]);
+    }, [isLoading, initialCountriesData]);
 
     // Refresh map when data type changes
     useEffect(() => {
@@ -110,11 +125,20 @@ const CountryView: React.FC = () => {
         // eslint-disable-next-line
     }, [dataType]);
 
-    // // Display popup on the map
+    // Refresh map when countries data changes
     useEffect(() => {
-        const { isOpen, countryName } = popupData;
+        if (!mapLoaded) return;
+
+        updateFeatureState();
+        // eslint-disable-next-line
+    }, [countriesData]);
+
+    // Display popup on the map
+    useEffect(() => {
+        const { countryName } = popupData;
         const mapRef = map.current;
-        if (!isOpen || !countryName || countryName === '' || !mapRef) return;
+
+        if (!countryName || countryName === '' || !mapRef) return;
 
         // Close previous popup if it exists
         if (currentPopup) currentPopup.remove();
@@ -134,6 +158,12 @@ const CountryView: React.FC = () => {
         const lng = countryDetails.centroid[0];
         const coordinates: mapboxgl.LngLatLike = { lng, lat };
 
+        const chartData = getChartDataFromTimeseriesData(
+            timeseriesData,
+            country.name,
+            currentTimeseriesDate,
+        );
+
         const popupContent = (
             <>
                 <PopupContentText>
@@ -141,10 +171,16 @@ const CountryView: React.FC = () => {
                     {confirmedCases > 1 ? ' cases' : ' case'}
                 </PopupContentText>
 
-                <PopupContentText>
-                    {suspectedCases.toLocaleString()} suspected
-                    {suspectedCases > 1 ? ' cases' : ' case'}
-                </PopupContentText>
+                {dataType === DataType.Combined && (
+                    <PopupContentText>
+                        {suspectedCases.toLocaleString()} suspected
+                        {suspectedCases > 1 ? ' cases' : ' case'}
+                    </PopupContentText>
+                )}
+
+                <Box sx={{ margin: '4rem 2rem 0 -2rem' }}>
+                    <CaseChart data={chartData} />
+                </Box>
             </>
         );
 
@@ -155,12 +191,19 @@ const CountryView: React.FC = () => {
             popupElement,
         );
 
-        const popup = new mapboxgl.Popup()
+        const popup = new mapboxgl.Popup({
+            anchor: smallScreen ? 'center' : undefined,
+        })
             .setLngLat(coordinates)
             .setDOMContent(popupElement)
             .addTo(mapRef)
             .on('close', () =>
-                dispatch(setPopup({ isOpen: false, countryName: '' })),
+                dispatch(
+                    setPopup({
+                        isOpen: false,
+                        countryName: '',
+                    }),
+                ),
             );
 
         setCurrentPopup(popup);
@@ -177,6 +220,11 @@ const CountryView: React.FC = () => {
             const countryCode = getCountryCode(name);
 
             if (lookupTableData[countryCode]) {
+                setFeatureStateIds((ids) => [
+                    ...ids,
+                    lookupTableData[countryCode].feature_id,
+                ]);
+
                 mapRef.setFeatureState(
                     {
                         source: 'countriesData',
@@ -253,6 +301,50 @@ const CountryView: React.FC = () => {
 
             dispatch(setSelectedCountryInSidebar({ name: countryName }));
             dispatch(setPopup({ isOpen: true, countryName }));
+        });
+    };
+
+    const updateFeatureState = () => {
+        const mapRef = map.current;
+        if (!mapRef) return;
+
+        const updatedStateIds: number[] = [];
+
+        for (const countryRow of countriesData) {
+            const { name, confirmed, combined } = countryRow;
+
+            const countryCode = getCountryCode(name);
+
+            if (lookupTableData[countryCode]) {
+                updatedStateIds.push(lookupTableData[countryCode].feature_id);
+
+                mapRef.setFeatureState(
+                    {
+                        source: 'countriesData',
+                        sourceLayer: 'country_boundaries',
+                        id: lookupTableData[countryCode].feature_id,
+                    },
+                    {
+                        caseCount:
+                            dataType === DataType.Confirmed
+                                ? confirmed
+                                : combined,
+                        name,
+                    },
+                );
+            }
+        }
+
+        // Remove feature ids that weren't updated
+        const stateIdsToRemove = featureStateIds.filter(
+            (id) => !updatedStateIds.includes(id),
+        );
+        stateIdsToRemove.forEach((id) => {
+            mapRef.removeFeatureState({
+                source: 'countriesData',
+                sourceLayer: 'country_boundaries',
+                id,
+            });
         });
     };
 

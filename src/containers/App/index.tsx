@@ -8,14 +8,24 @@ import {
     fetchCountriesData,
     fetchTotalCases,
     fetchAppVersion,
+    fetchTimeseriesData,
+    fetchTimeseriesCountData,
 } from 'redux/App/thunks';
-import { selectIsLoading, selectError } from 'redux/App/selectors';
+import { DataType, setCountriesData } from 'redux/App/slice';
+import {
+    selectIsLoading,
+    selectError,
+    selectDataType,
+    selectInitialCountriesData,
+} from 'redux/App/selectors';
 import Loader from 'components/Loader';
 import ErrorAlert from 'components/ErrorAlert';
 import ReactGA from 'react-ga4';
 import { useCookieBanner } from 'hooks/useCookieBanner';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from 'components/ErrorFallback';
+import Timeseries from 'components/Timeseries';
+import { sortCountriesData } from 'utils/helperFunctions';
 
 import { ErrorContainer } from './styled';
 import PopupSmallScreens from 'components/PopupSmallScreens';
@@ -42,12 +52,30 @@ const App = () => {
 
     const isLoading = useAppSelector(selectIsLoading);
     const error = useAppSelector(selectError);
+    const dataType = useAppSelector(selectDataType);
+    const initialCountriesData = useAppSelector(selectInitialCountriesData);
 
+    // Fetch data from AWS S3
     useEffect(() => {
         dispatch(fetchCountriesData());
         dispatch(fetchTotalCases());
         dispatch(fetchAppVersion());
+        dispatch(fetchTimeseriesData());
+        dispatch(fetchTimeseriesCountData());
     }, [dispatch]);
+
+    // When a user switches to "combined" view reset initial countries data
+    useEffect(() => {
+        if (dataType !== DataType.Combined) return;
+
+        // sort data by combined cases
+        const sortedCountriesData = sortCountriesData(
+            initialCountriesData,
+            DataType.Combined,
+        );
+
+        dispatch(setCountriesData(sortedCountriesData));
+    }, [dataType]);
 
     // Track page views
     useEffect(() => {
@@ -76,6 +104,8 @@ const App = () => {
                     />
                     <Route path="/country" element={<CountryView />} />
                 </Routes>
+
+                {dataType === DataType.Confirmed && <Timeseries />}
 
                 {error && (
                     <ErrorContainer>
