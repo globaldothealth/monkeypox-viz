@@ -7,6 +7,11 @@ describe('<SideBar />', () => {
         ).as('fetchCountriesData');
         cy.intercept(
             'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/total/latest.json',
+            { fixture: 'totalCasesData.json', statusCode: 200 },
+        ).as('fetchTotalCasesData');
+        cy.intercept(
+            'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
             { statusCode: 200 },
         ).as('fetchTimeseriesData');
@@ -88,6 +93,7 @@ describe('<SideBar />', () => {
         cy.wait('@fetchCountriesData');
         cy.wait('@fetchTimeseriesData');
         cy.wait('@fetchTimeseriesCountData');
+        cy.wait('@fetchTotalCasesData');
 
         cy.get('[data-cy="autocomplete-input"').should('have.value', '');
         const listedCountries = cy.get('[data-cy="listed-country"]');
