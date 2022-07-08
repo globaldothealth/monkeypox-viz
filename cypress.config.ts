@@ -5,8 +5,6 @@ export default defineConfig({
     defaultCommandTimeout: 8000,
     viewportWidth: 1280,
     viewportHeight: 1024,
-    screenshotOnRunFailure: false,
-    video: false,
     e2e: {
         // We've imported your old cypress plugins here.
         // You may want to clean this up later by importing these.
