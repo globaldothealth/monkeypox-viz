@@ -16,18 +16,22 @@ describe('<Navbar />', () => {
     it('Opens and closes the MapGuide', () => {
         cy.visit('/');
 
-        cy.get('.MuiDialog-paperScrollPaper').should('not.exist');
+        cy.get('.MuiTooltip-tooltip').should('not.exist');
         cy.contains(/Map Guide/i)
             .should('be.visible')
-            .click();
-        cy.get('.MuiDialog-paperScrollPaper').should('exist');
-        cy.get('[aria-label="close"]').click();
-        cy.get('.MuiDialog-paperScrollPaper').should('not.exist');
+            .trigger('mouseover');
+        cy.get('.MuiTooltip-tooltip').should('exist');
         cy.contains(/Map Guide/i)
             .should('be.visible')
-            .click();
-        cy.get('body').click(0, 0);
-        cy.get('.MuiDialog-paperScrollPaper').should('not.exist');
+            .trigger('mouseout');
+        cy.get('.MuiTooltip-tooltip').should('not.exist');
+
+        cy.contains(/Map Guide/i)
+            .should('be.visible')
+            .trigger('mouseover');
+        cy.get('.MuiTooltip-tooltip').should('exist');
+        cy.get('.MuiTooltip-tooltip').trigger('mouseout');
+        cy.get('.MuiTooltip-tooltip').should('not.exist');
     });
 
     it('Displays popup on small devices', () => {
