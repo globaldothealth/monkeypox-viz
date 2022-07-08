@@ -24,6 +24,9 @@ const StyledMapGuideTooltip = styled(
         fontFamily: 'Inter, Helvetica, Arial, sans-serif',
         padding: '0.5rem 2.4rem',
     },
+    [`& .${tooltipClasses.arrow}`]: {
+        color: '#0094e2',
+    },
 }));
 
 const StyledMapGuideContext: React.FC = () => {
