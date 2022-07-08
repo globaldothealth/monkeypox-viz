@@ -46,6 +46,11 @@ describe('<SideBar />', () => {
         ).as('fetchTotalCasesData');
         cy.intercept(
             'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
+            { statusCode: 200, delay: 3000 },
+        ).as('fetchTimeseriesData');
+        cy.intercept(
+            'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
             { statusCode: 200, delay: 3000 },
         ).as('fetchTimeseriesCountData');
@@ -58,6 +63,7 @@ describe('<SideBar />', () => {
             [
                 '@fetchCountriesData',
                 '@fetchTotalCasesData',
+                '@fetchTimeseriesData',
                 '@fetchTimeseriesCountData',
             ],
             { timeout: 15000 },

@@ -33,5 +33,7 @@ jobs:
 
                   REACT_APP_COUNTRY_VIEW_DATA_URL: https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json
                   REACT_APP_TOTAL_CASES_URL: https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/total/latest.json
+                  REACT_APP_TIMESERIES_COUNTRY_DATA: https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json
+                  REACT_APP_TIMESERIES_COUNT_DATA: https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json
                   REACT_APP_POLICY_PUBLIC_ID: 89575059
                   REACT_APP_COOKIE_CONSENT_PUBLIC_ID: 2070778
