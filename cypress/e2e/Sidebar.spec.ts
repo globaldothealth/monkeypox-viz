@@ -59,10 +59,15 @@ describe('<SideBar />', () => {
 
         cy.get('[data-cy="loading-skeleton"]').should('have.length', 3);
 
-        cy.wait('@fetchCountriesData');
-        cy.wait('@fetchTotalCasesData');
-        cy.wait('@fetchTimeseriesData');
-        cy.wait('@fetchTimeseriesCountData');
+        cy.wait(
+            [
+                '@fetchCountriesData',
+                '@fetchTotalCasesData',
+                '@fetchTimeseriesData',
+                '@fetchTimeseriesCountData',
+            ],
+            { timeout: 15000 },
+        );
 
         cy.get('[data-cy="loading-skeleton"]').should('not.exist');
         cy.contains(/Spain/i);
