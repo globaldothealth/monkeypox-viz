@@ -21,8 +21,7 @@ jobs:
               uses: cypress-io/github-action@v4
               with:
                   browser: chrome
-                  headless: true
-                  record: false
+                  record: true
                   start: npm start
                   wait-on: http://localhost:3000
               env:
