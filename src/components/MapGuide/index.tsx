@@ -1,14 +1,9 @@
 import Button from '@mui/material/Button';
+import { Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 
-import {
-    StyledMapGuideButton,
-    StyledTooltipTitle,
-    StyledTooltipContainer,
-} from './styled';
-
-import React from 'react';
+import { StyledMapGuideButton, StyledTooltipTitle } from './styled';
 
 const StyledMapGuideTooltip = styled(
     ({ className, ...props }: TooltipProps) => (
@@ -16,36 +11,40 @@ const StyledMapGuideTooltip = styled(
     ),
 )(({ theme }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: '#0094e2',
-        color: ' #fff',
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
         maxWidth: 1050,
         fontSize: theme.typography.pxToRem(20),
         border: '1px solid #dadde9',
         fontFamily: 'Inter, Helvetica, Arial, sans-serif',
-        padding: '0.5rem 2.4rem',
+        padding: '0.5rem 2.4rem 2.1rem',
     },
     [`& .${tooltipClasses.arrow}`]: {
-        color: '#0094e2',
+        color: theme.palette.primary.main,
     },
 }));
 
 const StyledMapGuideContext: React.FC = () => {
     return (
-        <StyledTooltipContainer>
+        <>
             <StyledTooltipTitle>
                 Welcome to Global.health Map!
             </StyledTooltipTitle>
-            <p>
+            <Typography
+                sx={{
+                    marginBottom: '2rem',
+                }}
+            >
                 These geospatial data visualisations allow you to explore our
                 Monkeypox line-list dataset.
-                <br />
-                <br />
+            </Typography>
+            <Typography>
                 <strong>Country View:</strong> Click on a country to see
                 available line-list data in that country. You can also use the
                 left-hand navigation to search or select a country. Darker
                 colours indicate more available line-list data.
-            </p>
-        </StyledTooltipContainer>
+            </Typography>
+        </>
     );
 };
 

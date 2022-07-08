@@ -33,19 +33,6 @@ export const StyledMapGuideButton = styled('div')`
     }
 `;
 
-export const StyledTooltipContainer = styled('div')`
-    p,
-    a {
-        color: #fff;
-    }
-    p {
-        padding: 1.4rem 0;
-        font-size: 1.6rem;
-        margin: 1rem auto;
-        font-family: Inter, Helvetica, Arial, sans-serif;
-    }
-`;
-
 export const StyledTooltipTitle = styled('h2')(() => ({
     display: 'flex',
     justifyContent: 'center',
