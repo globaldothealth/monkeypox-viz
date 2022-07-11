@@ -23,10 +23,15 @@ describe('<CountryView />', () => {
 
         cy.visit('/');
 
-        cy.wait('@fetchCountriesData');
-        cy.wait('@fetchTotalCasesData');
-        cy.wait('@fetchTimeseriesData');
-        cy.wait('@fetchTimeseriesCountData');
+        cy.wait(
+            [
+                '@fetchCountriesData',
+                '@fetchTotalCasesData',
+                '@fetchTimeseriesData',
+                '@fetchTimeseriesCountData',
+            ],
+            { timeout: 15000 },
+        );
 
         cy.get('.mapboxgl-canvas').should('be.visible');
         cy.contains('Confirmed Cases').should('be.visible');
