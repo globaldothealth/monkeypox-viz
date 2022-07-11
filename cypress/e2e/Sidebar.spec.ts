@@ -99,7 +99,7 @@ describe('<SideBar />', () => {
         const listedCountries = cy.get('[data-cy="listed-country"]');
         listedCountries.should('have.length.gte', 5);
 
-        cy.contains(/Germany/i).click();
+        cy.contains(/Germany/i).click({ force: true });
 
         cy.get('[data-cy="autocomplete-input"').should('have.value', 'Germany');
     });
