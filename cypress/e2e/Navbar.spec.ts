@@ -16,20 +16,25 @@ describe('<Navbar />', () => {
     it('Opens and closes the MapGuide', () => {
         cy.visit('/');
 
+        //hovering over button should display tooltip container
         cy.get('.MuiTooltip-tooltip').should('not.exist');
         cy.contains(/Map Guide/i)
             .should('be.visible')
             .trigger('mouseover');
         cy.get('.MuiTooltip-tooltip').should('exist');
+
+        //hovering out of button should hide tooltip container
         cy.contains(/Map Guide/i)
             .should('be.visible')
             .trigger('mouseout');
         cy.get('.MuiTooltip-tooltip').should('not.exist');
 
+        //repeating test for hovering out of tooltip container
         cy.contains(/Map Guide/i)
             .should('be.visible')
             .trigger('mouseover');
         cy.get('.MuiTooltip-tooltip').should('exist');
+        // hovering out of tooltip container should hide it
         cy.get('.MuiTooltip-tooltip').trigger('mouseout');
         cy.get('.MuiTooltip-tooltip').should('not.exist');
     });
