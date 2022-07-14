@@ -4,6 +4,8 @@ import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 
 import { StyledMapGuideButton, StyledTooltipTitle } from './styled';
+import { useState } from 'react';
+import { Action } from 'history';
 
 const StyledMapGuideTooltip = styled(
     ({ className, ...props }: TooltipProps) => (
@@ -49,9 +51,27 @@ const StyledMapGuideContext: React.FC = () => {
 };
 
 export const MapGuide: React.FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [type, setType] = useState('none');
+
+    //checks type of action for mobile usage and only changes display if it is the same as last time
+    const changeTooltipDisplay = (value: boolean, how: string) => {
+        if (type === how) {
+            setIsOpen(value);
+            setType(how);
+        } else if (type === 'none') {
+            setIsOpen(value);
+            setType(how);
+        }
+    };
+
     return (
         <StyledMapGuideButton>
             <StyledMapGuideTooltip
+                onClick={() => changeTooltipDisplay(!isOpen, 'click')}
+                onOpen={() => changeTooltipDisplay(true, 'hover')}
+                onClose={() => changeTooltipDisplay(false, 'hover')}
+                open={isOpen}
                 arrow
                 title={<StyledMapGuideContext />}
                 placement="bottom-end"
