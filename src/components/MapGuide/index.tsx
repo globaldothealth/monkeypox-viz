@@ -52,31 +52,19 @@ const StyledMapGuideContext: React.FC = () => {
 
 export const MapGuide: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [type, setType] = useState('none');
-
-    //checks type of action for mobile usage and only changes display if it is the same as last time
-    const changeTooltipDisplay = (value: boolean, how: string) => {
-        if (type === how) {
-            setIsOpen(value);
-            setType(how);
-        } else if (type === 'none') {
-            setIsOpen(value);
-            setType(how);
-        }
-    };
 
     return (
         <StyledMapGuideButton>
             <StyledMapGuideTooltip
-                onClick={() => changeTooltipDisplay(!isOpen, 'click')}
-                onOpen={() => changeTooltipDisplay(true, 'hover')}
-                onClose={() => changeTooltipDisplay(false, 'hover')}
+                onOpen={() => setIsOpen(true)}
+                onClose={() => setIsOpen(false)}
+                leaveTouchDelay={21000}
                 open={isOpen}
                 arrow
                 title={<StyledMapGuideContext />}
                 placement="bottom-end"
             >
-                <Button disableRipple>
+                <Button disableRipple onClick={() => setIsOpen(!isOpen)}>
                     <svg
                         className="MuiSvgIcon-root"
                         focusable="false"
