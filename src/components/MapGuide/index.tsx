@@ -5,7 +5,6 @@ import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 
 import { StyledMapGuideButton, StyledTooltipTitle } from './styled';
 import { useState } from 'react';
-import { Action } from 'history';
 
 const StyledMapGuideTooltip = styled(
     ({ className, ...props }: TooltipProps) => (
