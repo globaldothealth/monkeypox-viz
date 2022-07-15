@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 
 import { StyledMapGuideButton, StyledTooltipTitle } from './styled';
+import { useState } from 'react';
 
 const StyledMapGuideTooltip = styled(
     ({ className, ...props }: TooltipProps) => (
@@ -49,14 +50,20 @@ const StyledMapGuideContext: React.FC = () => {
 };
 
 export const MapGuide: React.FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <StyledMapGuideButton>
             <StyledMapGuideTooltip
+                onOpen={() => setIsOpen(true)}
+                onClose={() => setIsOpen(false)}
+                leaveTouchDelay={21000}
+                open={isOpen}
                 arrow
                 title={<StyledMapGuideContext />}
                 placement="bottom-end"
             >
-                <Button disableRipple>
+                <Button disableRipple onClick={() => setIsOpen(!isOpen)}>
                     <svg
                         className="MuiSvgIcon-root"
                         focusable="false"
