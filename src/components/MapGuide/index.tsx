@@ -1,101 +1,80 @@
-import { useEffect, useRef, useState } from 'react';
 import Button from '@mui/material/Button';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import Paper, { PaperProps } from '@mui/material/Paper';
-import Backdrop, { BackdropProps } from '@mui/material/Backdrop';
-import Draggable from 'react-draggable';
-import CloseIcon from '@mui/icons-material/Close';
+import { Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 
-import {
-    StyledMapGuideDialog,
-    StyledMapGuideButton,
-    StyledDialogTitle,
-    CloseButton,
-} from './styled';
+import { StyledMapGuideButton, StyledTooltipTitle } from './styled';
+import { useState } from 'react';
 
-const PaperComponent = (props: PaperProps) => {
+const StyledMapGuideTooltip = styled(
+    ({ className, ...props }: TooltipProps) => (
+        <Tooltip {...props} classes={{ popper: className }} />
+    ),
+)(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
+        maxWidth: 1050,
+        fontSize: theme.typography.pxToRem(20),
+        border: '1px solid #dadde9',
+        fontFamily: 'Inter, Helvetica, Arial, sans-serif',
+        padding: '0.5rem 2.4rem 2.1rem',
+    },
+    [`& .${tooltipClasses.arrow}`]: {
+        color: theme.palette.primary.main,
+    },
+}));
+
+const StyledMapGuideContext: React.FC = () => {
     return (
-        <Draggable
-            handle="#map-guide"
-            cancel={'[class*="MuiDialogContent-root"]'}
-        >
-            <Paper {...props} />
-        </Draggable>
+        <>
+            <StyledTooltipTitle>
+                Welcome to Global.health Map!
+            </StyledTooltipTitle>
+            <Typography
+                sx={{
+                    marginBottom: '2rem',
+                }}
+            >
+                These geospatial data visualisations allow you to explore our
+                Monkeypox line-list dataset.
+            </Typography>
+            <Typography>
+                <strong>Country View:</strong> Click on a country to see
+                available line-list data in that country. You can also use the
+                left-hand navigation to search or select a country. Darker
+                colours indicate more available line-list data.
+            </Typography>
+        </>
     );
 };
 
-const BackdropComponent = (props: BackdropProps) => {
-    return <Backdrop invisible {...props} />;
-};
-
 export const MapGuide: React.FC = () => {
-    const [open, setOpen] = useState(false);
-
-    const handleClickOpen = () => () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const descriptionElementRef = useRef<HTMLElement>(null);
-    useEffect(() => {
-        if (open) {
-            const { current: descriptionElement } = descriptionElementRef;
-            if (descriptionElement !== null) {
-                descriptionElement.focus();
-            }
-        }
-    }, [open]);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <StyledMapGuideButton>
-            <Button onClick={handleClickOpen()}>
-                <svg
-                    className="MuiSvgIcon-root"
-                    focusable="false"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                >
-                    <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"></path>
-                </svg>
-                Map guide
-            </Button>
-            <StyledMapGuideDialog
-                fullWidth
-                maxWidth="lg"
-                open={open}
-                onClose={handleClose}
-                PaperComponent={PaperComponent}
-                BackdropComponent={BackdropComponent}
-                scroll="paper"
-                aria-labelledby="map-guide"
+            <StyledMapGuideTooltip
+                onOpen={() => setIsOpen(true)}
+                onClose={() => setIsOpen(false)}
+                leaveTouchDelay={21000}
+                open={isOpen}
+                arrow
+                title={<StyledMapGuideContext />}
+                placement="bottom-end"
             >
-                <StyledDialogTitle id="map-guide">
-                    Welcome to Global.health Map!
-                    <CloseButton aria-label="close" onClick={handleClose}>
-                        <CloseIcon />
-                    </CloseButton>
-                </StyledDialogTitle>
-                <DialogContent>
-                    <DialogContentText
-                        ref={descriptionElementRef}
-                        tabIndex={-1}
+                <Button disableRipple onClick={() => setIsOpen(!isOpen)}>
+                    <svg
+                        className="MuiSvgIcon-root"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
                     >
-                        These geospatial data visualisations allow you to
-                        explore our Monkeypox line-list dataset.
-                        <br />
-                        <br />
-                        <strong>Country View:</strong> Click on a country to see
-                        available line-list data in that country. You can also
-                        use the left-hand navigation to search or select a
-                        country. Darker colours indicate more available
-                        line-list data.
-                    </DialogContentText>
-                </DialogContent>
-            </StyledMapGuideDialog>
+                        <path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"></path>
+                    </svg>
+                    Map guide
+                </Button>
+            </StyledMapGuideTooltip>
         </StyledMapGuideButton>
     );
 };

@@ -32,6 +32,11 @@ export const getCountryCode = (countryName: string): string => {
     if (countryName === 'Kosovo') return 'XK';
     if (countryName === 'Iran') return 'IR';
     if (countryName === 'South Korea') return 'KR';
+    if (countryName === 'Democratic Republic Of The Congo') return 'CD';
+    if (countryName === 'Republic of Congo') return 'CG';
+    if (countryName === 'Taiwan') return 'TW';
+    if (countryName === 'Russia') return 'RU';
+    if (countryName === 'Venezuela') return 'VE';
 
     return countryObj ? countryObj.alpha2 : 'N/A';
 };

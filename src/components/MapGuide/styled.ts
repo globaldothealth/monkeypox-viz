@@ -1,7 +1,4 @@
 import { styled } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
 
 export const StyledMapGuideButton = styled('div')`
     margin-left: 15px;
@@ -36,31 +33,7 @@ export const StyledMapGuideButton = styled('div')`
     }
 `;
 
-export const StyledMapGuideDialog = styled(Dialog)`
-    .MuiDialog-paperScrollPaper {
-        background: #0094e2;
-        color: #fff;
-    }
-    h1,
-    p,
-    a {
-        color: #fff;
-    }
-    p {
-        margin: 1rem auto;
-        font-family: Inter, Helvetica, Arial, sans-serif;
-    }
-    h1 {
-        font-weight: 400;
-        text-align: center;
-    }
-    .MuiButton-text {
-        color: #fff;
-    }
-`;
-
-export const StyledDialogTitle = styled(DialogTitle)(() => ({
-    cursor: 'move',
+export const StyledTooltipTitle = styled('h2')(() => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -68,10 +41,6 @@ export const StyledDialogTitle = styled(DialogTitle)(() => ({
     textAlign: 'center',
     width: '100%',
     position: 'relative',
-}));
-
-export const CloseButton = styled(IconButton)(() => ({
-    color: '#fff',
-    position: 'absolute',
-    right: '2rem',
+    padding: '1.6rem 2.4rem',
+    fontWeight: 450,
 }));
