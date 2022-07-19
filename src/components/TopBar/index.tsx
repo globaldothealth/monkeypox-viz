@@ -22,7 +22,7 @@ const TopBar = () => {
                             </Typography>
                         </NavLink>
                         <a
-                            href="https://www.monkeypox.global.health/"
+                            href="https://www.monkeypox.global.health"
                             rel="noopener noreferrer"
                             target="_blank"
                         >
