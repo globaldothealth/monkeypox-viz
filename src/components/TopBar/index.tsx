@@ -22,15 +22,6 @@ const TopBar = () => {
                             </Typography>
                         </NavLink>
                         <a
-                            href="https://www.monkeypox.global.health"
-                            rel="noopener noreferrer"
-                            target="_blank"
-                        >
-                            <Typography variant="navbarlink" gutterBottom>
-                                Briefing Report
-                            </Typography>
-                        </a>
-                        <a
                             href="https://github.com/globaldothealth/monkeypox"
                             rel="noopener noreferrer"
                             target="_blank"
@@ -43,6 +34,15 @@ const TopBar = () => {
                         <a href="mailto:info@global.health?subject=Feedback regarding Global.health map">
                             <Typography variant="navbarlink" gutterBottom>
                                 Feedback
+                            </Typography>
+                        </a>
+                        <a
+                            href="https://www.monkeypox.global.health"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                        >
+                            <Typography variant="navbarlink" gutterBottom>
+                                Briefing Report
                             </Typography>
                         </a>
                     </NavBar>
