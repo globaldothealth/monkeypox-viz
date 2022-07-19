@@ -37,6 +37,8 @@ describe('<App />', () => {
 
         cy.contains(/Country view/i).should('be.visible');
         cy.contains(/Monkeypox Dataset/i).should('be.visible');
+        cy.contains(/Feedback/i).should('be.visible');
+        cy.contains(/Briefing Report/i).should('be.visible');
     });
 
     it('Navigates to different views', () => {
@@ -56,5 +58,16 @@ describe('<App />', () => {
         cy.contains(/Monkeypox Dataset/i)
             .should('have.attr', 'href')
             .and('eq', 'https://github.com/globaldothealth/monkeypox');
+
+        cy.contains(/Briefing Report/i)
+            .should('have.attr', 'href')
+            .and('eq', 'https://www.monkeypox.global.health');
+
+        cy.contains(/Feedback/i)
+            .should('have.attr', 'href')
+            .and(
+                'eq',
+                'mailto:info@global.health?subject=Feedback regarding Global.health map',
+            );
     });
 });
