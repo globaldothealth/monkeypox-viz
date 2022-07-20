@@ -36,6 +36,15 @@ const TopBar = () => {
                                 Feedback
                             </Typography>
                         </a>
+                        <a
+                            href="https://www.monkeypox.global.health"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                        >
+                            <Typography variant="navbarlink" gutterBottom>
+                                Briefing Report
+                            </Typography>
+                        </a>
                     </NavBar>
                 </StyledTooolbar>
             </AppBarStyle>
