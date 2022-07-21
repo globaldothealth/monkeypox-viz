@@ -283,12 +283,15 @@ const CountryView: React.FC = () => {
             'admin-1-boundary',
         );
 
-        // Change the mouse cursor to pointer when hovering above this layer
-        mapRef.on('mouseenter', 'countries-join', () => {
+        // Change the mouse cursor to pointer when hovering above countries with data and to default when otherwise
+        mapRef.on('mousemove', 'countries-join', (e) => {
+            if (!e.features || !e.features[0].state.name) {
+                mapRef.getCanvas().style.cursor = '';
+                return;
+            }
             mapRef.getCanvas().style.cursor = 'pointer';
         });
 
-        // Change it back when it leaves.
         mapRef.on('mouseleave', 'countries-join', () => {
             mapRef.getCanvas().style.cursor = '';
         });
