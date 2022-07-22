@@ -11,6 +11,7 @@ import {
     getDataPortalUrl,
     Env,
     sortCountriesData,
+    getCountryCode,
 } from 'utils/helperFunctions';
 import enUSLocale from 'date-fns/locale/en-US';
 import { formatInTimeZone } from 'date-fns-tz';
@@ -52,7 +53,7 @@ export const fetchCountriesData = createAsyncThunk<
         const countriesData = jsonResponse[latestKey] as CountryDataRow[];
 
         // parse json that comes from S3 to a better format
-        let parsedCountriesData: ParsedCountryDataRow[] = countriesData.map(
+        const parsedCountriesData: ParsedCountryDataRow[] = countriesData.map(
             (row) => {
                 const countryName = Object.keys(row)[0];
 
@@ -67,52 +68,47 @@ export const fetchCountriesData = createAsyncThunk<
         );
 
         // remove duplicated United Kingdom
-        parsedCountriesData = parsedCountriesData.filter(
-            (countryData) => countryData.name !== 'United Kingdom',
-        );
+        // parsedCountriesData = parsedCountriesData.filter(
+        //     (countryData) => countryData.name !== 'United Kingdom',
+        // );
 
         // combine England, Scotland, Wales and Northern Ireland cases together as United Kingdom
         // this has to be done this way, as Mapbox source files that we use
         // doesn't differentiate those places
-        let ukConfirmedCases = 0;
-        let ukSuspectedCases = 0;
-        let ukCombinedCases = 0;
+        // let ukConfirmedCases = 0;
+        // let ukSuspectedCases = 0;
+        // let ukCombinedCases = 0;
 
-        ['England', 'Scotland', 'Wales', 'Northern Ireland'].forEach(
-            (country) => {
-                const countryIdx = parsedCountriesData.findIndex(
-                    (row) => row.name === country,
-                );
+        // const countryIdx = parsedCountriesData.findIndex(
+        //     (row) => row.name === 'IRL',
+        // );
 
-                const countryCases = {
-                    confirmed:
-                        countryIdx !== -1
-                            ? parsedCountriesData[countryIdx].confirmed
-                            : 0,
-                    suspected:
-                        countryIdx !== -1
-                            ? parsedCountriesData[countryIdx].suspected
-                            : 0,
-                };
+        // const countryCases = {
+        //     confirmed:
+        //         countryIdx !== -1
+        //             ? parsedCountriesData[countryIdx].confirmed
+        //             : 0,
+        //     suspected:
+        //         countryIdx !== -1
+        //             ? parsedCountriesData[countryIdx].suspected
+        //             : 0,
+        // };
 
-                ukConfirmedCases += countryCases.confirmed;
-                ukSuspectedCases += countryCases.suspected;
-                ukCombinedCases +=
-                    countryCases.confirmed + countryCases.suspected;
+        // ukConfirmedCases += countryCases.confirmed;
+        // ukSuspectedCases += countryCases.suspected;
+        // ukCombinedCases += countryCases.confirmed + countryCases.suspected;
 
-                // delete country from the array
-                parsedCountriesData = parsedCountriesData.filter(
-                    (row) => row.name !== country,
-                );
-            },
-        );
+        // // delete country from the array
+        // parsedCountriesData = parsedCountriesData.filter(
+        //     (row) => row.name !== 'IRL',
+        // );
 
-        parsedCountriesData.push({
-            name: 'United Kingdom',
-            confirmed: ukConfirmedCases,
-            suspected: ukSuspectedCases,
-            combined: ukCombinedCases,
-        });
+        // parsedCountriesData.push({
+        //     name: 'GBR',
+        //     confirmed: ukConfirmedCases,
+        //     suspected: ukSuspectedCases,
+        //     combined: ukCombinedCases,
+        // });
 
         // sort the data based on confirmed cases by default
         const countriesDataSorted = sortCountriesData(
@@ -219,7 +215,7 @@ export const fetchTimeseriesData = createAsyncThunk<
             jsonResponse.map((row) => {
                 return {
                     date: new Date(row.Date),
-                    country: row.Country,
+                    country: getCountryCode(row.Country),
                     cases: row.Cases,
                     cumulativeCases: row.Cumulative_cases,
                 };

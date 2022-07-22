@@ -33,7 +33,11 @@ import {
 } from 'redux/App/slice';
 import { selectSelectedCountryInSideBar } from 'redux/App/selectors';
 import { SelectedCountry } from 'models/CountryData';
-import { getCountryCode, getTotalCasesByDate } from 'utils/helperFunctions';
+import {
+    getTwoLetterCountryCode,
+    getTotalCasesByDate,
+    getCountryName,
+} from 'utils/helperFunctions';
 import { DataTypeButtons } from './DataTypeButtons';
 
 const SideBar = () => {
@@ -132,7 +136,9 @@ const SideBar = () => {
                             data-cy="listed-country"
                         >
                             <button>
-                                <span className="label">{name}</span>
+                                <span className="label">
+                                    {getCountryName(name)}
+                                </span>
                                 <span className="num">
                                     {value.toLocaleString()}
                                 </span>
@@ -195,7 +201,7 @@ const SideBar = () => {
                         options={autocompleteData}
                         autoHighlight
                         disabled={totalCasesCountIsLoading}
-                        getOptionLabel={(option) => option.name}
+                        getOptionLabel={(option) => getCountryName(option.name)}
                         onChange={(event, value: SelectedCountry | null) =>
                             handleAutocompleteCountrySelect(
                                 event,
@@ -215,15 +221,15 @@ const SideBar = () => {
                                 <FlagIcon
                                     loading="lazy"
                                     width="20"
-                                    src={`https://flagcdn.com/w20/${getCountryCode(
+                                    src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
                                         option.name,
                                     ).toLowerCase()}.png`}
-                                    srcSet={`https://flagcdn.com/w40/${getCountryCode(
+                                    srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
                                         option.name,
                                     ).toLowerCase()}.png 2x`}
                                     alt={`${option.name} flag`}
                                 />
-                                {option.name}
+                                {getCountryName(option.name)}
                             </Box>
                         )}
                         renderInput={(params) => (

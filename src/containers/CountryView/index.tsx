@@ -29,8 +29,9 @@ import { MapContainer } from 'theme/globalStyles';
 import Loader from 'components/Loader';
 import { PopupContentText } from './styled';
 import {
-    getCountryCode,
     getChartDataFromTimeseriesData,
+    getCountryName,
+    getTwoLetterCountryCode,
 } from 'utils/helperFunctions';
 import CaseChart from 'components/CaseChart';
 import { Box } from '@mui/material';
@@ -77,7 +78,7 @@ const CountryView: React.FC = () => {
     useEffect(() => {
         if (!selectedCountry) return;
 
-        const countryCode = getCountryCode(selectedCountry.name);
+        const countryCode = getTwoLetterCountryCode(selectedCountry.name);
 
         const bounds = lookupTableData[countryCode].bounds;
         map.current?.fitBounds(bounds);
@@ -147,7 +148,7 @@ const CountryView: React.FC = () => {
             (country) => country.name === countryName,
         )[0];
 
-        const countryCode = getCountryCode(country.name);
+        const countryCode = getTwoLetterCountryCode(country.name);
 
         const countryDetails = lookupTableData[countryCode];
         if (!countryDetails) return;
@@ -187,7 +188,10 @@ const CountryView: React.FC = () => {
         // This has to be done this way in order to allow for React components as a content of the popup
         const popupElement = document.createElement('div');
         ReactDOM.render(
-            <MapPopup title={countryName} content={popupContent} />,
+            <MapPopup
+                title={getCountryName(countryName)}
+                content={popupContent}
+            />,
             popupElement,
         );
 
@@ -217,7 +221,7 @@ const CountryView: React.FC = () => {
         for (const countryRow of countriesData) {
             const { name, confirmed, combined } = countryRow;
 
-            const countryCode = getCountryCode(name);
+            const countryCode = getTwoLetterCountryCode(name);
 
             if (lookupTableData[countryCode]) {
                 setFeatureStateIds((ids) => [
@@ -313,7 +317,7 @@ const CountryView: React.FC = () => {
         for (const countryRow of countriesData) {
             const { name, confirmed, combined } = countryRow;
 
-            const countryCode = getCountryCode(name);
+            const countryCode = getTwoLetterCountryCode(name);
 
             if (lookupTableData[countryCode]) {
                 updatedStateIds.push(lookupTableData[countryCode].feature_id);
