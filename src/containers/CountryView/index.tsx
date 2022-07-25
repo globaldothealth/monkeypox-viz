@@ -299,7 +299,6 @@ const CountryView: React.FC = () => {
             mapRef.getCanvas().style.cursor = 'pointer';
         });
 
-        // Change it back when it leaves.
         mapRef.on('mouseleave', 'countries-join', () => {
             mapRef.getCanvas().style.cursor = '';
         });
