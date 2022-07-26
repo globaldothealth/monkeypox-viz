@@ -1,31 +1,31 @@
 {
     "11-18-2021": [
         {
-            "Spain": {
+            "ESP": {
                 "confirmed": 58,
                 "suspected": 10
             }
         },
         {
-            "Portugal": {
+            "PRT": {
                 "confirmed": 48,
                 "suspected": 25
             }
         },
         {
-            "Canada": {
+            "CAN": {
                 "confirmed": 14,
                 "suspected": 1
             }
         },
         {
-            "Netherlands": {
+            "NLD": {
                 "confirmed": 11,
                 "suspected": 0
             }
         },
         {
-            "Germany": {
+            "DEU": {
                 "confirmed": 11,
                 "suspected": 0
             }
