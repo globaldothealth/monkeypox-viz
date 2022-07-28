@@ -287,12 +287,18 @@ const CountryView: React.FC = () => {
             'admin-1-boundary',
         );
 
+        //Filter out countries without any data
+        mapRef.setFilter('countries-join', [
+            'in',
+            'iso_3166_1_alpha_3',
+            ...countriesData.map((country) => country.name),
+        ]);
+
         // Change the mouse cursor to pointer when hovering above this layer
         mapRef.on('mouseenter', 'countries-join', () => {
             mapRef.getCanvas().style.cursor = 'pointer';
         });
 
-        // Change it back when it leaves.
         mapRef.on('mouseleave', 'countries-join', () => {
             mapRef.getCanvas().style.cursor = '';
         });
