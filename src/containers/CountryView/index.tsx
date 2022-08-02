@@ -36,6 +36,7 @@ import {
 import CaseChart from 'components/CaseChart';
 import { Box } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { ParsedCountryDataRow } from 'models/CountryData';
 
 const dataLayers: LegendRow[] = [
     { label: '0 or no data', color: CountryViewColors['NoData'] },

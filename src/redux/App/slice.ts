@@ -26,6 +26,7 @@ export enum DataType {
 
 interface AppState {
     isLoading: boolean;
+    isCaseCountsLoading: boolean;
     isMapLoading: boolean;
     error: string | undefined;
     countriesData: ParsedCountryDataRow[];
@@ -44,6 +45,7 @@ interface AppState {
 
 const initialState: AppState = {
     isLoading: false,
+    isCaseCountsLoading: false,
     isMapLoading: false,
     error: undefined,
     countriesData: [],
@@ -115,15 +117,15 @@ export const appSlice = createSlice({
 
         // Total Cases Count
         builder.addCase(fetchTotalCases.pending, (state) => {
-            state.isLoading = true;
+            state.isCaseCountsLoading = true;
             state.error = undefined;
         });
         builder.addCase(fetchTotalCases.fulfilled, (state, { payload }) => {
-            state.isLoading = false;
+            state.isCaseCountsLoading = false;
             state.totalCasesNumber = payload;
         });
         builder.addCase(fetchTotalCases.rejected, (state, action) => {
-            state.isLoading = false;
+            state.isCaseCountsLoading = false;
             state.error = action.payload
                 ? action.payload
                 : action.error.message;
@@ -153,18 +155,18 @@ export const appSlice = createSlice({
 
         // Timeseries case counts data
         builder.addCase(fetchTimeseriesCountData.pending, (state) => {
-            state.isLoading = true;
+            state.isCaseCountsLoading = true;
             state.error = undefined;
         });
         builder.addCase(
             fetchTimeseriesCountData.fulfilled,
             (state, { payload }) => {
-                state.isLoading = false;
+                state.isCaseCountsLoading = false;
                 state.timeseriesCaseCounts = payload;
             },
         );
         builder.addCase(fetchTimeseriesCountData.rejected, (state, action) => {
-            state.isLoading = false;
+            state.isCaseCountsLoading = false;
             state.error = action.payload
                 ? action.payload
                 : action.error.message;

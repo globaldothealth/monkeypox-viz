@@ -6,11 +6,11 @@ import {
     selectCountriesData,
     selectLastUpdateDate,
     selectTotalCasesNumber,
-    selectTotalCasesIsLoading,
     selectAppVersion,
     selectDataType,
     selectCurrentDate,
     selectTimeseriesCaseCounts,
+    selectIsCaseCountsLoading,
 } from 'redux/App/selectors';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
@@ -44,10 +44,10 @@ const SideBar = () => {
     const dispatch = useAppDispatch();
 
     const [openSidebar, setOpenSidebar] = useState(true);
-    const [timeseriesTotalCases, setTimeseriesTotalCases] = useState(0);
+    const [timeseriesTotalCases, setTimeseriesTotalCases] = useState<number>();
 
     const totalCasesNumber = useAppSelector(selectTotalCasesNumber);
-    const totalCasesCountIsLoading = useAppSelector(selectTotalCasesIsLoading);
+    const totalCasesCountIsLoading = useAppSelector(selectIsCaseCountsLoading);
     const lastUpdateDate = useAppSelector(selectLastUpdateDate);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const appVersion = useAppSelector(selectAppVersion);
@@ -59,6 +59,8 @@ const SideBar = () => {
     const [autocompleteData, setAutocompleteData] = useState<SelectedCountry[]>(
         [],
     );
+
+    console.log(timeseriesTotalCases);
 
     // Map countries data to autocomplete data
     useEffect(() => {
@@ -117,6 +119,9 @@ const SideBar = () => {
         return (
             <>
                 {countriesData.map((row) => {
+                    if (totalCasesCountIsLoading || !timeseriesTotalCases)
+                        return;
+
                     const { name, confirmed, combined } = row;
 
                     const value =
@@ -161,7 +166,7 @@ const SideBar = () => {
                 <DataTypeButtons />
 
                 <LatestGlobal id="latest-global">
-                    {totalCasesCountIsLoading ? (
+                    {totalCasesCountIsLoading || !timeseriesTotalCases ? (
                         <SideBarTitlesSkeleton
                             animation="pulse"
                             variant="rectangular"
@@ -182,15 +187,16 @@ const SideBar = () => {
                         </>
                     )}
                     <div className="last-updated-date">
-                        Updated:{' '}
-                        {totalCasesCountIsLoading ? (
+                        {totalCasesCountIsLoading || !timeseriesTotalCases ? (
                             <SideBarTitlesSkeleton
                                 animation="pulse"
                                 variant="rectangular"
                                 data-cy="loading-skeleton"
                             />
                         ) : (
-                            <span id="last-updated-date">{lastUpdateDate}</span>
+                            <span id="last-updated-date">
+                                Updated: {lastUpdateDate}
+                            </span>
                         )}
                     </div>
                 </LatestGlobal>
@@ -246,7 +252,7 @@ const SideBar = () => {
                 </SearchBar>
 
                 <LocationList>
-                    {totalCasesCountIsLoading ? (
+                    {totalCasesCountIsLoading || !timeseriesTotalCases ? (
                         <CountriesListSkeleton
                             animation="pulse"
                             variant="rectangular"
