@@ -1,6 +1,8 @@
 import type { RootState } from 'redux/store';
 
 export const selectIsLoading = (state: RootState) => state.app.isLoading;
+export const selectIsCaseCountsLoading = (state: RootState) =>
+    state.app.isCaseCountsLoading;
 export const selectError = (state: RootState) => state.app.error;
 export const selectCountriesData = (state: RootState) =>
     state.app.countriesData;
@@ -8,8 +10,6 @@ export const selectInitialCountriesData = (state: RootState) =>
     state.app.initialCountriesData;
 export const selectTotalCasesNumber = (state: RootState) =>
     state.app.totalCasesNumber;
-export const selectTotalCasesIsLoading = (state: RootState) =>
-    state.app.isLoading;
 export const selectSelectedCountryInSideBar = (state: RootState) =>
     state.app.selectedCountryInSideBar;
 export const selectLastUpdateDate = (state: RootState) =>

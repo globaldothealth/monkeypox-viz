@@ -25,7 +25,9 @@ import {
 } from 'redux/App/slice';
 import { getCountryDataFromTimeseriesData } from 'utils/helperFunctions';
 
-function getLabel(dates: Date[], selectedDate: number) {
+function getLabel(dates: Date[], selectedDate: number | undefined) {
+    if (!selectedDate) return '';
+
     return format(dates[selectedDate], 'MMM d, yyyy');
 }
 
@@ -44,7 +46,7 @@ export default function Timeseries() {
 
     const [startDate, setStartDate] = useState<Date>();
     const [endDate, setEndDate] = useState<Date>();
-    const [selectedDate, setSelectedDate] = useState(0);
+    const [selectedDate, setSelectedDate] = useState<number>();
     const [animationInterval, setAnimationInterval] = useState<
         NodeJS.Timeout | undefined
     >(undefined);
@@ -58,7 +60,6 @@ export default function Timeseries() {
         setStartDate(start);
         setEndDate(end);
         setSelectedDate(timeseriesDates.length - 1);
-        dispatch(setCurrentDate(end));
     }, [timeseriesDates]);
 
     useEffect(() => {
@@ -67,6 +68,7 @@ export default function Timeseries() {
             !currentDate ||
             !startDate ||
             !endDate ||
+            !selectedDate ||
             selectedDate === 0 ||
             selectedDate === timeseriesDates.length - 1
         )
@@ -91,7 +93,7 @@ export default function Timeseries() {
 
     // Stop animation and delete interval when completed
     useEffect(() => {
-        if (selectedDate < timeseriesDates.length - 1) return;
+        if (!selectedDate || selectedDate < timeseriesDates.length - 1) return;
 
         if (animationInterval) {
             clearInterval(animationInterval);
@@ -103,6 +105,8 @@ export default function Timeseries() {
 
     // Update current date when timeseries is changed
     useEffect(() => {
+        if (!selectedDate) return;
+
         dispatch(setCurrentDate(timeseriesDates[selectedDate]));
     }, [selectedDate]);
 
@@ -114,9 +118,10 @@ export default function Timeseries() {
         if (selectedDate === timeseriesDates.length - 1) setSelectedDate(0);
 
         const interval = setInterval(() => {
-            setSelectedDate((state) =>
-                state < timeseriesDates.length - 1 ? (state += 1) : 0,
-            );
+            setSelectedDate((state) => {
+                if (!state) return;
+                return state < timeseriesDates.length - 1 ? (state += 1) : 0;
+            });
         }, animationSpeed * 1000);
 
         setAnimationInterval(interval);
@@ -192,8 +197,8 @@ export default function Timeseries() {
                             </Typography>
                             <Slider
                                 aria-label="timeseries marks"
-                                defaultValue={selectedDate}
-                                value={selectedDate}
+                                defaultValue={selectedDate || 0}
+                                value={selectedDate || 0}
                                 onChange={(e, value) => handleChange(value)}
                                 getAriaValueText={(value) =>
                                     getLabel(timeseriesDates, value)
