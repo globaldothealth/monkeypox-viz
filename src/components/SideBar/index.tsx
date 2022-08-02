@@ -117,7 +117,10 @@ const SideBar = () => {
         return (
             <>
                 {countriesData.map((row) => {
-                    if (totalCasesCountIsLoading || !timeseriesTotalCases)
+                    if (
+                        totalCasesCountIsLoading ||
+                        timeseriesTotalCases === undefined
+                    )
                         return;
 
                     const { name, confirmed, combined } = row;
@@ -164,7 +167,8 @@ const SideBar = () => {
                 <DataTypeButtons />
 
                 <LatestGlobal id="latest-global">
-                    {totalCasesCountIsLoading || !timeseriesTotalCases ? (
+                    {totalCasesCountIsLoading ||
+                    timeseriesTotalCases === undefined ? (
                         <SideBarTitlesSkeleton
                             animation="pulse"
                             variant="rectangular"
@@ -185,7 +189,8 @@ const SideBar = () => {
                         </>
                     )}
                     <div className="last-updated-date">
-                        {totalCasesCountIsLoading || !timeseriesTotalCases ? (
+                        {totalCasesCountIsLoading ||
+                        timeseriesTotalCases === undefined ? (
                             <SideBarTitlesSkeleton
                                 animation="pulse"
                                 variant="rectangular"
@@ -250,7 +255,8 @@ const SideBar = () => {
                 </SearchBar>
 
                 <LocationList>
-                    {totalCasesCountIsLoading || !timeseriesTotalCases ? (
+                    {totalCasesCountIsLoading ||
+                    timeseriesTotalCases === undefined ? (
                         <CountriesListSkeleton
                             animation="pulse"
                             variant="rectangular"

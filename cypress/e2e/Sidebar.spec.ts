@@ -13,12 +13,12 @@ describe('<SideBar />', () => {
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
-            { statusCode: 200 },
+            { fixture: 'timeseriesCountryData.json', statusCode: 200 },
         ).as('fetchTimeseriesData');
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
-            { statusCode: 200 },
+            { fixture: 'timeseriesTotalData.json', statusCode: 200 },
         ).as('fetchTimeseriesCountData');
     });
 
@@ -52,12 +52,20 @@ describe('<SideBar />', () => {
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
-            { statusCode: 200, delay: 3000 },
+            {
+                fixture: 'timeseriesCountryData.json',
+                statusCode: 200,
+                delay: 3000,
+            },
         ).as('fetchTimeseriesData');
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
-            { statusCode: 200, delay: 3000 },
+            {
+                fixture: 'timeseriesTotalData.json',
+                statusCode: 200,
+                delay: 3000,
+            },
         ).as('fetchTimeseriesCountData');
 
         cy.visit('/');
