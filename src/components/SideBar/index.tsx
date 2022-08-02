@@ -60,8 +60,6 @@ const SideBar = () => {
         [],
     );
 
-    console.log(timeseriesTotalCases);
-
     // Map countries data to autocomplete data
     useEffect(() => {
         const mappedData = countriesData.map((country) => {
