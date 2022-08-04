@@ -3,6 +3,7 @@ import {
     TimeseriesCountryDataRow,
     ParsedCountryDataRow,
     TimeseriesCaseCountsDataRow,
+    SelectedCountry,
 } from 'models/CountryData';
 import { DataType } from 'redux/App/slice';
 import { ChartDataFormat } from 'models/ChartData';
@@ -134,7 +135,26 @@ export const getChartDataFromTimeseriesData = (
 // This gets global case counts for the chart
 export const getGlobalChartData = (
     timeseriesCountData: TimeseriesCaseCountsDataRow[],
+    selectedCountry: SelectedCountry | null,
+    timeseriesData: TimeseriesCountryDataRow[],
 ): ChartDataFormat[] => {
+    // If there is a selected country specified get count data just for this country
+    if (selectedCountry) {
+        const countryData = timeseriesData.filter(
+            (data) => data.country === selectedCountry.name,
+        );
+
+        const chartData = countryData.map((data) => {
+            return {
+                date: format(data.date, 'MMM d, yyyy'),
+                caseCount: data.cumulativeCases,
+            };
+        });
+
+        return chartData;
+    }
+
+    // If there isn't any country selected get count data for global case count
     const chartData = timeseriesCountData.map((data) => {
         return {
             date: format(data.date, 'MMM d, yyyy'),

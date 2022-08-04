@@ -3,6 +3,7 @@ import { useAppSelector } from 'redux/hooks';
 import {
     selectTimeseriesCaseCounts,
     selectSelectedCountryInSideBar,
+    selectTimeseriesCountryData,
 } from 'redux/App/selectors';
 import { ChartDataFormat } from 'models/ChartData';
 import {
@@ -22,15 +23,23 @@ import { ChartContainer, ChartTitle } from './styled';
 
 const ChartView = () => {
     const theme = useTheme();
-    const timeseriesCaseCounts = useAppSelector(selectTimeseriesCaseCounts);
 
     const [chartData, setChartData] = useState<ChartDataFormat[]>([]);
+    const timeseriesCaseCounts = useAppSelector(selectTimeseriesCaseCounts);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
+    const timeseriesCountryData = useAppSelector(selectTimeseriesCountryData);
 
     useEffect(() => {
         if (!timeseriesCaseCounts) return;
 
-        setChartData(getGlobalChartData(timeseriesCaseCounts));
+        setChartData(
+            getGlobalChartData(
+                timeseriesCaseCounts,
+                selectedCountry,
+                timeseriesCountryData,
+            ),
+        );
+        // eslint-disable-next-line
     }, [timeseriesCaseCounts, selectedCountry]);
 
     const isMediumScreen = useMediaQuery(theme.breakpoints.down('lg'));
