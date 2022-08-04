@@ -34,7 +34,11 @@ function getLabel(dates: Date[], selectedDate: number | undefined) {
 // number of seconds per one mark
 const animationSpeed = 0.25;
 
-export default function Timeseries() {
+interface TimeseriesProps {
+    isHidden: boolean;
+}
+
+export default function Timeseries({ isHidden }: TimeseriesProps) {
     const dispatch = useAppDispatch();
 
     const timeseriesData = useAppSelector(selectTimeseriesCountryData);
@@ -142,7 +146,7 @@ export default function Timeseries() {
                         position: 'absolute',
                         bottom: 20,
                         width: '100%',
-                        display: 'flex',
+                        display: isHidden ? 'none' : 'flex',
                         justifyContent: 'center',
                     }}
                 >

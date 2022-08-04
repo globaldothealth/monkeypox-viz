@@ -5,7 +5,7 @@ import {
     TimeseriesCaseCountsDataRow,
 } from 'models/CountryData';
 import { DataType } from 'redux/App/slice';
-import { ChartDataFormat } from 'components/CaseChart';
+import { ChartDataFormat } from 'models/ChartData';
 import { isEqual, format, compareAsc } from 'date-fns';
 
 // Parses search query that takes user to Curator Portal
@@ -99,6 +99,7 @@ export const getCountryDataFromTimeseriesData = (
     return countryData;
 };
 
+// This gets number of cases through time for a particular country
 export const getChartDataFromTimeseriesData = (
     timeseriesData: TimeseriesCountryDataRow[],
     country: string,
@@ -123,6 +124,20 @@ export const getChartDataFromTimeseriesData = (
                 idx === 0 || idx === countryData.length - 1
                     ? formattedDate
                     : '',
+            caseCount: data.cumulativeCases,
+        };
+    });
+
+    return chartData;
+};
+
+// This gets global case counts for the chart
+export const getGlobalChartData = (
+    timeseriesCountData: TimeseriesCaseCountsDataRow[],
+): ChartDataFormat[] => {
+    const chartData = timeseriesCountData.map((data) => {
+        return {
+            date: format(data.date, 'MMM d, yyyy'),
             caseCount: data.cumulativeCases,
         };
     });

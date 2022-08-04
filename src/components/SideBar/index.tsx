@@ -137,7 +137,7 @@ const SideBar = () => {
                     return (
                         <LocationListItem
                             key={name}
-                            $barWidth={countryCasesCountPercentage}
+                            barWidth={countryCasesCountPercentage}
                             onClick={() => handleOnCountryClick(name)}
                             data-cy="listed-country"
                         >
@@ -158,7 +158,7 @@ const SideBar = () => {
     };
 
     return (
-        <StyledSideBar $sidebaropen={openSidebar} data-cy="sidebar">
+        <StyledSideBar sidebaropen={openSidebar} data-cy="sidebar">
             <>
                 <SideBarHeader id="sidebar-header">
                     <h1 id="total">MONKEYPOX LINE LIST CASES</h1>

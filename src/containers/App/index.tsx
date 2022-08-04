@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import TopBar from 'components/TopBar';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import CountryView from 'containers/CountryView';
+import ChartView from 'containers/ChartView';
 import SideBar from 'components/SideBar';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
@@ -103,9 +104,15 @@ const App = () => {
                         element={<Navigate replace to="/country" />}
                     />
                     <Route path="/country" element={<CountryView />} />
+                    <Route path="/chart" element={<ChartView />} />
                 </Routes>
 
-                {dataType === DataType.Confirmed && <Timeseries />}
+                <Timeseries
+                    isHidden={
+                        location.pathname === '/chart' ||
+                        dataType === DataType.Combined
+                    }
+                />
 
                 {error && (
                     <ErrorContainer>
