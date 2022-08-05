@@ -137,11 +137,23 @@ export const getGlobalChartData = (
     timeseriesCountData: TimeseriesCaseCountsDataRow[],
     selectedCountry: SelectedCountry | null,
     timeseriesData: TimeseriesCountryDataRow[],
+    timeseriesDates: Date[],
+    chartDatePeriod: number[],
 ): ChartDataFormat[] => {
+    const startDate = timeseriesDates[chartDatePeriod[0]];
+    const endDate = timeseriesDates[chartDatePeriod[1]];
+
     // If there is a selected country specified get count data just for this country
     if (selectedCountry) {
-        const countryData = timeseriesData.filter(
+        let countryData = timeseriesData.filter(
             (data) => data.country === selectedCountry.name,
+        );
+
+        // Filter data so that only values from specified time period are returned
+        countryData = countryData.filter(
+            (data) =>
+                compareAsc(data.date, startDate) !== -1 &&
+                compareAsc(data.date, endDate) === -1,
         );
 
         const chartData = countryData.map((data) => {
@@ -155,7 +167,15 @@ export const getGlobalChartData = (
     }
 
     // If there isn't any country selected get count data for global case count
-    const chartData = timeseriesCountData.map((data) => {
+
+    // Filter data so that only values from specified time period are returned
+    const filteredData = timeseriesCountData.filter(
+        (data) =>
+            compareAsc(data.date, startDate) !== -1 &&
+            compareAsc(data.date, endDate) === -1,
+    );
+
+    const chartData = filteredData.map((data) => {
         return {
             date: format(data.date, 'MMM d, yyyy'),
             caseCount: data.cumulativeCases,

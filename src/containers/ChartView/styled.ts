@@ -1,7 +1,6 @@
 import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
 
-export const ChartContainer = styled('div')(({ theme }) => ({
+export const ChartContainer = styled('div')(() => ({
     position: 'absolute',
     top: '6.4rem',
     left: 0,
@@ -12,8 +11,4 @@ export const ChartContainer = styled('div')(({ theme }) => ({
     alignItems: 'center',
     flexDirection: 'column',
     gap: '2rem',
-}));
-
-export const ChartTitle = styled(Typography)(() => ({
-    fontWeight: 'bold',
 }));

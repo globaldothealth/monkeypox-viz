@@ -12,7 +12,7 @@ import {
     fetchTimeseriesData,
     fetchTimeseriesCountData,
 } from 'redux/App/thunks';
-import { DataType, setCountriesData } from 'redux/App/slice';
+import { DataType, setCountriesData, setDataType } from 'redux/App/slice';
 import {
     selectIsLoading,
     selectError,
@@ -77,6 +77,16 @@ const App = () => {
 
         dispatch(setCountriesData(sortedCountriesData));
     }, [dataType]);
+
+    // When a user goes to chart view set data type to confirmed
+    useEffect(() => {
+        if (dataType === DataType.Confirmed || location.pathname !== '/chart')
+            return;
+
+        dispatch(setDataType(DataType.Confirmed));
+
+        // eslint-disable-next-line
+    }, [location.pathname]);
 
     // Track page views
     useEffect(() => {

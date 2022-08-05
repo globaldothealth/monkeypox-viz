@@ -4,7 +4,9 @@ import {
     selectTimeseriesCaseCounts,
     selectSelectedCountryInSideBar,
     selectTimeseriesCountryData,
+    selectTimeseriesDates,
 } from 'redux/App/selectors';
+import { selectChartDatePeriod } from 'redux/ChartView/selectors';
 import { ChartDataFormat } from 'models/ChartData';
 import {
     AreaChart,
@@ -18,8 +20,11 @@ import {
 import { getGlobalChartData } from 'utils/helperFunctions';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import ChartSlider from 'components/ChartSlider';
+import { getCountryName } from 'utils/helperFunctions';
 
-import { ChartContainer, ChartTitle } from './styled';
+import { ChartContainer } from './styled';
 
 const ChartView = () => {
     const theme = useTheme();
@@ -28,30 +33,40 @@ const ChartView = () => {
     const timeseriesCaseCounts = useAppSelector(selectTimeseriesCaseCounts);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const timeseriesCountryData = useAppSelector(selectTimeseriesCountryData);
+    const timeseriesDates = useAppSelector(selectTimeseriesDates);
+    const chartDatePeriod = useAppSelector(selectChartDatePeriod);
 
     useEffect(() => {
-        if (!timeseriesCaseCounts) return;
+        if (!timeseriesCaseCounts || !timeseriesDates || !chartDatePeriod)
+            return;
 
         setChartData(
             getGlobalChartData(
                 timeseriesCaseCounts,
                 selectedCountry,
                 timeseriesCountryData,
+                timeseriesDates,
+                chartDatePeriod,
             ),
         );
         // eslint-disable-next-line
-    }, [timeseriesCaseCounts, selectedCountry]);
+    }, [timeseriesCaseCounts, selectedCountry, chartDatePeriod]);
 
     const isMediumScreen = useMediaQuery(theme.breakpoints.down('lg'));
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
         <ChartContainer>
-            <ChartTitle variant="body1">
-                Chart representing total cases number through time
-            </ChartTitle>
+            <Typography variant="body1">
+                Total confirmed cases:{' '}
+                <strong>
+                    {selectedCountry
+                        ? getCountryName(selectedCountry.name)
+                        : `worldwide`}
+                </strong>
+            </Typography>
 
-            <ResponsiveContainer width="70%" height="90%">
+            <ResponsiveContainer width="70%" height="80%">
                 <AreaChart data={chartData}>
                     <defs>
                         <linearGradient
@@ -95,6 +110,8 @@ const ChartView = () => {
                     />
                 </AreaChart>
             </ResponsiveContainer>
+
+            <ChartSlider />
         </ChartContainer>
     );
 };

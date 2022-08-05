@@ -1,6 +1,7 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import { useLocation } from 'react-router-dom';
 import { useState, SyntheticEvent, useEffect } from 'react';
 import {
     selectCountriesData,
@@ -42,6 +43,7 @@ import { DataTypeButtons } from './DataTypeButtons';
 
 const SideBar = () => {
     const dispatch = useAppDispatch();
+    const location = useLocation();
 
     const [openSidebar, setOpenSidebar] = useState(true);
     const [timeseriesTotalCases, setTimeseriesTotalCases] = useState<number>();
@@ -164,7 +166,7 @@ const SideBar = () => {
                     <h1 id="total">MONKEYPOX LINE LIST CASES</h1>
                 </SideBarHeader>
 
-                <DataTypeButtons />
+                {location.pathname !== '/chart' && <DataTypeButtons />}
 
                 <LatestGlobal id="latest-global">
                     {totalCasesCountIsLoading ||

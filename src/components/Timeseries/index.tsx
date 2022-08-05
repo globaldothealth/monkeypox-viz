@@ -26,7 +26,7 @@ import {
 import { getCountryDataFromTimeseriesData } from 'utils/helperFunctions';
 
 function getLabel(dates: Date[], selectedDate: number | undefined) {
-    if (!selectedDate) return '';
+    if (selectedDate === undefined || !dates || dates.length === 0) return '';
 
     return format(dates[selectedDate], 'MMM d, yyyy');
 }
