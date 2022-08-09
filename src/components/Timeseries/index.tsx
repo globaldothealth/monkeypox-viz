@@ -26,7 +26,7 @@ import {
 import { getCountryDataFromTimeseriesData } from 'utils/helperFunctions';
 
 function getLabel(dates: Date[], selectedDate: number | undefined) {
-    if (!selectedDate) return '';
+    if (selectedDate === undefined) return '';
 
     return format(dates[selectedDate], 'MMM d, yyyy');
 }
@@ -68,8 +68,7 @@ export default function Timeseries() {
             !currentDate ||
             !startDate ||
             !endDate ||
-            !selectedDate ||
-            selectedDate === 0 ||
+            selectedDate === undefined ||
             selectedDate === timeseriesDates.length - 1
         )
             return;
@@ -93,7 +92,11 @@ export default function Timeseries() {
 
     // Stop animation and delete interval when completed
     useEffect(() => {
-        if (!selectedDate || selectedDate < timeseriesDates.length - 1) return;
+        if (
+            selectedDate === undefined ||
+            selectedDate < timeseriesDates.length - 1
+        )
+            return;
 
         if (animationInterval) {
             clearInterval(animationInterval);
@@ -105,7 +108,7 @@ export default function Timeseries() {
 
     // Update current date when timeseries is changed
     useEffect(() => {
-        if (!selectedDate) return;
+        if (selectedDate === undefined) return;
 
         dispatch(setCurrentDate(timeseriesDates[selectedDate]));
     }, [selectedDate]);
@@ -119,7 +122,7 @@ export default function Timeseries() {
 
         const interval = setInterval(() => {
             setSelectedDate((state) => {
-                if (!state) return;
+                if (state === undefined) return;
                 return state < timeseriesDates.length - 1 ? (state += 1) : 0;
             });
         }, animationSpeed * 1000);
