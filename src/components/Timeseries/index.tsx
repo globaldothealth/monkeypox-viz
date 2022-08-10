@@ -72,8 +72,7 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
             !currentDate ||
             !startDate ||
             !endDate ||
-            !selectedDate ||
-            selectedDate === 0 ||
+            selectedDate === undefined ||
             selectedDate === timeseriesDates.length - 1
         )
             return;
@@ -97,7 +96,11 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
 
     // Stop animation and delete interval when completed
     useEffect(() => {
-        if (!selectedDate || selectedDate < timeseriesDates.length - 1) return;
+        if (
+            selectedDate === undefined ||
+            selectedDate < timeseriesDates.length - 1
+        )
+            return;
 
         if (animationInterval) {
             clearInterval(animationInterval);
@@ -109,7 +112,7 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
 
     // Update current date when timeseries is changed
     useEffect(() => {
-        if (!selectedDate) return;
+        if (selectedDate === undefined) return;
 
         dispatch(setCurrentDate(timeseriesDates[selectedDate]));
     }, [selectedDate]);
@@ -123,7 +126,7 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
 
         const interval = setInterval(() => {
             setSelectedDate((state) => {
-                if (!state) return;
+                if (state === undefined) return;
                 return state < timeseriesDates.length - 1 ? (state += 1) : 0;
             });
         }, animationSpeed * 1000);

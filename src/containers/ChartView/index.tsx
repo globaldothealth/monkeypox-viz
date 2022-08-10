@@ -18,8 +18,6 @@ import {
     CartesianGrid,
 } from 'recharts';
 import { getGlobalChartData } from 'utils/helperFunctions';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import ChartSlider from 'components/ChartSlider';
 import { getCountryName } from 'utils/helperFunctions';
@@ -27,8 +25,6 @@ import { getCountryName } from 'utils/helperFunctions';
 import { ChartContainer } from './styled';
 
 const ChartView = () => {
-    const theme = useTheme();
-
     const [chartData, setChartData] = useState<ChartDataFormat[]>([]);
     const timeseriesCaseCounts = useAppSelector(selectTimeseriesCaseCounts);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
@@ -52,9 +48,6 @@ const ChartView = () => {
         // eslint-disable-next-line
     }, [timeseriesCaseCounts, selectedCountry, chartDatePeriod]);
 
-    const isMediumScreen = useMediaQuery(theme.breakpoints.down('lg'));
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-
     return (
         <ChartContainer>
             <Typography variant="body1">
@@ -66,7 +59,7 @@ const ChartView = () => {
                 </strong>
             </Typography>
 
-            <ResponsiveContainer width="70%" height="80%">
+            <ResponsiveContainer width="90%" height="80%">
                 <AreaChart data={chartData}>
                     <defs>
                         <linearGradient
