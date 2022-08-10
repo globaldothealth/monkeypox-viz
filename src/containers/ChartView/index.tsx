@@ -25,11 +25,13 @@ import { getGlobalChartData } from 'utils/helperFunctions';
 import Typography from '@mui/material/Typography';
 import ChartSlider from 'components/ChartSlider';
 import { getCountryName } from 'utils/helperFunctions';
+import { useTheme } from '@mui/material/styles';
 
 import { ChartContainer } from './styled';
 
 const ChartView = () => {
     const dispatch = useAppDispatch();
+    const theme = useTheme();
 
     const chartData = useAppSelector(selectChartData);
     const timeseriesCaseCounts = useAppSelector(selectTimeseriesCaseCounts);
@@ -89,12 +91,12 @@ const ChartView = () => {
                         >
                             <stop
                                 offset="5%"
-                                stopColor="#0094e2"
+                                stopColor={theme.palette.primary.main}
                                 stopOpacity={0.8}
                             />
                             <stop
                                 offset="95%"
-                                stopColor="#0094e2"
+                                stopColor={theme.palette.primary.main}
                                 stopOpacity={0}
                             />
                         </linearGradient>
@@ -112,7 +114,7 @@ const ChartView = () => {
                     <Area
                         type="monotone"
                         dataKey="caseCount"
-                        stroke="#0094e2"
+                        stroke={theme.palette.primary.main}
                         fillOpacity={1}
                         fill="url(#caseCount)"
                     />
