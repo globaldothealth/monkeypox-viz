@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useAppSelector } from 'redux/hooks';
+import { useEffect } from 'react';
+import { useAppSelector, useAppDispatch } from 'redux/hooks';
 import {
     selectTimeseriesCaseCounts,
     selectSelectedCountryInSideBar,
     selectTimeseriesCountryData,
     selectTimeseriesDates,
 } from 'redux/App/selectors';
-import { selectChartDatePeriod } from 'redux/ChartView/selectors';
-import { ChartDataFormat } from 'models/ChartData';
+import {
+    selectChartDatePeriod,
+    selectChartData,
+    selectAvailableDates,
+} from 'redux/ChartView/selectors';
+import { setChartData } from 'redux/ChartView/slice';
 import {
     AreaChart,
     XAxis,
@@ -25,28 +29,42 @@ import { getCountryName } from 'utils/helperFunctions';
 import { ChartContainer } from './styled';
 
 const ChartView = () => {
-    const [chartData, setChartData] = useState<ChartDataFormat[]>([]);
+    const dispatch = useAppDispatch();
+
+    const chartData = useAppSelector(selectChartData);
     const timeseriesCaseCounts = useAppSelector(selectTimeseriesCaseCounts);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const timeseriesCountryData = useAppSelector(selectTimeseriesCountryData);
     const timeseriesDates = useAppSelector(selectTimeseriesDates);
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
+    const availableDates = useAppSelector(selectAvailableDates);
 
     useEffect(() => {
-        if (!timeseriesCaseCounts || !timeseriesDates || !chartDatePeriod)
+        if (
+            !timeseriesCaseCounts ||
+            !timeseriesDates ||
+            !chartDatePeriod ||
+            !timeseriesCountryData ||
+            !availableDates
+        )
             return;
 
-        setChartData(
-            getGlobalChartData(
-                timeseriesCaseCounts,
-                selectedCountry,
-                timeseriesCountryData,
-                timeseriesDates,
-                chartDatePeriod,
-            ),
+        const data = getGlobalChartData(
+            timeseriesCaseCounts,
+            selectedCountry,
+            timeseriesCountryData,
+            availableDates,
+            chartDatePeriod,
         );
+
+        dispatch(setChartData(data));
         // eslint-disable-next-line
-    }, [timeseriesCaseCounts, selectedCountry, chartDatePeriod]);
+    }, [
+        timeseriesCaseCounts,
+        selectedCountry,
+        chartDatePeriod,
+        availableDates,
+    ]);
 
     return (
         <ChartContainer>

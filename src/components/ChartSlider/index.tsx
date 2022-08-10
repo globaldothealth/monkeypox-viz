@@ -1,13 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from 'redux/hooks';
-import { setChartDatePeriod } from 'redux/ChartView/slice';
-import { selectChartDatePeriod } from 'redux/ChartView/selectors';
-import { selectTimeseriesDates } from 'redux/App/selectors';
+import { setChartDatePeriod, setAvailableDates } from 'redux/ChartView/slice';
+import {
+    selectChartDatePeriod,
+    selectAvailableDates,
+} from 'redux/ChartView/selectors';
+import {
+    selectTimeseriesDates,
+    selectSelectedCountryInSideBar,
+    selectTimeseriesCountryData,
+} from 'redux/App/selectors';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { format } from 'date-fns';
 
 import Slider from '@mui/material/Slider';
+import { getAvailableDatesForCountry } from 'utils/helperFunctions';
 
 const minDistance = 5;
 
@@ -21,13 +29,28 @@ export default function ChartSlider() {
     const dispatch = useAppDispatch();
 
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
-    const timeseriesDates = useAppSelector(selectTimeseriesDates);
+    const allTimeseriesDates = useAppSelector(selectTimeseriesDates);
+    const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
+    const timeseriesCountryData = useAppSelector(selectTimeseriesCountryData);
+    const availableDates = useAppSelector(selectAvailableDates);
+    const [sliderRange, setSliderRange] = useState<number[]>([]);
 
+    // Update slider range when selected country changes
     useEffect(() => {
-        if (!timeseriesDates || timeseriesDates.length === 0) return;
+        if (!timeseriesCountryData || timeseriesCountryData.length === 0)
+            return;
 
-        dispatch(setChartDatePeriod([0, timeseriesDates.length - 1]));
-    }, [timeseriesDates]);
+        const dates = selectedCountry
+            ? getAvailableDatesForCountry(
+                  timeseriesCountryData,
+                  selectedCountry,
+              )
+            : allTimeseriesDates;
+
+        setSliderRange([0, dates.length - 1]);
+        dispatch(setAvailableDates(dates));
+        dispatch(setChartDatePeriod([0, dates.length - 1]));
+    }, [selectedCountry, timeseriesCountryData]);
 
     const handleValueChange = (
         event: Event,
@@ -36,8 +59,8 @@ export default function ChartSlider() {
     ) => {
         if (
             !Array.isArray(newValue) ||
-            !timeseriesDates ||
-            timeseriesDates.length === 0
+            !sliderRange ||
+            sliderRange.length === 0
         )
             return;
 
@@ -45,7 +68,7 @@ export default function ChartSlider() {
             if (activeThumb === 0) {
                 const clamped = Math.min(
                     newValue[0],
-                    timeseriesDates.length - 1 - minDistance,
+                    sliderRange[1] - minDistance,
                 );
                 dispatch(setChartDatePeriod([clamped, clamped + minDistance]));
             } else {
@@ -62,8 +85,8 @@ export default function ChartSlider() {
             <Typography variant="subtitle2" sx={{ fontWeight: 400 }}>
                 Current date period:{' '}
                 <strong>
-                    {getLabel(timeseriesDates, chartDatePeriod[0])} -{' '}
-                    {getLabel(timeseriesDates, chartDatePeriod[1])}
+                    {getLabel(availableDates, chartDatePeriod[0])} -{' '}
+                    {getLabel(availableDates, chartDatePeriod[1])}
                 </strong>
             </Typography>
 
@@ -77,7 +100,7 @@ export default function ChartSlider() {
                 alignItems="center"
             >
                 <Typography variant="subtitle2">
-                    {getLabel(timeseriesDates, 0)}
+                    {getLabel(availableDates, 0)}
                 </Typography>
 
                 <Slider
@@ -86,17 +109,17 @@ export default function ChartSlider() {
                     onChange={handleValueChange}
                     valueLabelDisplay="auto"
                     valueLabelFormat={(value) =>
-                        getLabel(timeseriesDates, value)
+                        getLabel(availableDates, value)
                     }
                     disableSwap
                     step={1}
                     min={0}
-                    max={timeseriesDates.length - 1 || 100}
+                    max={availableDates.length - 1 || 100}
                     sx={{ width: '100%', marginRight: '2rem' }}
                 />
 
                 <Typography variant="subtitle2">
-                    {getLabel(timeseriesDates, timeseriesDates.length - 1)}
+                    {getLabel(availableDates, availableDates.length - 1)}
                 </Typography>
             </Stack>
         </Stack>

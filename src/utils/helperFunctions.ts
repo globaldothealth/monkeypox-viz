@@ -7,7 +7,7 @@ import {
 } from 'models/CountryData';
 import { DataType } from 'redux/App/slice';
 import { ChartDataFormat } from 'models/ChartData';
-import { isEqual, format, compareAsc } from 'date-fns';
+import { isEqual, format, compareAsc, isBefore } from 'date-fns';
 
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
@@ -137,11 +137,11 @@ export const getGlobalChartData = (
     timeseriesCountData: TimeseriesCaseCountsDataRow[],
     selectedCountry: SelectedCountry | null,
     timeseriesData: TimeseriesCountryDataRow[],
-    timeseriesDates: Date[],
+    availableDates: Date[],
     chartDatePeriod: number[],
 ): ChartDataFormat[] => {
-    const startDate = timeseriesDates[chartDatePeriod[0]];
-    const endDate = timeseriesDates[chartDatePeriod[1]];
+    const startDate = availableDates[chartDatePeriod[0]];
+    const endDate = availableDates[chartDatePeriod[1]];
 
     // If there is a selected country specified get count data just for this country
     if (selectedCountry) {
@@ -209,4 +209,22 @@ export const sortCountriesData = (
             a.combined < b.combined ? 1 : -1,
         );
     }
+};
+
+export const getAvailableDatesForCountry = (
+    timeseriesCountryData: TimeseriesCountryDataRow[],
+    country: SelectedCountry,
+): Date[] => {
+    // Get data only for selected country
+    const filteredData = timeseriesCountryData.filter(
+        (data) => data.country === country.name,
+    );
+
+    // Get all available dates for this country
+    const dates = filteredData.map((data) => new Date(data.date));
+
+    // sort dates
+    dates.sort((date1, date2) => (isBefore(date1, date2) ? -1 : 1));
+
+    return dates;
 };
