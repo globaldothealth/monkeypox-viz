@@ -12,12 +12,18 @@ import {
     fetchTimeseriesData,
     fetchTimeseriesCountData,
 } from 'redux/App/thunks';
-import { DataType, setCountriesData, setDataType } from 'redux/App/slice';
+import {
+    DataType,
+    setCountriesData,
+    setDataType,
+    setSelectedCountryInSidebar,
+} from 'redux/App/slice';
 import {
     selectIsLoading,
     selectError,
     selectDataType,
     selectInitialCountriesData,
+    selectSelectedCountryInSideBar,
 } from 'redux/App/selectors';
 import Loader from 'components/Loader';
 import ErrorAlert from 'components/ErrorAlert';
@@ -55,6 +61,7 @@ const App = () => {
     const error = useAppSelector(selectError);
     const dataType = useAppSelector(selectDataType);
     const initialCountriesData = useAppSelector(selectInitialCountriesData);
+    const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
 
     // Fetch data from AWS S3
     useEffect(() => {
@@ -87,6 +94,19 @@ const App = () => {
 
         // eslint-disable-next-line
     }, [location.pathname]);
+
+    // When a user goes to CountryView reset selected country
+    useEffect(() => {
+        if (
+            !selectedCountry ||
+            selectedCountry.name !== 'worldwide' ||
+            location.pathname !== '/country'
+        )
+            return;
+
+        dispatch(setSelectedCountryInSidebar(null));
+        // eslint-disable-next-line
+    }, [location]);
 
     // Track page views
     useEffect(() => {

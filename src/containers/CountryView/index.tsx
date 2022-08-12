@@ -76,7 +76,7 @@ const CountryView: React.FC = () => {
 
     // Fly to country
     useEffect(() => {
-        if (!selectedCountry) return;
+        if (!selectedCountry || selectedCountry.name === 'worldwide') return;
 
         const countryCode = getTwoLetterCountryCode(selectedCountry.name);
 
@@ -139,7 +139,13 @@ const CountryView: React.FC = () => {
         const { countryName } = popupData;
         const mapRef = map.current;
 
-        if (!countryName || countryName === '' || !mapRef) return;
+        if (
+            !countryName ||
+            countryName === '' ||
+            countryName === 'worldwide' ||
+            !mapRef
+        )
+            return;
 
         // Close previous popup if it exists
         if (currentPopup) currentPopup.remove();
