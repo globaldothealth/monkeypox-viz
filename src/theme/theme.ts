@@ -30,8 +30,8 @@ export const theme = createTheme({
         },
         gray: {
             main: '#8796A5',
-            [100]: '#F5F5F5',
-            [200]: '#E0E3E7',
+            light: '#F5F5F5',
+            dark: '#E0E3E7',
         },
     },
     primary: {

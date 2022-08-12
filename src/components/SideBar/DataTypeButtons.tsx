@@ -21,7 +21,7 @@ export const DataTypeButtons = () => {
                 variant={
                     dataType === DataType.Confirmed ? 'contained' : 'outlined'
                 }
-                $selected={dataType === DataType.Confirmed}
+                selected={dataType === DataType.Confirmed}
                 onClick={() => dispatch(setDataType(DataType.Confirmed))}
             >
                 Confirmed
@@ -30,7 +30,7 @@ export const DataTypeButtons = () => {
                 variant={
                     dataType === DataType.Combined ? 'contained' : 'outlined'
                 }
-                $selected={dataType === DataType.Combined}
+                selected={dataType === DataType.Combined}
                 onClick={() => dispatch(setDataType(DataType.Combined))}
             >
                 Confirmed and Suspected

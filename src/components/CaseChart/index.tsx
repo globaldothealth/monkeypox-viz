@@ -1,9 +1,5 @@
 import { LineChart, Line, XAxis, YAxis } from 'recharts';
-
-export interface ChartDataFormat {
-    date: string;
-    caseCount: number;
-}
+import { ChartDataFormat } from 'models/ChartData';
 
 interface CaseChartProps {
     data: ChartDataFormat[];

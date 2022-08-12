@@ -3,11 +3,13 @@ import Skeleton from '@mui/material/Skeleton';
 import Button from '@mui/material/Button';
 
 interface StyledSideBarProps {
-    $sidebaropen: boolean;
-    $isVariantsView?: boolean;
+    sidebaropen: boolean;
 }
 
-export const StyledSideBar = styled('aside')<StyledSideBarProps>`
+export const StyledSideBar = styled('aside', {
+    shouldForwardProp: (prop) =>
+        prop !== 'sidebaropen' && prop !== 'isVariantsView',
+})<StyledSideBarProps>`
     backdrop-filter: blur(0.5rem);
     background-color: white;
     border-radius: 1ex;
@@ -15,9 +17,9 @@ export const StyledSideBar = styled('aside')<StyledSideBarProps>`
     color: #aaa;
     display: flex;
     flex-direction: column;
-    bottom: ${(props) => (props.$isVariantsView ? 'unset' : '25%')};
-    height: ${(props) => (props.$isVariantsView ? 'unset' : '70%')};
-    left: ${({ $sidebaropen }) => ($sidebaropen === true ? '2ex' : '-28rem')};
+    bottom: 25%;
+    height: 70%;
+    left: ${({ sidebaropen }) => (sidebaropen === true ? '2ex' : '-28rem')};
     padding: 2ex;
     position: fixed;
     margin-top: 0;
@@ -55,6 +57,13 @@ export const FlagIcon = styled('img')(() => ({
     flexShrink: 0,
 }));
 
+export const EmptyFlag = styled('div')(() => ({
+    width: '2rem',
+    marginRight: '2rem',
+    display: 'flex',
+    justifyContent: 'center',
+}));
+
 export const SideBarHeader = styled('div')(({ theme }) => ({
     cursor: 'default',
     height: 'auto',
@@ -66,7 +75,7 @@ export const SideBarHeader = styled('div')(({ theme }) => ({
     },
 }));
 
-export const LatestGlobal = styled('aside')<{ $sidebaropen: boolean }>`
+export const LatestGlobal = styled('aside')`
     margin: 2ex 0;
     #total-cases,
     #total-deaths,
@@ -114,47 +123,47 @@ export const LocationList = styled('div')`
     margin-top: 2rem;
 `;
 
-export const LocationListItem = styled('div')<{ $barWidth: number }>(
-    ({ theme, $barWidth }) => ({
+export const LocationListItem = styled('div', {
+    shouldForwardProp: (prop) => prop !== 'barWidth',
+})<{ barWidth: number }>(({ barWidth, theme }) => ({
+    width: '100%',
+    margin: '.1rem auto',
+    button: {
+        color: '#454545',
+        backgroundColor: '#fff',
+        boxShadow: 'none',
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '0.5rem 0 0.2rem 0',
         width: '100%',
-        margin: '.1rem auto',
-        button: {
-            color: '#454545',
-            backgroundColor: '#fff',
-            boxShadow: 'none',
+        fontSize: '1.4rem',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '0.2rem',
+        transition: 'all 0.3s ease',
+        cursor: 'pointer',
+        '&:hover': {
+            backgroundColor: '#f3f3f3',
+        },
+        '& .label': {
+            marginRight: '1rem',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+        },
+        '& .num': {
             display: 'flex',
-            justifyContent: 'space-between',
-            padding: '0.5rem 0 0.2rem 0',
-            width: '100%',
-            fontSize: '1.4rem',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '0.2rem',
-            transition: 'all 0.3s ease',
-            cursor: 'pointer',
-            '&:hover': {
-                backgroundColor: '#f3f3f3',
-            },
-            '& .label': {
-                marginRight: '1rem',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-            },
-            '& .num': {
-                display: 'flex',
-                alignItems: 'center',
-                fontWeight: 'normal',
-                color: '#999',
-                marginRight: '1rem',
-            },
+            alignItems: 'center',
+            fontWeight: 'normal',
+            color: '#999',
+            marginRight: '1rem',
         },
-        '& .country-cases-bar': {
-            background: theme.primary.main,
-            height: '.3rem',
-            width: $barWidth + '%',
-        },
-    }),
-);
+    },
+    '& .country-cases-bar': {
+        background: theme.primary.main,
+        height: '.3rem',
+        width: barWidth + '%',
+    },
+}));
 
 export const CountriesListSkeleton = styled(Skeleton)(() => ({
     width: '100%',
@@ -180,25 +189,25 @@ export const VersionNumber = styled('a')(() => ({
 }));
 
 interface DataTypeButtonProps {
-    $selected: boolean;
+    selected: boolean;
 }
 
-export const DataTypeButton = styled(Button)<DataTypeButtonProps>(
-    ({ $selected, theme }) => ({
-        width: '100%',
+export const DataTypeButton = styled(Button, {
+    shouldForwardProp: (prop) => prop !== 'selected',
+})<DataTypeButtonProps>(({ selected, theme }) => ({
+    width: '100%',
+
+    '&:hover': {
+        backgroundColor: theme.palette.primary.main,
+    },
+
+    ...(!selected && {
+        color: theme.palette.gray.main,
+        borderColor: theme.palette.gray.dark,
 
         '&:hover': {
-            backgroundColor: theme.palette.primary.main,
+            borderColor: theme.palette.gray.dark,
+            backgroundColor: theme.palette.gray.light,
         },
-
-        ...(!$selected && {
-            color: theme.palette.gray.main,
-            borderColor: theme.palette.gray[200],
-
-            '&:hover': {
-                borderColor: theme.palette.gray[200],
-                backgroundColor: theme.palette.gray[100],
-            },
-        }),
     }),
-);
+}));
