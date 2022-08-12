@@ -57,6 +57,13 @@ export const FlagIcon = styled('img')(() => ({
     flexShrink: 0,
 }));
 
+export const EmptyFlag = styled('div')(() => ({
+    width: '2rem',
+    marginRight: '2rem',
+    display: 'flex',
+    justifyContent: 'center',
+}));
+
 export const SideBarHeader = styled('div')(({ theme }) => ({
     cursor: 'default',
     height: 'auto',

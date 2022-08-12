@@ -75,7 +75,7 @@ const ChartView = () => {
                 <strong>
                     {selectedCountry
                         ? getCountryName(selectedCountry.name)
-                        : `worldwide`}
+                        : `Worldwide`}
                 </strong>
             </Typography>
 

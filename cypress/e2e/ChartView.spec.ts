@@ -32,17 +32,19 @@ describe('<ChartView />', () => {
             ],
             { timeout: 15000 },
         );
-
-        cy.contains('Chart View').click();
     });
 
     it('Displays chart and slider', () => {
-        cy.contains(/Total confirmed cases: worldwide/);
+        cy.contains('Chart View').click();
+
+        cy.contains(/Total confirmed cases: Worldwide/);
         cy.contains(/Current date period:/i);
         cy.get('svg.recharts-surface').should('be.visible');
     });
 
     it("Doesn't show confrimed and confirmed and suspected buttons in the Sidebar", () => {
+        cy.contains('Chart View').click();
+
         cy.get('button')
             .contains(/confirmed/i)
             .should('not.exist');
@@ -52,11 +54,33 @@ describe('<ChartView />', () => {
     });
 
     it('Can select specific countries from the Sidebar', () => {
-        cy.contains(/Total confirmed cases: worldwide/i);
+        cy.contains('Chart View').click();
+
+        cy.contains(/Total confirmed cases: Worldwide/i);
 
         cy.get('button').contains(/spain/i).click();
 
         cy.contains(/Total confirmed cases: worldwide/i).should('not.exist');
         cy.contains(/Total confirmed cases: spain/i);
+    });
+
+    it('Can select "worldwide" as an option in Autocomplete only in ChartView', () => {
+        cy.get('button[aria-label="Open"]').click();
+        cy.contains(/Worldwide/i).should('not.exist');
+
+        cy.contains('Chart View').click();
+        cy.get('button[aria-label="Open"]').click();
+        cy.contains(/Worldwide/i);
+    });
+
+    it('Can switch to worldwide cases', () => {
+        cy.contains('Chart View').click();
+        cy.contains('Spain').click();
+        cy.contains('Total confirmed cases: Spain');
+
+        cy.get('button[aria-label="Open"]').click();
+        cy.contains('Worldwide').click();
+        cy.contains('Total confirmed cases: Spain').should('not.exist');
+        cy.contains('Total confirmed cases: Worldwide');
     });
 });

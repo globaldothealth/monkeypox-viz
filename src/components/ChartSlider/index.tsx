@@ -40,7 +40,7 @@ export default function ChartSlider() {
         if (!timeseriesCountryData || timeseriesCountryData.length === 0)
             return;
 
-        const dates = selectedCountry
+        const dates = selectedCountry && selectedCountry.name !== 'worldwide'
             ? getAvailableDatesForCountry(
                   timeseriesCountryData,
                   selectedCountry,

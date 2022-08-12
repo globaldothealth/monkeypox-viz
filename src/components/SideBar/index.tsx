@@ -25,6 +25,7 @@ import {
     SideBarTitlesSkeleton,
     CountriesListSkeleton,
     VersionNumber,
+    EmptyFlag,
 } from './styled';
 import {
     setSelectedCountryInSidebar,
@@ -64,12 +65,17 @@ const SideBar = () => {
 
     // Map countries data to autocomplete data
     useEffect(() => {
-        const mappedData = countriesData.map((country) => {
+        let mappedData = countriesData.map((country) => {
             return { name: country.name };
         });
 
+        // Add worldwide option in chart view
+        if (location.pathname === '/chart') {
+            mappedData = [{ name: 'worldwide' }, ...mappedData];
+        }
+
         setAutocompleteData(mappedData);
-    }, [countriesData]);
+    }, [countriesData, location]);
 
     // Sort countries based on number of cases
     useEffect(() => {
@@ -229,17 +235,22 @@ const SideBar = () => {
                                 className="autocompleteBox"
                                 {...props}
                             >
-                                <FlagIcon
-                                    loading="lazy"
-                                    width="20"
-                                    src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
-                                        option.name,
-                                    ).toLowerCase()}.png`}
-                                    srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
-                                        option.name,
-                                    ).toLowerCase()}.png 2x`}
-                                    alt={`${option.name} flag`}
-                                />
+                                {option.name === 'worldwide' ? (
+                                    <EmptyFlag>-</EmptyFlag>
+                                ) : (
+                                    <FlagIcon
+                                        loading="lazy"
+                                        width="20"
+                                        src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
+                                            option.name,
+                                        ).toLowerCase()}.png`}
+                                        srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
+                                            option.name,
+                                        ).toLowerCase()}.png 2x`}
+                                        alt={`${option.name} flag`}
+                                    />
+                                )}
+
                                 {getCountryName(option.name)}
                             </Box>
                         )}

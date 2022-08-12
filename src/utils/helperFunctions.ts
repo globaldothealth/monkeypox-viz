@@ -21,6 +21,8 @@ export const parseSearchQuery = (searchQuery: string): string => {
 };
 
 export const getCountryName = (code: string) => {
+    if (code === 'worldwide') return 'Worldwide';
+
     const countryObj = iso.whereAlpha3(code);
 
     if (code === 'COD') return 'The Democratic Republic of the Congo';
@@ -144,7 +146,7 @@ export const getGlobalChartData = (
     const endDate = availableDates[chartDatePeriod[1]];
 
     // If there is a selected country specified get count data just for this country
-    if (selectedCountry) {
+    if (selectedCountry && selectedCountry.name !== 'worldwide') {
         let countryData = timeseriesData.filter(
             (data) => data.country === selectedCountry.name,
         );
