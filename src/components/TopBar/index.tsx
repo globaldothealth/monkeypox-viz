@@ -21,6 +21,16 @@ const TopBar = () => {
                                 Country View
                             </Typography>
                         </NavLink>
+                        <NavLink
+                            to="/chart"
+                            className={({ isActive }) =>
+                                'nav-link' + (isActive ? ' activated' : '')
+                            }
+                        >
+                            <Typography variant="navbarlink" gutterBottom>
+                                Chart View
+                            </Typography>
+                        </NavLink>
                         <a
                             href="https://github.com/globaldothealth/monkeypox"
                             rel="noopener noreferrer"

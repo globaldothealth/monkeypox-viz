@@ -1,6 +1,7 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import { useLocation } from 'react-router-dom';
 import { useState, SyntheticEvent, useEffect } from 'react';
 import {
     selectCountriesData,
@@ -24,6 +25,7 @@ import {
     SideBarTitlesSkeleton,
     CountriesListSkeleton,
     VersionNumber,
+    EmptyFlag,
 } from './styled';
 import {
     setSelectedCountryInSidebar,
@@ -42,6 +44,7 @@ import { DataTypeButtons } from './DataTypeButtons';
 
 const SideBar = () => {
     const dispatch = useAppDispatch();
+    const location = useLocation();
 
     const [openSidebar, setOpenSidebar] = useState(true);
     const [timeseriesTotalCases, setTimeseriesTotalCases] = useState<number>();
@@ -62,12 +65,17 @@ const SideBar = () => {
 
     // Map countries data to autocomplete data
     useEffect(() => {
-        const mappedData = countriesData.map((country) => {
+        let mappedData = countriesData.map((country) => {
             return { name: country.name };
         });
 
+        // Add worldwide option in chart view
+        if (location.pathname === '/chart') {
+            mappedData = [{ name: 'worldwide' }, ...mappedData];
+        }
+
         setAutocompleteData(mappedData);
-    }, [countriesData]);
+    }, [countriesData, location]);
 
     // Sort countries based on number of cases
     useEffect(() => {
@@ -137,7 +145,7 @@ const SideBar = () => {
                     return (
                         <LocationListItem
                             key={name}
-                            $barWidth={countryCasesCountPercentage}
+                            barWidth={countryCasesCountPercentage}
                             onClick={() => handleOnCountryClick(name)}
                             data-cy="listed-country"
                         >
@@ -158,13 +166,13 @@ const SideBar = () => {
     };
 
     return (
-        <StyledSideBar $sidebaropen={openSidebar} data-cy="sidebar">
+        <StyledSideBar sidebaropen={openSidebar} data-cy="sidebar">
             <>
                 <SideBarHeader id="sidebar-header">
                     <h1 id="total">MONKEYPOX LINE LIST CASES</h1>
                 </SideBarHeader>
 
-                <DataTypeButtons />
+                {location.pathname !== '/chart' && <DataTypeButtons />}
 
                 <LatestGlobal id="latest-global">
                     {totalCasesCountIsLoading ||
@@ -227,17 +235,22 @@ const SideBar = () => {
                                 className="autocompleteBox"
                                 {...props}
                             >
-                                <FlagIcon
-                                    loading="lazy"
-                                    width="20"
-                                    src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
-                                        option.name,
-                                    ).toLowerCase()}.png`}
-                                    srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
-                                        option.name,
-                                    ).toLowerCase()}.png 2x`}
-                                    alt={`${option.name} flag`}
-                                />
+                                {option.name === 'worldwide' ? (
+                                    <EmptyFlag>-</EmptyFlag>
+                                ) : (
+                                    <FlagIcon
+                                        loading="lazy"
+                                        width="20"
+                                        src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
+                                            option.name,
+                                        ).toLowerCase()}.png`}
+                                        srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
+                                            option.name,
+                                        ).toLowerCase()}.png 2x`}
+                                        alt={`${option.name} flag`}
+                                    />
+                                )}
+
                                 {getCountryName(option.name)}
                             </Box>
                         )}
