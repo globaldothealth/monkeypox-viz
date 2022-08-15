@@ -107,8 +107,8 @@ const SideBar = () => {
 
     const handleOnCountryClick = (countryName: string) => {
         if (selectedCountry && countryName === selectedCountry.name) {
-            dispatch(setSelectedCountryInSidebar({name: 'worldwide'}));
-            dispatch(setPopup({ isOpen: false, countryName: '' }));
+            dispatch(setSelectedCountryInSidebar({ name: 'worldwide' }));
+            dispatch(setPopup({ isOpen: false, countryName: 'worldwide' }));
         } else {
             dispatch(setSelectedCountryInSidebar({ name: countryName }));
             dispatch(setPopup({ isOpen: true, countryName }));
