@@ -9,6 +9,12 @@ import { DataType } from 'redux/App/slice';
 import { ChartDataFormat } from 'models/ChartData';
 import { isEqual, format, compareAsc, isBefore } from 'date-fns';
 
+export interface ChartParamValues {
+    name?: string;
+    startDate?: number;
+    endDate?: number;
+}
+
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
     const parsedQuery = searchQuery.includes(' ')
@@ -229,4 +235,41 @@ export const getAvailableDatesForCountry = (
     dates.sort((date1, date2) => (isBefore(date1, date2) ? -1 : 1));
 
     return dates;
+};
+
+export const filtersToURL = (filters: ChartParamValues): string => {
+    const searchParams = new URLSearchParams();
+
+    for (const [key, value] of Object.entries(filters)) {
+        if (value) {
+            const parsedValue = value.toString().includes(' ')
+                ? `"${value}"`
+                : value;
+            searchParams.append(key, parsedValue);
+        }
+    }
+
+    return searchParams.toString();
+};
+
+export const URLToFilters = (url: string): ChartParamValues => {
+    const isQuery = url.includes('?q=');
+
+    if (isQuery) return {};
+
+    const searchParams = new URLSearchParams(url);
+    let filters: ChartParamValues = {};
+
+    searchParams.forEach((value, key) => {
+        const parsedValue = value.includes('"')
+            ? value.replaceAll('"', '')
+            : value;
+
+        filters = {
+            ...filters,
+            [key]: parsedValue,
+        };
+    });
+
+    return filters;
 };

@@ -26,8 +26,10 @@ import Typography from '@mui/material/Typography';
 import ChartSlider from 'components/ChartSlider';
 import { getCountryName } from 'utils/helperFunctions';
 import { useTheme } from '@mui/material/styles';
-
 import { ChartContainer } from './styled';
+import { filtersToURL, URLToFilters } from 'utils/helperFunctions';
+import { setPopup, setSelectedCountryInSidebar } from 'redux/App/slice';
+import iso from 'iso-3166-1';
 
 const ChartView = () => {
     const dispatch = useAppDispatch();
@@ -67,6 +69,18 @@ const ChartView = () => {
         chartDatePeriod,
         availableDates,
     ]);
+
+    useEffect(() => {
+        const newChartValues = URLToFilters(location.search);
+        if (!newChartValues.name) return;
+
+        const newCountryName = iso.whereAlpha3(newChartValues.name)
+            ? newChartValues.name
+            : 'worldwide';
+
+        dispatch(setSelectedCountryInSidebar({ name: newCountryName }));
+        dispatch(setPopup({ isOpen: true, countryName: newCountryName }));
+    }, [location.search]);
 
     return (
         <ChartContainer>
