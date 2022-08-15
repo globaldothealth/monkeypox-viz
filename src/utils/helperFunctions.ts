@@ -237,21 +237,6 @@ export const getAvailableDatesForCountry = (
     return dates;
 };
 
-export const filtersToURL = (filters: ChartParamValues): string => {
-    const searchParams = new URLSearchParams();
-
-    for (const [key, value] of Object.entries(filters)) {
-        if (value) {
-            const parsedValue = value.toString().includes(' ')
-                ? `"${value}"`
-                : value;
-            searchParams.append(key, parsedValue);
-        }
-    }
-
-    return searchParams.toString();
-};
-
 export const URLToFilters = (url: string): ChartParamValues => {
     const isQuery = url.includes('?q=');
 
