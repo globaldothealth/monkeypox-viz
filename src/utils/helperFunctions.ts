@@ -13,6 +13,7 @@ export interface ChartParamValues {
     name?: string;
     startDate?: number;
     endDate?: number;
+    currDate?: number;
 }
 
 // Parses search query that takes user to Curator Portal

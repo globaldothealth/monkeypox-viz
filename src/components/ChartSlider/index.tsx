@@ -15,11 +15,11 @@ import Stack from '@mui/material/Stack';
 import { format } from 'date-fns';
 
 import Slider from '@mui/material/Slider';
+import { useNavigate } from 'react-router-dom';
 import {
     getAvailableDatesForCountry,
     URLToFilters,
 } from 'utils/helperFunctions';
-import { useNavigate } from 'react-router-dom';
 
 const minDistance = 5;
 
@@ -52,7 +52,6 @@ export default function ChartSlider() {
                       selectedCountry,
                   )
                 : allTimeseriesDates;
-        // console.log(dates);
         const newChartValues = URLToFilters(location.search);
         const dateRange = spaceBetweenDatesParams(
             Number(newChartValues.startDate) || 0,
@@ -63,7 +62,7 @@ export default function ChartSlider() {
         setSliderRange(dateRange);
         dispatch(setAvailableDates(dates));
         dispatch(setChartDatePeriod(dateRange));
-        navigate('/chart');
+        navigate(location.pathname);
     }, [selectedCountry, timeseriesCountryData]);
 
     const handleValueChange = (

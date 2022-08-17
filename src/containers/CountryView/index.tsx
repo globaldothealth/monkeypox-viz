@@ -36,6 +36,7 @@ import {
 import CaseChart from 'components/CaseChart';
 import { Box } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import CopyStateLinkButton from 'components/CopyStateLinkButton';
 
 const dataLayers: LegendRow[] = [
     { label: '0 or no data', color: CountryViewColors['NoData'] },
@@ -384,6 +385,10 @@ const CountryView: React.FC = () => {
                         : 'Confirmed and Suspected Cases'
                 }
                 legendRows={dataLayers}
+            />
+            <CopyStateLinkButton
+                onWhichContainer="view"
+                adjustMarginRightRem={7.25}
             />
         </>
     );

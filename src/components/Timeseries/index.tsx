@@ -24,6 +24,9 @@ import {
     setPopup,
 } from 'redux/App/slice';
 import { getCountryDataFromTimeseriesData } from 'utils/helperFunctions';
+import { URLToFilters } from '../../utils/helperFunctions';
+import { useNavigate } from 'react-router-dom';
+import { SelectedCountry } from '../../models/CountryData';
 
 function getLabel(dates: Date[], selectedDate: number | undefined) {
     if (selectedDate === undefined || !dates || dates.length === 0) return '';
@@ -55,15 +58,29 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
         NodeJS.Timeout | undefined
     >(undefined);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (!timeseriesDates || timeseriesDates.length === 0) return;
 
         const start = timeseriesDates[0];
         const end = timeseriesDates[timeseriesDates.length - 1];
 
+        const { currDate } = URLToFilters(location.search);
+
         setStartDate(start);
         setEndDate(end);
-        setSelectedDate(timeseriesDates.length - 1);
+
+        setSelectedDate(
+            currDateFromURLHandler(currDate, timeseriesDates.length - 1),
+        );
+        dispatch(
+            setCurrentDate(
+                timeseriesDates[selectedDate || timeseriesDates.length - 1],
+            ),
+        );
+
+        navigate(location.pathname);
     }, [timeseriesDates]);
 
     useEffect(() => {
@@ -76,6 +93,7 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
             selectedDate === timeseriesDates.length - 1
         )
             return;
+        console.log('siemanoodsofdspodfs');
 
         const data = getCountryDataFromTimeseriesData(
             timeseriesData,
@@ -119,6 +137,18 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
 
     const handleChange = (value: number | number[]) => {
         setSelectedDate(typeof value === 'object' ? value[0] : value);
+    };
+
+    const currDateFromURLHandler = (
+        currDate: number | undefined,
+        max: number,
+    ) => {
+        const properlyFormatedNumber = Number(currDate);
+
+        if (!properlyFormatedNumber) return max;
+        if (properlyFormatedNumber > max) return max;
+        if (properlyFormatedNumber < 0) return 0;
+        return Math.floor(properlyFormatedNumber);
     };
 
     const handleStartAnimationClick = () => {

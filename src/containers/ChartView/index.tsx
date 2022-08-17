@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from 'redux/hooks';
 import {
     selectTimeseriesCaseCounts,
@@ -27,12 +27,7 @@ import ChartSlider from 'components/ChartSlider';
 import { getCountryName } from 'utils/helperFunctions';
 import { useTheme } from '@mui/material/styles';
 import { ChartContainer } from './styled';
-import { URLToFilters } from 'utils/helperFunctions';
-import { setPopup, setSelectedCountryInSidebar } from 'redux/App/slice';
-import iso from 'iso-3166-1';
-import Fab from '@mui/material/Fab';
-import LinkIcon from '@mui/icons-material/Link';
-import DoneIcon from '@mui/icons-material/Done';
+import CopyStateLinkButton from 'components/CopyStateLinkButton';
 
 const ChartView = () => {
     const dispatch = useAppDispatch();
@@ -45,11 +40,6 @@ const ChartView = () => {
     const timeseriesDates = useAppSelector(selectTimeseriesDates);
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
     const availableDates = useAppSelector(selectAvailableDates);
-
-    const [copyHandler, setCopyHandler] = useState({
-        message: 'Copy link to chart',
-        isCopying: false,
-    });
 
     useEffect(() => {
         if (
@@ -77,35 +67,6 @@ const ChartView = () => {
         chartDatePeriod,
         availableDates,
     ]);
-
-    useEffect(() => {
-        const newChartValues = URLToFilters(location.search);
-        if (!newChartValues.name) return;
-
-        const newCountryName = iso.whereAlpha3(newChartValues.name)
-            ? newChartValues.name
-            : 'worldwide';
-
-        dispatch(setSelectedCountryInSidebar({ name: newCountryName }));
-        dispatch(setPopup({ isOpen: true, countryName: newCountryName }));
-    }, [location.search]);
-
-    const handleCopyLinkButton = () => {
-        if (copyHandler.isCopying) return;
-
-        const countryName = selectedCountry
-            ? selectedCountry.name
-            : 'worldwide';
-
-        navigator.clipboard.writeText(
-            `${window.location.href}?name=${countryName}&startDate=${chartDatePeriod[0]}&endDate=${chartDatePeriod[1]}`,
-        );
-        setCopyHandler({ message: 'Copied!', isCopying: true });
-
-        setTimeout(() => {
-            setCopyHandler({ message: 'Copy link to chart', isCopying: false });
-        }, 2000);
-    };
 
     return (
         <>
@@ -166,23 +127,7 @@ const ChartView = () => {
 
                 <ChartSlider />
             </ChartContainer>
-            <Fab
-                color="primary"
-                variant="extended"
-                sx={{
-                    position: 'absolute',
-                    bottom: '0',
-                    right: '0',
-                    marginBottom: '3.75rem',
-                    marginRight: '3.75rem',
-                    minWidth: '25ch',
-                }}
-                onClick={handleCopyLinkButton}
-            >
-                {' '}
-                {copyHandler.isCopying ? <DoneIcon /> : <LinkIcon />}
-                {copyHandler.message}
-            </Fab>
+            <CopyStateLinkButton onWhichContainer="chart" />
         </>
     );
 };
