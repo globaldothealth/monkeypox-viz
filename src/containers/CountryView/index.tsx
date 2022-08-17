@@ -133,7 +133,7 @@ const CountryView: React.FC = () => {
 
         updateFeatureState();
         // eslint-disable-next-line
-    }, [countriesData]);
+    }, [countriesData, mapLoaded]);
 
     // Display popup on the map
     useEffect(() => {
@@ -144,9 +144,12 @@ const CountryView: React.FC = () => {
             !countryName ||
             countryName === '' ||
             countryName === 'worldwide' ||
-            !mapRef
+            !mapRef ||
+            !timeseriesData ||
+            !currentTimeseriesDate
         )
             return;
+        // console.log(timeseriesData);
 
         // Close previous popup if it exists
         if (currentPopup) currentPopup.remove();
@@ -171,6 +174,8 @@ const CountryView: React.FC = () => {
             country.name,
             currentTimeseriesDate,
         );
+
+        console.log(selectedCountry?.name || 'lol');
 
         const popupContent = (
             <>
@@ -218,7 +223,7 @@ const CountryView: React.FC = () => {
             );
 
         setCurrentPopup(popup);
-    }, [popupData]);
+    }, [popupData, timeseriesData, currentTimeseriesDate]);
 
     // Display countries data on the map
     const displayCountriesOnMap = () => {

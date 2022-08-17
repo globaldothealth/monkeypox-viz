@@ -4,7 +4,11 @@ import DoneIcon from '@mui/icons-material/Done';
 import LinkIcon from '@mui/icons-material/Link';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { selectChartDatePeriod } from 'redux/ChartView/selectors';
-import { selectSelectedCountryInSideBar } from 'redux/App/selectors';
+import {
+    selectCurrentDate,
+    selectSelectedCountryInSideBar,
+    selectTimeseriesDates,
+} from 'redux/App/selectors';
 import { URLToFilters } from 'utils/helperFunctions';
 import { setPopup, setSelectedCountryInSidebar } from 'redux/App/slice';
 import { selectCountriesData } from '../../redux/App/selectors';
@@ -25,6 +29,8 @@ const CopyStateLinkButton = ({
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const countriesData = useAppSelector(selectCountriesData);
+    const timeseriesDates = useAppSelector(selectTimeseriesDates);
+    const currentDate = useAppSelector(selectCurrentDate);
 
     useEffect(() => {
         const newChartValues = URLToFilters(location.search);
@@ -38,7 +44,6 @@ const CopyStateLinkButton = ({
         )
             return;
 
-        console.log(location);
         for (const country of countriesData) {
             if (country.name === newChartValues.name) {
                 dispatch(
@@ -72,7 +77,11 @@ const CopyStateLinkButton = ({
             );
         } else {
             navigator.clipboard.writeText(
-                `${window.location.href}?name=${countryName}&currDate=`,
+                `${
+                    window.location.href
+                }?name=${countryName}&currDate=${timeseriesDates.indexOf(
+                    currentDate || timeseriesDates[timeseriesDates.length - 1],
+                )}`,
             );
         }
         setCopyHandler({ message: 'Copied!', isCopying: true });

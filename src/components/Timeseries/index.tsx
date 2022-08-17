@@ -26,7 +26,6 @@ import {
 import { getCountryDataFromTimeseriesData } from 'utils/helperFunctions';
 import { URLToFilters } from '../../utils/helperFunctions';
 import { useNavigate } from 'react-router-dom';
-import { SelectedCountry } from '../../models/CountryData';
 
 function getLabel(dates: Date[], selectedDate: number | undefined) {
     if (selectedDate === undefined || !dates || dates.length === 0) return '';
@@ -66,19 +65,19 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
         const start = timeseriesDates[0];
         const end = timeseriesDates[timeseriesDates.length - 1];
 
-        const { currDate } = URLToFilters(location.search);
+        const countryViewFilters = URLToFilters(location.search);
+
+        const newSelectedDate = currDateFromURLHandler(
+            countryViewFilters.currDate,
+            timeseriesDates.length - 1,
+        );
 
         setStartDate(start);
         setEndDate(end);
 
-        setSelectedDate(
-            currDateFromURLHandler(currDate, timeseriesDates.length - 1),
-        );
-        dispatch(
-            setCurrentDate(
-                timeseriesDates[selectedDate || timeseriesDates.length - 1],
-            ),
-        );
+        setSelectedDate(newSelectedDate);
+
+        dispatch(setCurrentDate(timeseriesDates[newSelectedDate]));
 
         navigate(location.pathname);
     }, [timeseriesDates]);
@@ -93,7 +92,6 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
             selectedDate === timeseriesDates.length - 1
         )
             return;
-        console.log('siemanoodsofdspodfs');
 
         const data = getCountryDataFromTimeseriesData(
             timeseriesData,
