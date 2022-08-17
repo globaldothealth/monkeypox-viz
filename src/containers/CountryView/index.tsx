@@ -149,7 +149,6 @@ const CountryView: React.FC = () => {
             !currentTimeseriesDate
         )
             return;
-        // console.log(timeseriesData);
 
         // Close previous popup if it exists
         if (currentPopup) currentPopup.remove();
@@ -163,7 +162,6 @@ const CountryView: React.FC = () => {
         const countryDetails = lookupTableData[countryCode];
         if (!countryDetails) return;
 
-        const confirmedCases = country.confirmed;
         const suspectedCases = country.suspected;
         const lat = countryDetails.centroid[1];
         const lng = countryDetails.centroid[0];
@@ -175,7 +173,9 @@ const CountryView: React.FC = () => {
             currentTimeseriesDate,
         );
 
-        console.log(selectedCountry?.name || 'lol');
+        const confirmedCases = chartData.length
+            ? chartData[chartData.length - 1].caseCount
+            : 0;
 
         const popupContent = (
             <>

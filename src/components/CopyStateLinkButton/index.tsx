@@ -12,6 +12,8 @@ import {
 import { URLToFilters } from 'utils/helperFunctions';
 import { setPopup, setSelectedCountryInSidebar } from 'redux/App/slice';
 import { selectCountriesData } from '../../redux/App/selectors';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 interface CopyStateLinkButtonProps {
     onWhichContainer: 'view' | 'chart';
@@ -35,14 +37,7 @@ const CopyStateLinkButton = ({
     useEffect(() => {
         const newChartValues = URLToFilters(location.search);
 
-        if (
-            !newChartValues.name ||
-            // !selectedCountry ||
-            // selectedCountry.name === 'worldwide' ||
-            // selectedCountry === undefined ||
-            countriesData.length === 0
-        )
-            return;
+        if (!newChartValues.name || countriesData.length === 0) return;
 
         for (const country of countriesData) {
             if (country.name === newChartValues.name) {
@@ -57,12 +52,15 @@ const CopyStateLinkButton = ({
 
         dispatch(setPopup({ isOpen: false, countryName: '' }));
         dispatch(setSelectedCountryInSidebar({ name: 'worldwide' }));
+        setSnackbarAlertOpen(true);
     }, [location.search, countriesData]);
 
     const [copyHandler, setCopyHandler] = useState({
         message: `Copy link to ${onWhichContainer}`,
         isCopying: false,
     });
+
+    const [snackbarAlertOpen, setSnackbarAlertOpen] = useState(false);
 
     const handleCopyLinkButton = () => {
         if (copyHandler.isCopying) return;
@@ -95,23 +93,37 @@ const CopyStateLinkButton = ({
     };
 
     return (
-        <Fab
-            color="primary"
-            variant="extended"
-            sx={{
-                position: 'absolute',
-                bottom: '0',
-                right: '0',
-                marginBottom: `${3.75 + adjustMarginBottomRem}rem`,
-                marginRight: `${3.75 + adjustMarginRightRem}rem`,
-                minWidth: `${onWhichContainer.length + 20}ch`,
-            }}
-            onClick={handleCopyLinkButton}
-        >
-            {' '}
-            {copyHandler.isCopying ? <DoneIcon /> : <LinkIcon />}
-            {copyHandler.message}
-        </Fab>
+        <>
+            <Fab
+                color="primary"
+                variant="extended"
+                sx={{
+                    position: 'absolute',
+                    bottom: '0',
+                    right: '0',
+                    marginBottom: `${3.75 + adjustMarginBottomRem}rem`,
+                    marginRight: `${3.75 + adjustMarginRightRem}rem`,
+                    minWidth: `${onWhichContainer.length + 20}ch`,
+                }}
+                onClick={handleCopyLinkButton}
+            >
+                {' '}
+                {copyHandler.isCopying ? <DoneIcon /> : <LinkIcon />}
+                {copyHandler.message}
+            </Fab>
+            <Snackbar
+                open={snackbarAlertOpen}
+                onClose={() => setSnackbarAlertOpen(false)}
+                autoHideDuration={3000}
+                anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+                sx={{ height: '100%' }}
+            >
+                <Alert severity="error" elevation={6} variant="filled">
+                    Unfortunately, there is no data from the country that u
+                    selected.
+                </Alert>
+            </Snackbar>
+        </>
     );
 };
 
