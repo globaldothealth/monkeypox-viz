@@ -18,13 +18,13 @@ import Alert from '@mui/material/Alert';
 interface CopyStateLinkButtonProps {
     onWhichContainer: 'view' | 'chart';
     adjustMarginBottomRem?: number;
-    adjustMarginRightRem?: number;
+    adjustMarginRightVw?: number;
 }
 
 const CopyStateLinkButton = ({
     onWhichContainer,
     adjustMarginBottomRem = 0,
-    adjustMarginRightRem = 0,
+    adjustMarginRightVw = 0,
 }: CopyStateLinkButtonProps) => {
     const dispatch = useAppDispatch();
 
@@ -102,8 +102,9 @@ const CopyStateLinkButton = ({
                     bottom: '0',
                     right: '0',
                     marginBottom: `${3.75 + adjustMarginBottomRem}rem`,
-                    marginRight: `${3.75 + adjustMarginRightRem}rem`,
-                    minWidth: `${onWhichContainer.length + 20}ch`,
+                    marginRight: `${4 + adjustMarginRightVw}vw`,
+                    // minWidth: `${onWhichContainer.length + 20}ch`,
+                    width: `13vw`,
                 }}
                 onClick={handleCopyLinkButton}
             >
@@ -118,7 +119,7 @@ const CopyStateLinkButton = ({
                 anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
                 sx={{ height: '100%' }}
             >
-                <Alert severity="error" elevation={6} variant="filled">
+                <Alert severity="error" variant="filled">
                     Unfortunately, there is no data from the country that u
                     selected.
                 </Alert>

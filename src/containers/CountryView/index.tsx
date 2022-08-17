@@ -393,7 +393,7 @@ const CountryView: React.FC = () => {
             />
             <CopyStateLinkButton
                 onWhichContainer="view"
-                adjustMarginRightRem={7.25}
+                adjustMarginRightVw={2}
             />
         </>
     );
