@@ -58,19 +58,10 @@ describe('<ChartView />', () => {
 
         cy.contains(/Total confirmed cases: Worldwide/i);
 
-        cy.get('button').contains(/spain/i).click();
+        cy.contains(/spain/i).click();
 
         cy.contains(/Total confirmed cases: worldwide/i).should('not.exist');
         cy.contains(/Total confirmed cases: spain/i);
-    });
-
-    it('Can select "worldwide" as an option in Autocomplete only in ChartView', () => {
-        cy.get('button[aria-label="Open"]').click();
-        cy.contains(/Worldwide/i).should('not.exist');
-
-        cy.contains('Chart View').click();
-        cy.get('button[aria-label="Open"]').click();
-        cy.contains(/Worldwide/i);
     });
 
     it('Can switch to worldwide cases', () => {
@@ -78,7 +69,6 @@ describe('<ChartView />', () => {
         cy.contains('Spain').click();
         cy.contains('Total confirmed cases: Spain');
 
-        cy.get('button[aria-label="Open"]').click();
         cy.contains('Worldwide').click();
         cy.contains('Total confirmed cases: Spain').should('not.exist');
         cy.contains('Total confirmed cases: Worldwide');
