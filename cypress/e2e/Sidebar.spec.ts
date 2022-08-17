@@ -13,12 +13,12 @@ describe('<SideBar />', () => {
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
-            { statusCode: 200 },
+            { fixture: 'timeseriesCountryData.json', statusCode: 200 },
         ).as('fetchTimeseriesData');
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
-            { statusCode: 200 },
+            { fixture: 'timeseriesTotalData.json', statusCode: 200 },
         ).as('fetchTimeseriesCountData');
     });
 
@@ -52,12 +52,20 @@ describe('<SideBar />', () => {
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
-            { statusCode: 200, delay: 3000 },
+            {
+                fixture: 'timeseriesCountryData.json',
+                statusCode: 200,
+                delay: 3000,
+            },
         ).as('fetchTimeseriesData');
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
-            { statusCode: 200, delay: 3000 },
+            {
+                fixture: 'timeseriesTotalData.json',
+                statusCode: 200,
+                delay: 3000,
+            },
         ).as('fetchTimeseriesCountData');
 
         cy.visit('/');
@@ -97,7 +105,7 @@ describe('<SideBar />', () => {
 
         cy.get('[data-cy="autocomplete-input"').should('have.value', '');
         const listedCountries = cy.get('[data-cy="listed-country"]');
-        listedCountries.should('have.length.gte', 5);
+        listedCountries.should('have.length.gte', 6);
 
         cy.contains(/Germany/i).click({ force: true });
 
@@ -112,28 +120,15 @@ describe('<SideBar />', () => {
         cy.contains(/Confirmed/i);
         cy.contains(/Confirmed and Suspected/i);
 
-        cy.get('[data-cy="listed-country"]')
-            .first()
-            .contains('Spain')
-            .contains('58');
-
-        cy.get('[data-cy="listed-country"]')
-            .eq(1)
-            .contains('Portugal')
-            .contains('48');
+        cy.get('[data-cy="listed-country"]').first().contains('Worldwide');
+        cy.get('[data-cy="listed-country"]').eq(1).contains('Spain');
+        cy.get('[data-cy="listed-country"]').eq(2).contains('Portugal');
 
         cy.get('button')
             .contains(/Confirmed and Suspected/i)
             .click();
 
-        cy.get('[data-cy="listed-country"]')
-            .first()
-            .contains('Portugal')
-            .contains('73');
-
-        cy.get('[data-cy="listed-country"]')
-            .eq(1)
-            .contains('Spain')
-            .contains('68');
+        cy.get('[data-cy="listed-country"]').eq(1).contains('Portugal');
+        cy.get('[data-cy="listed-country"]').eq(2).contains('Spain');
     });
 });

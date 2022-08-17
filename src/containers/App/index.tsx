@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import TopBar from 'components/TopBar';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import CountryView from 'containers/CountryView';
+import ChartView from 'containers/ChartView';
 import SideBar from 'components/SideBar';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
@@ -11,12 +12,18 @@ import {
     fetchTimeseriesData,
     fetchTimeseriesCountData,
 } from 'redux/App/thunks';
-import { DataType, setCountriesData } from 'redux/App/slice';
+import {
+    DataType,
+    setCountriesData,
+    setDataType,
+    setSelectedCountryInSidebar,
+} from 'redux/App/slice';
 import {
     selectIsLoading,
     selectError,
     selectDataType,
     selectInitialCountriesData,
+    selectSelectedCountryInSideBar,
 } from 'redux/App/selectors';
 import Loader from 'components/Loader';
 import ErrorAlert from 'components/ErrorAlert';
@@ -54,6 +61,7 @@ const App = () => {
     const error = useAppSelector(selectError);
     const dataType = useAppSelector(selectDataType);
     const initialCountriesData = useAppSelector(selectInitialCountriesData);
+    const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
 
     // Fetch data from AWS S3
     useEffect(() => {
@@ -76,6 +84,29 @@ const App = () => {
 
         dispatch(setCountriesData(sortedCountriesData));
     }, [dataType]);
+
+    // When a user goes to chart view set data type to confirmed
+    useEffect(() => {
+        if (dataType === DataType.Confirmed || location.pathname !== '/chart')
+            return;
+
+        dispatch(setDataType(DataType.Confirmed));
+
+        // eslint-disable-next-line
+    }, [location.pathname]);
+
+    // When a user goes to CountryView reset selected country
+    useEffect(() => {
+        if (
+            !selectedCountry ||
+            selectedCountry.name !== 'worldwide' ||
+            location.pathname !== '/country'
+        )
+            return;
+
+        dispatch(setSelectedCountryInSidebar(null));
+        // eslint-disable-next-line
+    }, [location]);
 
     // Track page views
     useEffect(() => {
@@ -103,9 +134,15 @@ const App = () => {
                         element={<Navigate replace to="/country" />}
                     />
                     <Route path="/country" element={<CountryView />} />
+                    <Route path="/chart" element={<ChartView />} />
                 </Routes>
 
-                {dataType === DataType.Confirmed && <Timeseries />}
+                <Timeseries
+                    isHidden={
+                        location.pathname === '/chart' ||
+                        dataType === DataType.Combined
+                    }
+                />
 
                 {error && (
                     <ErrorContainer>

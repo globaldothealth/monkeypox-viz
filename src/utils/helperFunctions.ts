@@ -3,10 +3,11 @@ import {
     TimeseriesCountryDataRow,
     ParsedCountryDataRow,
     TimeseriesCaseCountsDataRow,
+    SelectedCountry,
 } from 'models/CountryData';
 import { DataType } from 'redux/App/slice';
-import { ChartDataFormat } from 'components/CaseChart';
-import { isEqual, format, compareAsc } from 'date-fns';
+import { ChartDataFormat } from 'models/ChartData';
+import { isEqual, format, compareAsc, isBefore } from 'date-fns';
 
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
@@ -20,6 +21,8 @@ export const parseSearchQuery = (searchQuery: string): string => {
 };
 
 export const getCountryName = (code: string) => {
+    if (code === 'worldwide') return 'Worldwide';
+
     const countryObj = iso.whereAlpha3(code);
 
     if (code === 'COD') return 'The Democratic Republic of the Congo';
@@ -99,6 +102,7 @@ export const getCountryDataFromTimeseriesData = (
     return countryData;
 };
 
+// This gets number of cases through time for a particular country
 export const getChartDataFromTimeseriesData = (
     timeseriesData: TimeseriesCountryDataRow[],
     country: string,
@@ -130,6 +134,59 @@ export const getChartDataFromTimeseriesData = (
     return chartData;
 };
 
+// This gets global case counts for the chart
+export const getGlobalChartData = (
+    timeseriesCountData: TimeseriesCaseCountsDataRow[],
+    selectedCountry: SelectedCountry | null,
+    timeseriesData: TimeseriesCountryDataRow[],
+    availableDates: Date[],
+    chartDatePeriod: number[],
+): ChartDataFormat[] => {
+    const startDate = availableDates[chartDatePeriod[0]];
+    const endDate = availableDates[chartDatePeriod[1]];
+
+    // If there is a selected country specified get count data just for this country
+    if (selectedCountry && selectedCountry.name !== 'worldwide') {
+        let countryData = timeseriesData.filter(
+            (data) => data.country === selectedCountry.name,
+        );
+
+        // Filter data so that only values from specified time period are returned
+        countryData = countryData.filter(
+            (data) =>
+                compareAsc(data.date, startDate) !== -1 &&
+                compareAsc(data.date, endDate) === -1,
+        );
+
+        const chartData = countryData.map((data) => {
+            return {
+                date: format(data.date, 'MMM d, yyyy'),
+                caseCount: data.cumulativeCases,
+            };
+        });
+
+        return chartData;
+    }
+
+    // If there isn't any country selected get count data for global case count
+
+    // Filter data so that only values from specified time period are returned
+    const filteredData = timeseriesCountData.filter(
+        (data) =>
+            compareAsc(data.date, startDate) !== -1 &&
+            compareAsc(data.date, endDate) === -1,
+    );
+
+    const chartData = filteredData.map((data) => {
+        return {
+            date: format(data.date, 'MMM d, yyyy'),
+            caseCount: data.cumulativeCases,
+        };
+    });
+
+    return chartData;
+};
+
 export const getTotalCasesByDate = (
     timeseriesCaseCountsData: TimeseriesCaseCountsDataRow[],
     date: Date,
@@ -154,4 +211,22 @@ export const sortCountriesData = (
             a.combined < b.combined ? 1 : -1,
         );
     }
+};
+
+export const getAvailableDatesForCountry = (
+    timeseriesCountryData: TimeseriesCountryDataRow[],
+    country: SelectedCountry,
+): Date[] => {
+    // Get data only for selected country
+    const filteredData = timeseriesCountryData.filter(
+        (data) => data.country === country.name,
+    );
+
+    // Get all available dates for this country
+    const dates = filteredData.map((data) => new Date(data.date));
+
+    // sort dates
+    dates.sort((date1, date2) => (isBefore(date1, date2) ? -1 : 1));
+
+    return dates;
 };

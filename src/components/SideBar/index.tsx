@@ -1,16 +1,17 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import { useLocation } from 'react-router-dom';
 import { useState, SyntheticEvent, useEffect } from 'react';
 import {
     selectCountriesData,
     selectLastUpdateDate,
     selectTotalCasesNumber,
-    selectTotalCasesIsLoading,
     selectAppVersion,
     selectDataType,
     selectCurrentDate,
     selectTimeseriesCaseCounts,
+    selectIsCaseCountsLoading,
 } from 'redux/App/selectors';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import {
@@ -18,12 +19,16 @@ import {
     LatestGlobal,
     LocationList,
     LocationListItem,
+    CountryLabel,
+    CountryCaseCount,
+    CaseCountsBar,
     SearchBar,
     SideBarHeader,
     StyledSideBar,
     SideBarTitlesSkeleton,
     CountriesListSkeleton,
     VersionNumber,
+    EmptyFlag,
 } from './styled';
 import {
     setSelectedCountryInSidebar,
@@ -42,12 +47,13 @@ import { DataTypeButtons } from './DataTypeButtons';
 
 const SideBar = () => {
     const dispatch = useAppDispatch();
+    const location = useLocation();
 
     const [openSidebar, setOpenSidebar] = useState(true);
-    const [timeseriesTotalCases, setTimeseriesTotalCases] = useState(0);
+    const [timeseriesTotalCases, setTimeseriesTotalCases] = useState<number>();
 
     const totalCasesNumber = useAppSelector(selectTotalCasesNumber);
-    const totalCasesCountIsLoading = useAppSelector(selectTotalCasesIsLoading);
+    const totalCasesCountIsLoading = useAppSelector(selectIsCaseCountsLoading);
     const lastUpdateDate = useAppSelector(selectLastUpdateDate);
     const selectedCountry = useAppSelector(selectSelectedCountryInSideBar);
     const appVersion = useAppSelector(selectAppVersion);
@@ -62,9 +68,12 @@ const SideBar = () => {
 
     // Map countries data to autocomplete data
     useEffect(() => {
-        const mappedData = countriesData.map((country) => {
+        let mappedData = countriesData.map((country) => {
             return { name: country.name };
         });
+
+        // Add worldwide option
+        mappedData = [{ name: 'worldwide' }, ...mappedData];
 
         setAutocompleteData(mappedData);
     }, [countriesData]);
@@ -97,26 +106,76 @@ const SideBar = () => {
     };
 
     const handleOnCountryClick = (countryName: string) => {
-        dispatch(setSelectedCountryInSidebar({ name: countryName }));
-        dispatch(setPopup({ isOpen: true, countryName }));
+        if (selectedCountry && countryName === selectedCountry.name) {
+            dispatch(setSelectedCountryInSidebar({ name: 'worldwide' }));
+            dispatch(setPopup({ isOpen: false, countryName: 'worldwide' }));
+        } else {
+            dispatch(setSelectedCountryInSidebar({ name: countryName }));
+            dispatch(setPopup({ isOpen: true, countryName }));
+        }
     };
 
     const handleAutocompleteCountrySelect = (
         event: SyntheticEvent<Element, Event>,
-        value: string | null,
+        value: SelectedCountry | string | null,
     ) => {
         if (value === null || value === '') {
             dispatch(setSelectedCountryInSidebar(null));
-        } else {
+        } else if (typeof value === 'string') {
             dispatch(setSelectedCountryInSidebar({ name: value }));
             dispatch(setPopup({ isOpen: true, countryName: value }));
+        } else {
+            dispatch(setSelectedCountryInSidebar({ name: value.name }));
+            dispatch(setPopup({ isOpen: true, countryName: value.name }));
         }
     };
 
     const Countries = () => {
         return (
             <>
+                <LocationListItem
+                    onClick={() => handleOnCountryClick('worldwide')}
+                    data-cy="listed-country"
+                    isActive={
+                        selectedCountry
+                            ? selectedCountry.name === 'worldwide'
+                            : true
+                    }
+                >
+                    <>
+                        <EmptyFlag>-</EmptyFlag>
+                        <CountryLabel
+                            isActive={
+                                selectedCountry
+                                    ? selectedCountry.name === 'worldwide'
+                                    : true
+                            }
+                            variant="body2"
+                        >
+                            {getCountryName('worldwide')}
+                        </CountryLabel>
+                    </>
+                    <CountryCaseCount
+                        isActive={
+                            selectedCountry
+                                ? selectedCountry.name === 'worldwide'
+                                : true
+                        }
+                        variant="body2"
+                    >
+                        {dataType === DataType.Confirmed
+                            ? totalCasesNumber.confirmed.toLocaleString()
+                            : totalCasesNumber.total.toLocaleString()}
+                    </CountryCaseCount>
+                </LocationListItem>
+
                 {countriesData.map((row) => {
+                    if (
+                        totalCasesCountIsLoading ||
+                        timeseriesTotalCases === undefined
+                    )
+                        return;
+
                     const { name, confirmed, combined } = row;
 
                     const value =
@@ -128,22 +187,44 @@ const SideBar = () => {
                     const countryCasesCountPercentage =
                         (value / totalValue) * 100;
 
+                    const isActive = selectedCountry
+                        ? selectedCountry.name === name
+                        : false;
+
                     return (
                         <LocationListItem
                             key={name}
-                            $barWidth={countryCasesCountPercentage}
                             onClick={() => handleOnCountryClick(name)}
                             data-cy="listed-country"
+                            isActive={isActive}
                         >
-                            <button>
-                                <span className="label">
+                            <>
+                                <FlagIcon
+                                    loading="lazy"
+                                    src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
+                                        name,
+                                    ).toLowerCase()}.png`}
+                                    srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
+                                        name,
+                                    ).toLowerCase()}.png 2x`}
+                                    alt={`${name} flag`}
+                                />
+                                <CountryLabel
+                                    isActive={isActive}
+                                    variant="body2"
+                                >
                                     {getCountryName(name)}
-                                </span>
-                                <span className="num">
-                                    {value.toLocaleString()}
-                                </span>
-                            </button>
-                            <div className="country-cases-bar"></div>
+                                </CountryLabel>
+                            </>
+                            <CountryCaseCount
+                                isActive={isActive}
+                                variant="body2"
+                            >
+                                {value.toLocaleString()}
+                            </CountryCaseCount>
+                            <CaseCountsBar
+                                barWidth={countryCasesCountPercentage}
+                            />
                         </LocationListItem>
                     );
                 })}
@@ -152,16 +233,17 @@ const SideBar = () => {
     };
 
     return (
-        <StyledSideBar $sidebaropen={openSidebar} data-cy="sidebar">
+        <StyledSideBar sidebaropen={openSidebar} data-cy="sidebar">
             <>
                 <SideBarHeader id="sidebar-header">
                     <h1 id="total">MONKEYPOX LINE LIST CASES</h1>
                 </SideBarHeader>
 
-                <DataTypeButtons />
+                {location.pathname !== '/chart' && <DataTypeButtons />}
 
                 <LatestGlobal id="latest-global">
-                    {totalCasesCountIsLoading ? (
+                    {totalCasesCountIsLoading ||
+                    timeseriesTotalCases === undefined ? (
                         <SideBarTitlesSkeleton
                             animation="pulse"
                             variant="rectangular"
@@ -182,15 +264,17 @@ const SideBar = () => {
                         </>
                     )}
                     <div className="last-updated-date">
-                        Updated:{' '}
-                        {totalCasesCountIsLoading ? (
+                        {totalCasesCountIsLoading ||
+                        timeseriesTotalCases === undefined ? (
                             <SideBarTitlesSkeleton
                                 animation="pulse"
                                 variant="rectangular"
                                 data-cy="loading-skeleton"
                             />
                         ) : (
-                            <span id="last-updated-date">{lastUpdateDate}</span>
+                            <span id="last-updated-date">
+                                Updated: {lastUpdateDate}
+                            </span>
                         )}
                     </div>
                 </LatestGlobal>
@@ -200,14 +284,19 @@ const SideBar = () => {
                         id="country-select"
                         options={autocompleteData}
                         autoHighlight
+                        popupIcon={<></>}
                         disabled={totalCasesCountIsLoading}
-                        getOptionLabel={(option) => getCountryName(option.name)}
-                        onChange={(event, value: SelectedCountry | null) =>
-                            handleAutocompleteCountrySelect(
-                                event,
-                                value ? value.name : null,
+                        getOptionLabel={(option) =>
+                            getCountryName(
+                                typeof option === 'string'
+                                    ? option
+                                    : option.name,
                             )
                         }
+                        onChange={(
+                            event,
+                            value: SelectedCountry | string | null,
+                        ) => handleAutocompleteCountrySelect(event, value)}
                         isOptionEqualToValue={(option, value) =>
                             option.name === value.name
                         }
@@ -218,17 +307,22 @@ const SideBar = () => {
                                 className="autocompleteBox"
                                 {...props}
                             >
-                                <FlagIcon
-                                    loading="lazy"
-                                    width="20"
-                                    src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
-                                        option.name,
-                                    ).toLowerCase()}.png`}
-                                    srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
-                                        option.name,
-                                    ).toLowerCase()}.png 2x`}
-                                    alt={`${option.name} flag`}
-                                />
+                                {option.name === 'worldwide' ? (
+                                    <EmptyFlag>-</EmptyFlag>
+                                ) : (
+                                    <FlagIcon
+                                        loading="lazy"
+                                        width="20"
+                                        src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
+                                            option.name,
+                                        ).toLowerCase()}.png`}
+                                        srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
+                                            option.name,
+                                        ).toLowerCase()}.png 2x`}
+                                        alt={`${option.name} flag`}
+                                    />
+                                )}
+
                                 {getCountryName(option.name)}
                             </Box>
                         )}
@@ -246,7 +340,8 @@ const SideBar = () => {
                 </SearchBar>
 
                 <LocationList>
-                    {totalCasesCountIsLoading ? (
+                    {totalCasesCountIsLoading ||
+                    timeseriesTotalCases === undefined ? (
                         <CountriesListSkeleton
                             animation="pulse"
                             variant="rectangular"

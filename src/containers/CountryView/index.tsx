@@ -78,6 +78,13 @@ const CountryView: React.FC = () => {
     useEffect(() => {
         if (!selectedCountry) return;
 
+        if (selectedCountry.name === 'worldwide') {
+            map.current?.setCenter([0, 40]);
+            map.current?.setZoom(2.5);
+
+            return;
+        }
+
         const countryCode = getTwoLetterCountryCode(selectedCountry.name);
 
         const bounds = lookupTableData[countryCode].bounds;
@@ -139,7 +146,13 @@ const CountryView: React.FC = () => {
         const { countryName } = popupData;
         const mapRef = map.current;
 
-        if (!countryName || countryName === '' || !mapRef) return;
+        if (!countryName || !mapRef) return;
+
+        if (countryName === '' || countryName === 'worldwide') {
+            // Close previous popup if it exists
+            if (currentPopup) currentPopup.remove();
+            return;
+        }
 
         // Close previous popup if it exists
         if (currentPopup) currentPopup.remove();
@@ -356,6 +369,12 @@ const CountryView: React.FC = () => {
                 id,
             });
         });
+
+        mapRef.setFilter('countries-join', [
+            'in',
+            'iso_3166_1_alpha_3',
+            ...countriesData.map((country) => country.name),
+        ]);
     };
 
     return (
