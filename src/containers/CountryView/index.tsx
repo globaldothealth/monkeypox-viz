@@ -125,15 +125,7 @@ const CountryView: React.FC = () => {
         });
     }, [isLoading, initialCountriesData]);
 
-    // Refresh map when data type changes
-    useEffect(() => {
-        if (!mapLoaded) return;
-
-        displayCountriesOnMap();
-        // eslint-disable-next-line
-    }, [dataType]);
-
-    // Refresh map when countries data changes
+    // Refresh map when data changes
     useEffect(() => {
         if (!mapLoaded) return;
 
