@@ -14,6 +14,7 @@ import { setPopup, setSelectedCountryInSidebar } from 'redux/App/slice';
 import { selectCountriesData } from '../../redux/App/selectors';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { CopyStateLinkButtonContainer } from './styled';
 
 interface CopyStateLinkButtonProps {
     onWhichContainer: 'view' | 'chart';
@@ -23,8 +24,6 @@ interface CopyStateLinkButtonProps {
 
 const CopyStateLinkButton = ({
     onWhichContainer,
-    adjustMarginBottomRem = 0,
-    adjustMarginRightVw = 0,
 }: CopyStateLinkButtonProps) => {
     const dispatch = useAppDispatch();
 
@@ -94,24 +93,15 @@ const CopyStateLinkButton = ({
 
     return (
         <>
-            <Fab
+            <CopyStateLinkButtonContainer
                 color="primary"
                 variant="extended"
-                sx={{
-                    position: 'absolute',
-                    bottom: '0',
-                    right: '0',
-                    marginBottom: `${3.75 + adjustMarginBottomRem}rem`,
-                    marginRight: `${4 + adjustMarginRightVw}vw`,
-                    // minWidth: `${onWhichContainer.length + 20}ch`,
-                    width: `13vw`,
-                }}
                 onClick={handleCopyLinkButton}
             >
                 {' '}
                 {copyHandler.isCopying ? <DoneIcon /> : <LinkIcon />}
                 {copyHandler.message}
-            </Fab>
+            </CopyStateLinkButtonContainer>
             <Snackbar
                 open={snackbarAlertOpen}
                 onClose={() => setSnackbarAlertOpen(false)}

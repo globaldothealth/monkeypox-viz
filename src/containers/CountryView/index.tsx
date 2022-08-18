@@ -391,10 +391,7 @@ const CountryView: React.FC = () => {
                 }
                 legendRows={dataLayers}
             />
-            <CopyStateLinkButton
-                onWhichContainer="view"
-                adjustMarginRightVw={2}
-            />
+            <CopyStateLinkButton onWhichContainer="view" />
         </>
     );
 };
