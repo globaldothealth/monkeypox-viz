@@ -54,7 +54,7 @@ const CopyStateLinkButton = ({
         }
 
         dispatch(setPopup({ isOpen: false, countryName: '' }));
-        dispatch(setSelectedCountryInSidebar({ name: 'worldwide' }));
+        dispatch(setSelectedCountryInSidebar(null));
         setSnackbarAlertOpen(newViewValues.name !== 'worldwide');
     }, [location.search, countriesData]);
 
