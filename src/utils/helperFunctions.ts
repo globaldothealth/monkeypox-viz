@@ -8,13 +8,7 @@ import {
 import { DataType } from 'redux/App/slice';
 import { ChartDataFormat } from 'models/ChartData';
 import { isEqual, format, compareAsc, isBefore } from 'date-fns';
-
-export interface ChartParamValues {
-    name?: string;
-    startDate?: number;
-    endDate?: number;
-    currDate?: number;
-}
+import { ViewParamURLValues } from 'models/ViewParamURLValues';
 
 // Parses search query that takes user to Curator Portal
 export const parseSearchQuery = (searchQuery: string): string => {
@@ -238,13 +232,13 @@ export const getAvailableDatesForCountry = (
     return dates;
 };
 
-export const URLToFilters = (url: string): ChartParamValues => {
+export const URLToFilters = (url: string): ViewParamURLValues => {
     const isQuery = url.includes('?q=');
 
     if (isQuery) return {};
 
     const searchParams = new URLSearchParams(url);
-    let filters: ChartParamValues = {};
+    let filters: ViewParamURLValues = {};
 
     searchParams.forEach((value, key) => {
         const parsedValue = value.includes('"')

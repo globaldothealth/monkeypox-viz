@@ -1,4 +1,3 @@
-import Fab from '@mui/material/Fab';
 import { useEffect, useState } from 'react';
 import DoneIcon from '@mui/icons-material/Done';
 import LinkIcon from '@mui/icons-material/Link';
@@ -34,14 +33,14 @@ const CopyStateLinkButton = ({
     const currentDate = useAppSelector(selectCurrentDate);
 
     useEffect(() => {
-        const newChartValues = URLToFilters(location.search);
+        const newViewValues = URLToFilters(location.search);
 
-        if (!newChartValues.name || countriesData.length === 0) return;
+        if (!newViewValues.name || countriesData.length === 0) return;
 
         for (const country of countriesData) {
-            if (country.name === newChartValues.name) {
+            if (country.name === newViewValues.name) {
                 dispatch(
-                    setSelectedCountryInSidebar({ name: newChartValues.name }),
+                    setSelectedCountryInSidebar({ name: newViewValues.name }),
                 );
                 dispatch(setPopup({ isOpen: true, countryName: country.name }));
 
@@ -51,7 +50,7 @@ const CopyStateLinkButton = ({
 
         dispatch(setPopup({ isOpen: false, countryName: '' }));
         dispatch(setSelectedCountryInSidebar({ name: 'worldwide' }));
-        setSnackbarAlertOpen(true);
+        setSnackbarAlertOpen(newViewValues.name !== 'worldwide');
     }, [location.search, countriesData]);
 
     const [copyHandler, setCopyHandler] = useState({
@@ -60,6 +59,13 @@ const CopyStateLinkButton = ({
     });
 
     const [snackbarAlertOpen, setSnackbarAlertOpen] = useState(false);
+
+    useEffect(() => {
+        if (!snackbarAlertOpen) return;
+        setTimeout(() => {
+            setSnackbarAlertOpen(false);
+        }, 3000);
+    }, [snackbarAlertOpen]);
 
     const handleCopyLinkButton = () => {
         if (copyHandler.isCopying) return;
@@ -104,8 +110,8 @@ const CopyStateLinkButton = ({
             </CopyStateLinkButtonContainer>
             <Snackbar
                 open={snackbarAlertOpen}
+                // open={true}
                 onClose={() => setSnackbarAlertOpen(false)}
-                autoHideDuration={3000}
                 anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
                 sx={{ height: '100%' }}
             >
