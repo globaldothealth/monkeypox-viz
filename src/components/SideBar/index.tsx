@@ -19,6 +19,9 @@ import {
     LatestGlobal,
     LocationList,
     LocationListItem,
+    CountryLabel,
+    CountryCaseCount,
+    CaseCountsBar,
     SearchBar,
     SideBarHeader,
     StyledSideBar,
@@ -69,13 +72,11 @@ const SideBar = () => {
             return { name: country.name };
         });
 
-        // Add worldwide option in chart view
-        if (location.pathname === '/chart') {
-            mappedData = [{ name: 'worldwide' }, ...mappedData];
-        }
+        // Add worldwide option
+        mappedData = [{ name: 'worldwide' }, ...mappedData];
 
         setAutocompleteData(mappedData);
-    }, [countriesData, location]);
+    }, [countriesData]);
 
     // Sort countries based on number of cases
     useEffect(() => {
@@ -105,25 +106,69 @@ const SideBar = () => {
     };
 
     const handleOnCountryClick = (countryName: string) => {
-        dispatch(setSelectedCountryInSidebar({ name: countryName }));
-        dispatch(setPopup({ isOpen: true, countryName }));
+        if (selectedCountry && countryName === selectedCountry.name) {
+            dispatch(setSelectedCountryInSidebar({ name: 'worldwide' }));
+            dispatch(setPopup({ isOpen: false, countryName: 'worldwide' }));
+        } else {
+            dispatch(setSelectedCountryInSidebar({ name: countryName }));
+            dispatch(setPopup({ isOpen: true, countryName }));
+        }
     };
 
     const handleAutocompleteCountrySelect = (
         event: SyntheticEvent<Element, Event>,
-        value: string | null,
+        value: SelectedCountry | string | null,
     ) => {
         if (value === null || value === '') {
             dispatch(setSelectedCountryInSidebar(null));
-        } else {
+        } else if (typeof value === 'string') {
             dispatch(setSelectedCountryInSidebar({ name: value }));
             dispatch(setPopup({ isOpen: true, countryName: value }));
+        } else {
+            dispatch(setSelectedCountryInSidebar({ name: value.name }));
+            dispatch(setPopup({ isOpen: true, countryName: value.name }));
         }
     };
 
     const Countries = () => {
         return (
             <>
+                <LocationListItem
+                    onClick={() => handleOnCountryClick('worldwide')}
+                    data-cy="listed-country"
+                    isActive={
+                        selectedCountry
+                            ? selectedCountry.name === 'worldwide'
+                            : true
+                    }
+                >
+                    <>
+                        <EmptyFlag>-</EmptyFlag>
+                        <CountryLabel
+                            isActive={
+                                selectedCountry
+                                    ? selectedCountry.name === 'worldwide'
+                                    : true
+                            }
+                            variant="body2"
+                        >
+                            {getCountryName('worldwide')}
+                        </CountryLabel>
+                    </>
+                    <CountryCaseCount
+                        isActive={
+                            selectedCountry
+                                ? selectedCountry.name === 'worldwide'
+                                : true
+                        }
+                        variant="body2"
+                    >
+                        {dataType === DataType.Confirmed
+                            ? totalCasesNumber.confirmed.toLocaleString()
+                            : totalCasesNumber.total.toLocaleString()}
+                    </CountryCaseCount>
+                </LocationListItem>
+
                 {countriesData.map((row) => {
                     if (
                         totalCasesCountIsLoading ||
@@ -142,22 +187,44 @@ const SideBar = () => {
                     const countryCasesCountPercentage =
                         (value / totalValue) * 100;
 
+                    const isActive = selectedCountry
+                        ? selectedCountry.name === name
+                        : false;
+
                     return (
                         <LocationListItem
                             key={name}
-                            barWidth={countryCasesCountPercentage}
                             onClick={() => handleOnCountryClick(name)}
                             data-cy="listed-country"
+                            isActive={isActive}
                         >
-                            <button>
-                                <span className="label">
+                            <>
+                                <FlagIcon
+                                    loading="lazy"
+                                    src={`https://flagcdn.com/w20/${getTwoLetterCountryCode(
+                                        name,
+                                    ).toLowerCase()}.png`}
+                                    srcSet={`https://flagcdn.com/w40/${getTwoLetterCountryCode(
+                                        name,
+                                    ).toLowerCase()}.png 2x`}
+                                    alt={`${name} flag`}
+                                />
+                                <CountryLabel
+                                    isActive={isActive}
+                                    variant="body2"
+                                >
                                     {getCountryName(name)}
-                                </span>
-                                <span className="num">
-                                    {value.toLocaleString()}
-                                </span>
-                            </button>
-                            <div className="country-cases-bar"></div>
+                                </CountryLabel>
+                            </>
+                            <CountryCaseCount
+                                isActive={isActive}
+                                variant="body2"
+                            >
+                                {value.toLocaleString()}
+                            </CountryCaseCount>
+                            <CaseCountsBar
+                                barWidth={countryCasesCountPercentage}
+                            />
                         </LocationListItem>
                     );
                 })}
@@ -217,14 +284,19 @@ const SideBar = () => {
                         id="country-select"
                         options={autocompleteData}
                         autoHighlight
+                        popupIcon={<></>}
                         disabled={totalCasesCountIsLoading}
-                        getOptionLabel={(option) => getCountryName(option.name)}
-                        onChange={(event, value: SelectedCountry | null) =>
-                            handleAutocompleteCountrySelect(
-                                event,
-                                value ? value.name : null,
+                        getOptionLabel={(option) =>
+                            getCountryName(
+                                typeof option === 'string'
+                                    ? option
+                                    : option.name,
                             )
                         }
+                        onChange={(
+                            event,
+                            value: SelectedCountry | string | null,
+                        ) => handleAutocompleteCountrySelect(event, value)}
                         isOptionEqualToValue={(option, value) =>
                             option.name === value.name
                         }
