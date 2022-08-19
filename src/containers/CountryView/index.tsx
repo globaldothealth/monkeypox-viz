@@ -65,6 +65,7 @@ const CountryView: React.FC = () => {
     const [mapLoaded, setMapLoaded] = useState(false);
     const [currentPopup, setCurrentPopup] = useState<mapboxgl.Popup>();
     const [featureStateIds, setFeatureStateIds] = useState<number[]>([]);
+    const [dragging, setDragging] = useState(false);
 
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useMapboxMap(mapboxAccessToken, mapContainer);
@@ -74,6 +75,18 @@ const CountryView: React.FC = () => {
     const lookupTableData = countryLookupTable.adm0.data.all as {
         [key: string]: any;
     };
+
+    useEffect(() => {
+        if (
+            !dragging ||
+            !selectedCountry ||
+            selectedCountry.name === 'worldwide'
+        )
+            return;
+
+        dispatch(setSelectedCountryInSidebar(null));
+        if (currentPopup) currentPopup.remove();
+    }, [dragging]);
 
     // Fly to country
     useEffect(() => {
@@ -324,6 +337,13 @@ const CountryView: React.FC = () => {
             dispatch(setSelectedCountryInSidebar({ name: countryName }));
             dispatch(setPopup({ isOpen: true, countryName }));
         });
+
+        mapRef.on('dragstart', () => {
+            setDragging(true);
+        });
+        mapRef.on('dragend', () => {
+            setDragging(false);
+        });
     };
 
     const updateFeatureState = () => {
@@ -391,7 +411,7 @@ const CountryView: React.FC = () => {
                 }
                 legendRows={dataLayers}
             />
-            <CopyStateLinkButton onWhichContainer="view" />
+            <CopyStateLinkButton onWhichContainer="view" map={map} />
         </>
     );
 };

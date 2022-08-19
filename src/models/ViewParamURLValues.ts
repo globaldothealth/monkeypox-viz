@@ -3,4 +3,7 @@ export interface ViewParamURLValues {
     startDate?: number;
     endDate?: number;
     currDate?: number;
+    lng?: number;
+    lat?: number;
+    zoom?: number;
 }

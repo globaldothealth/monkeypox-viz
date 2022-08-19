@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 import DoneIcon from '@mui/icons-material/Done';
 import LinkIcon from '@mui/icons-material/Link';
 import { useAppDispatch, useAppSelector } from 'redux/hooks';
@@ -17,12 +17,12 @@ import { CopyStateLinkButtonContainer } from './styled';
 
 interface CopyStateLinkButtonProps {
     onWhichContainer: 'view' | 'chart';
-    adjustMarginBottomRem?: number;
-    adjustMarginRightVw?: number;
+    map?: RefObject<mapboxgl.Map | null>;
 }
 
 const CopyStateLinkButton = ({
     onWhichContainer,
+    map,
 }: CopyStateLinkButtonProps) => {
     const dispatch = useAppDispatch();
 
@@ -37,6 +37,11 @@ const CopyStateLinkButton = ({
 
         if (!newViewValues.name || countriesData.length === 0) return;
 
+        if (map && map.current) {
+            const mapRef = map.current;
+            mapRef.setCenter([newViewValues.lng || 40, newViewValues.lat || 0]);
+            mapRef.setZoom(newViewValues.zoom || 2.5);
+        }
         for (const country of countriesData) {
             if (country.name === newViewValues.name) {
                 dispatch(
@@ -70,6 +75,9 @@ const CopyStateLinkButton = ({
     const handleCopyLinkButton = () => {
         if (copyHandler.isCopying) return;
 
+        const center = map?.current?.getCenter().toArray();
+        const zoom = map?.current?.getZoom();
+
         const countryName = selectedCountry
             ? selectedCountry.name
             : 'worldwide';
@@ -84,7 +92,11 @@ const CopyStateLinkButton = ({
                     window.location.href
                 }?name=${countryName}&currDate=${timeseriesDates.indexOf(
                     currentDate || timeseriesDates[timeseriesDates.length - 1],
-                )}`,
+                )}${
+                    center &&
+                    zoom &&
+                    '&lng=' + center[0] + '&lat=' + center[1] + '&zoom=' + zoom
+                }`,
             );
         }
         setCopyHandler({ message: 'Copied!', isCopying: true });

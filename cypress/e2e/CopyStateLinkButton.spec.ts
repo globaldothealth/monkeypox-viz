@@ -52,16 +52,17 @@ describe('<CopyStateLinkButton />', () => {
 
         cy.contains('Argentina').click();
 
-        cy.get('.MuiSlider-track + span > input').invoke('attr', 'value', 9);
+        cy.get('.MuiSlider-track + span > input').invoke('attr', 'value', 12);
 
         cy.contains(/COPY LINK TO/i)
             .should('be.visible')
             .focus()
-            .realClick();
+            .realClick()
+            .click();
 
         cy.window().then((win) => {
             win.navigator.clipboard.readText().then((text) => {
-                expect(text).to.include('?name=ARG&currDate=9');
+                expect(text).to.include('?name=ARG&currDate=12');
             });
         });
 
@@ -69,6 +70,7 @@ describe('<CopyStateLinkButton />', () => {
 
         cy.contains('Argentina').click();
 
+        //changing slider via attributes, cases in test = 12, 25% of 12 is 3, 9 - 3 = 6, 50% of 12 is 6
         cy.get('.MuiSlider-track').invoke('attr', 'style', [
             'left: 25%',
             'width: 50%',
