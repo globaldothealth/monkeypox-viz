@@ -14,7 +14,15 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands';
 
+// eslint-disable-next-line no-undef
+Cypress.on('uncaught:exception', (err, runnable) => {
+    if (err.message.includes('Write permission denied')) {
+        return false;
+    }
+    // we still want to ensure there are no other unexpected
+    // errors, so we let them fail the test
+});
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
