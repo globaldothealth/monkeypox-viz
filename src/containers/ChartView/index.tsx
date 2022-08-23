@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from 'redux/hooks';
 import {
     selectTimeseriesCaseCounts,
@@ -26,8 +26,7 @@ import Typography from '@mui/material/Typography';
 import ChartSlider from 'components/ChartSlider';
 import { getCountryName } from 'utils/helperFunctions';
 import { useTheme } from '@mui/material/styles';
-
-import { ChartContainer } from './styled';
+import { ChartContainer, ChartDataSwitch } from './styled';
 
 const ChartView = () => {
     const dispatch = useAppDispatch();
@@ -40,6 +39,8 @@ const ChartView = () => {
     const timeseriesDates = useAppSelector(selectTimeseriesDates);
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
     const availableDates = useAppSelector(selectAvailableDates);
+
+    const [isTotalConfirmedCases, setIsTotalConfirmedCases] = useState(true);
 
     useEffect(() => {
         if (
@@ -68,15 +69,28 @@ const ChartView = () => {
         availableDates,
     ]);
 
+    const handleChartDataChange = () => {
+        setIsTotalConfirmedCases(!isTotalConfirmedCases);
+    };
+
     return (
         <ChartContainer>
-            <Typography variant="body1">
-                Total confirmed cases:{' '}
+            <Typography
+                variant="body1"
+                sx={{ width: '100%', textAlign: 'center' }}
+            >
+                {isTotalConfirmedCases
+                    ? 'Total confirmed cases: '
+                    : '7 Days case count moving average: '}
                 <strong>
                     {selectedCountry
                         ? getCountryName(selectedCountry.name)
                         : `Worldwide`}
                 </strong>
+                <ChartDataSwitch
+                    onChange={() => handleChartDataChange()}
+                    checked={!isTotalConfirmedCases}
+                />
             </Typography>
 
             <ResponsiveContainer width="90%" height="80%">
@@ -113,13 +127,23 @@ const ChartView = () => {
                     <YAxis />
                     <Area
                         type="monotone"
-                        dataKey="caseCount"
+                        dataKey={
+                            isTotalConfirmedCases
+                                ? 'caseCount'
+                                : 'caseMovingNDaysCount'
+                        }
                         stroke={theme.palette.primary.main}
                         fillOpacity={1}
                         fill="url(#caseCount)"
                     />
+
                     <Tooltip
-                        formatter={(value: string) => [value, 'Case count']}
+                        formatter={(value: string) => [
+                            value,
+                            isTotalConfirmedCases
+                                ? 'Case count'
+                                : '7 days case count average',
+                        ]}
                     />
                 </AreaChart>
             </ResponsiveContainer>

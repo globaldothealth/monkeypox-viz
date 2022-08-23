@@ -128,10 +128,32 @@ export const getChartDataFromTimeseriesData = (
                     ? formattedDate
                     : '',
             caseCount: data.cumulativeCases,
+            caseMovingNDaysCount: getNDaysAverage(countryData, idx, 7),
         };
     });
 
     return chartData;
+};
+
+const getNDaysAverage = (
+    data: TimeseriesCountryDataRow[] | TimeseriesCaseCountsDataRow[],
+    index: number,
+    nDays: number,
+): number | null => {
+    index = index + 1;
+    if (nDays > index) return null;
+
+    const initialValue = 0;
+
+    return (
+        data
+            .slice(index - nDays, index)
+            .reduce(
+                (previousValue, currentValue) =>
+                    previousValue + currentValue.cumulativeCases,
+                initialValue,
+            ) / nDays
+    );
 };
 
 // This gets global case counts for the chart
@@ -158,10 +180,11 @@ export const getGlobalChartData = (
                 compareAsc(data.date, endDate) === -1,
         );
 
-        const chartData = countryData.map((data) => {
+        const chartData = countryData.map((data, index) => {
             return {
                 date: format(data.date, 'MMM d, yyyy'),
                 caseCount: data.cumulativeCases,
+                caseMovingNDaysCount: getNDaysAverage(countryData, index, 7),
             };
         });
 
@@ -177,10 +200,11 @@ export const getGlobalChartData = (
             compareAsc(data.date, endDate) === -1,
     );
 
-    const chartData = filteredData.map((data) => {
+    const chartData = filteredData.map((data, index) => {
         return {
             date: format(data.date, 'MMM d, yyyy'),
             caseCount: data.cumulativeCases,
+            caseMovingNDaysCount: getNDaysAverage(filteredData, index, 7),
         };
     });
 
