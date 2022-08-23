@@ -47,15 +47,8 @@ describe('<CopyStateLinkButton />', () => {
     });
 
     it('Copying proper link to clipboard', () => {
-        cy.on('uncaught:exception', (err) => {
-            if (err.message.includes('Write permission denied')) {
-                return false;
-            }
-            if (err.message.includes('Read permission denied')) {
-                return false;
-            }
-            // we still want to ensure there are no other unexpected
-            // errors, so we let them fail the test
+        cy.on('uncaught:exception', () => {
+            return false;
         });
 
         cy.visit('/country');
