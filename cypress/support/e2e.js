@@ -21,6 +21,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     if (err.message.includes('Write permission denied')) {
         return false;
     }
+    if (err.message.includes('Read permission denied')) {
+        return false;
+    }
     // we still want to ensure there are no other unexpected
     // errors, so we let them fail the test
 });
