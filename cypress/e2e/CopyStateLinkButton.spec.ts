@@ -123,7 +123,7 @@ describe('<CopyStateLinkButton />', () => {
 
     it('Propely setup view via given URL', () => {
         cy.visit('/country?name=ARG&currDate=11');
-
+        cy.wait(3000);
         cy.get('.MuiSlider-thumb > input').should('have.attr', 'value', '11');
         cy.get('.mapboxgl-popup-content').should('exist').contains('Argentina');
 
