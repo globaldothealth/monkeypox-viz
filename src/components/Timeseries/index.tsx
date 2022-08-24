@@ -75,12 +75,13 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
         setStartDate(start);
         setEndDate(end);
 
+
         setSelectedDate(newSelectedDate);
 
         dispatch(setCurrentDate(timeseriesDates[newSelectedDate]));
 
         navigate(location.pathname);
-    }, [timeseriesDates]);
+    }, [timeseriesDates, location.pathname]);
 
     useEffect(() => {
         if (
