@@ -61,7 +61,6 @@ describe('<CopyStateLinkButton />', () => {
         cy.contains(/COPY LINK TO/i)
             .should('be.visible')
             .focus()
-            .realClick()
             .click();
 
         cy.window().then((win) => {
@@ -83,7 +82,7 @@ describe('<CopyStateLinkButton />', () => {
         cy.contains(/COPY LINK TO/i)
             .should('be.visible')
             .focus()
-            .realClick();
+            .click();
 
         cy.window().then((win) => {
             win.navigator.clipboard.readText().then((text) => {
