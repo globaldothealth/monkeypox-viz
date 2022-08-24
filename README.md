@@ -2,6 +2,8 @@
 
 Global.health Monkeypox visualization
 
+https://map.monkeypox.global.health
+
 **Main technologies and libraries used in this project**
 
 -   React (Create React App)
@@ -16,6 +18,8 @@ Global.health Monkeypox visualization
 
 ## Development
 
+http://dev-map.monkeypox.global.health.s3-website.eu-central-1.amazonaws.com/country
+
 Once you clone the project, you can use npm to install all the dependencies by running:
 
 #### `npm install`
@@ -25,3 +29,4 @@ In order to run this project in development mode `.env.development` file is need
 You can start the development server by running:
 
 #### `npm start`
+
