@@ -17,10 +17,16 @@ jobs:
             - name: Install dependecies
               run: npm install
 
+              # ! This step should be commencted when pushing to github !
+            # - name: Install Cypress dependencies (local only!)
+            #   run: |
+            #       apt-get update
+            #       apt-get --assume-yes install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
             - name: Cypress run
               uses: cypress-io/github-action@v4
               with:
-                  browser: chrome
+                  browser: electron
                   record: false
                   start: npm start
                   wait-on: http://localhost:3000
