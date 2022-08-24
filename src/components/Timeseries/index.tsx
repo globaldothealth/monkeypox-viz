@@ -64,7 +64,7 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
         setStartDate(start);
         setEndDate(end);
         setSelectedDate(timeseriesDates.length - 1);
-    }, [timeseriesDates]);
+    }, [timeseriesDates, location.pathname]);
 
     useEffect(() => {
         if (
