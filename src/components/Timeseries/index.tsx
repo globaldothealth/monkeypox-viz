@@ -64,7 +64,7 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
         setStartDate(start);
         setEndDate(end);
         setSelectedDate(timeseriesDates.length - 1);
-    }, [timeseriesDates]);
+    }, [timeseriesDates, location.pathname]);
 
     useEffect(() => {
         if (
@@ -81,6 +81,7 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
             timeseriesData,
             timeseriesDates[selectedDate],
         );
+        console.log(location);
 
         const sortBy =
             dataType === DataType.Confirmed ? 'confirmed' : 'combined';

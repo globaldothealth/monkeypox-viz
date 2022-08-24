@@ -95,6 +95,7 @@ const SideBar = () => {
     // Update total cases count whenever current date in timeseries changes
     useEffect(() => {
         if (!currentDate || !timeseriesCaseCounts) return;
+        console.log('testtt');
 
         setTimeseriesTotalCases(
             getTotalCasesByDate(timeseriesCaseCounts, currentDate),
