@@ -81,7 +81,6 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
             timeseriesData,
             timeseriesDates[selectedDate],
         );
-        console.log(location);
 
         const sortBy =
             dataType === DataType.Confirmed ? 'confirmed' : 'combined';
