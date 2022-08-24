@@ -26,9 +26,34 @@ import Typography from '@mui/material/Typography';
 import ChartSlider from 'components/ChartSlider';
 import { getCountryName } from 'utils/helperFunctions';
 import { useTheme } from '@mui/material/styles';
-import { ChartContainer, ChartDataSwitch } from './styled';
+import { ChartContainer } from './styled';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+
+type ChartTypeValues = {
+    title: string;
+    dataKey: string;
+    tooltipName: string;
+};
+
+interface ChartTypesValues {
+    cumulative: ChartTypeValues;
+    nDaysAverage: ChartTypeValues;
+}
 
 const ChartView = () => {
+    const chartTypes: ChartTypesValues = {
+        cumulative: {
+            title: 'Total confirmed cases: ',
+            dataKey: 'caseCount',
+            tooltipName: 'Case count',
+        },
+        nDaysAverage: {
+            title: '7 Days case count moving average: ',
+            dataKey: 'caseMovingNDaysCount',
+            tooltipName: '7 days case count average',
+        },
+    };
+
     const dispatch = useAppDispatch();
     const theme = useTheme();
 
@@ -40,7 +65,9 @@ const ChartView = () => {
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
     const availableDates = useAppSelector(selectAvailableDates);
 
-    const [isTotalConfirmedCases, setIsTotalConfirmedCases] = useState(true);
+    const [chartType, setChartType] = useState<'cumulative' | 'nDaysAverage'>(
+        'cumulative',
+    );
 
     useEffect(() => {
         if (
@@ -69,8 +96,13 @@ const ChartView = () => {
         availableDates,
     ]);
 
-    const handleChartDataChange = () => {
-        setIsTotalConfirmedCases(!isTotalConfirmedCases);
+    const handleChartDataChange = (
+        event: React.MouseEvent<HTMLElement>, //needs to be here for correct type check
+        newChartType: 'cumulative' | 'nDaysAverage',
+    ) => {
+        if (!newChartType) return;
+
+        setChartType(newChartType);
     };
 
     return (
@@ -79,20 +111,23 @@ const ChartView = () => {
                 variant="body1"
                 sx={{ width: '100%', textAlign: 'center' }}
             >
-                {isTotalConfirmedCases
-                    ? 'Total confirmed cases: '
-                    : '7 Days case count moving average: '}
+                {chartTypes[chartType].title}
                 <strong>
                     {selectedCountry
                         ? getCountryName(selectedCountry.name)
                         : `Worldwide`}
                 </strong>
-                <ChartDataSwitch
-                    onChange={() => handleChartDataChange()}
-                    checked={!isTotalConfirmedCases}
-                />
             </Typography>
-
+            <ToggleButtonGroup
+                color="primary"
+                value={chartType}
+                exclusive
+                onChange={handleChartDataChange}
+                aria-label="Platform"
+            >
+                <ToggleButton value="cumulative">Cumulative</ToggleButton>
+                <ToggleButton value="nDaysAverage"> 7-day average</ToggleButton>
+            </ToggleButtonGroup>
             <ResponsiveContainer width="90%" height="80%">
                 <AreaChart data={chartData}>
                     <defs>
@@ -127,11 +162,7 @@ const ChartView = () => {
                     <YAxis />
                     <Area
                         type="monotone"
-                        dataKey={
-                            isTotalConfirmedCases
-                                ? 'caseCount'
-                                : 'caseMovingNDaysCount'
-                        }
+                        dataKey={chartTypes[chartType].dataKey}
                         stroke={theme.palette.primary.main}
                         fillOpacity={1}
                         fill="url(#caseCount)"
@@ -140,9 +171,7 @@ const ChartView = () => {
                     <Tooltip
                         formatter={(value: string) => [
                             value,
-                            isTotalConfirmedCases
-                                ? 'Case count'
-                                : '7 days case count average',
+                            chartTypes[chartType].tooltipName,
                         ]}
                     />
                 </AreaChart>

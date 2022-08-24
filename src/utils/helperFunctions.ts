@@ -146,13 +146,17 @@ const getNDaysAverage = (
     const initialValue = 0;
 
     return (
-        data
-            .slice(index - nDays, index)
-            .reduce(
-                (previousValue, currentValue) =>
-                    previousValue + currentValue.cumulativeCases,
-                initialValue,
-            ) / nDays
+        Math.round(
+            (data
+                .slice(index - nDays, index)
+                .reduce(
+                    (previousValue, currentValue) =>
+                        previousValue + currentValue.cumulativeCases,
+                    initialValue,
+                ) /
+                nDays) *
+                100,
+        ) / 100
     );
 };
 
