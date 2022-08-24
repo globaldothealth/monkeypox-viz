@@ -137,18 +137,18 @@ export const getChartDataFromTimeseriesData = (
 
 const getNDaysAverage = (
     data: TimeseriesCountryDataRow[] | TimeseriesCaseCountsDataRow[],
-    index: number,
+    idx: number,
     nDays: number,
 ): number | null => {
-    index = index + 1;
-    if (nDays > index) return null;
+    idx = idx + 1;
+    if (nDays > idx) return null;
 
     const initialValue = 0;
 
     return (
         Math.round(
             (data
-                .slice(index - nDays, index)
+                .slice(idx - nDays, idx)
                 .reduce(
                     (previousValue, currentValue) =>
                         previousValue + currentValue.cumulativeCases,
@@ -184,11 +184,11 @@ export const getGlobalChartData = (
                 compareAsc(data.date, endDate) === -1,
         );
 
-        const chartData = countryData.map((data, index) => {
+        const chartData = countryData.map((data, idx) => {
             return {
                 date: format(data.date, 'MMM d, yyyy'),
                 caseCount: data.cumulativeCases,
-                caseMovingNDaysCount: getNDaysAverage(countryData, index, 7),
+                caseMovingNDaysCount: getNDaysAverage(countryData, idx, 7),
             };
         });
 
@@ -204,11 +204,11 @@ export const getGlobalChartData = (
             compareAsc(data.date, endDate) === -1,
     );
 
-    const chartData = filteredData.map((data, index) => {
+    const chartData = filteredData.map((data, idx) => {
         return {
             date: format(data.date, 'MMM d, yyyy'),
             caseCount: data.cumulativeCases,
-            caseMovingNDaysCount: getNDaysAverage(filteredData, index, 7),
+            caseMovingNDaysCount: getNDaysAverage(filteredData, idx, 7),
         };
     });
 
