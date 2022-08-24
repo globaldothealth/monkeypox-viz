@@ -48,9 +48,9 @@ const ChartView = () => {
             tooltipName: 'Case count',
         },
         nDaysAverage: {
-            title: '7 Days case count moving average: ',
+            title: '7-day case count moving average: ',
             dataKey: 'caseMovingNDaysCount',
-            tooltipName: '7 days case count average',
+            tooltipName: '7-day case count average',
         },
     };
 

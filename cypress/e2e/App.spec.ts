@@ -1,10 +1,25 @@
 describe('<App />', () => {
-    it('Shows loading indicator while fetching data', () => {
+    it.only('Shows loading indicator while fetching data', () => {
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json',
-            { fixture: 'countriesData.json', delay: 1000 },
+            { fixture: 'countriesData.json', statusCode: 200 },
         ).as('fetchCountriesData');
+        cy.intercept(
+            'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
+            { fixture: 'timeseriesCountryData.json', statusCode: 200 },
+        ).as('fetchTimeseriesData');
+        cy.intercept(
+            'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
+            { fixture: 'timeseriesTotalData.json', statusCode: 200 },
+        ).as('fetchTimeseriesCountData');
+        cy.intercept(
+            'GET',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/total/latest.json',
+            { fixture: 'totalCasesData.json', statusCode: 200 },
+        ).as('fetchTotalCasesData');
 
         cy.visit('/');
 
@@ -12,7 +27,15 @@ describe('<App />', () => {
             .should('exist')
             .should('be.visible');
 
-        cy.wait('@fetchCountriesData');
+        cy.wait(
+            [
+                '@fetchCountriesData',
+                '@fetchTotalCasesData',
+                '@fetchTimeseriesData',
+                '@fetchTimeseriesCountData',
+            ],
+            { timeout: 15000 },
+        );
 
         cy.get('.MuiCircularProgress-root').should('not.exist');
     });
