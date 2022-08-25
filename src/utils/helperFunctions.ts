@@ -128,20 +128,6 @@ export const getChartDataFromTimeseriesData = (
                     ? formattedDate
                     : '',
             caseCount: data.cumulativeCases,
-            caseMovingNDaysCount: getNDaysAverage(
-                countryData,
-                idx,
-                7,
-                timeseriesData,
-                0,
-            ),
-            caseMovingNDaysCountCumulative: getNDaysAverage(
-                countryData,
-                idx,
-                7,
-                timeseriesData,
-                1,
-            ),
         };
     });
 
@@ -155,9 +141,10 @@ const getNDaysAverage = (
     timeseriesCountData:
         | TimeseriesCaseCountsDataRow[]
         | TimeseriesCountryDataRow[],
-    cumulative = 0,
+    cumulative = false,
 ): number | null => {
     //if first 7 days return null
+
     if (
         nDays > idx + 1 &&
         compareAsc(data[0].date, timeseriesCountData[7].date) === -1
@@ -165,15 +152,9 @@ const getNDaysAverage = (
         return null;
 
     const initialValue = 0;
-    let indexOfdateInTimeSeries = -1;
-
-    // check index of date in timeseries
-    for (let i = 0; i < timeseriesCountData.length; i++) {
-        if (compareAsc(data[idx].date, timeseriesCountData[i].date) === 0) {
-            indexOfdateInTimeSeries = i;
-            break;
-        }
-    }
+    const indexOfdateInTimeSeries = timeseriesCountData.findIndex(
+        (element) => element.date === data[idx].date,
+    );
 
     //add 7 days prior to first date shown in chart
     const newData = [
@@ -238,14 +219,13 @@ export const getGlobalChartData = (
                     idx,
                     7,
                     timeseriesCountData,
-                    0,
                 ),
                 caseMovingNDaysCountCumulative: getNDaysAverage(
                     countryData,
                     idx,
                     7,
                     timeseriesCountData,
-                    1,
+                    true,
                 ),
             };
         });
@@ -272,14 +252,13 @@ export const getGlobalChartData = (
                 idx,
                 7,
                 timeseriesCountData,
-                0,
             ),
             caseMovingNDaysCountCumulative: getNDaysAverage(
                 filteredData,
                 idx,
                 7,
                 timeseriesCountData,
-                1,
+                true,
             ),
         };
     });
