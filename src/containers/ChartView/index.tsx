@@ -38,6 +38,7 @@ type ChartTypeValues = {
 interface ChartTypesValues {
     cumulative: ChartTypeValues;
     nDaysAverage: ChartTypeValues;
+    nDaysAverageCumulative: ChartTypeValues;
 }
 
 const ChartView = () => {
@@ -52,6 +53,11 @@ const ChartView = () => {
             dataKey: 'caseMovingNDaysCount',
             tooltipName: '7-day case count average',
         },
+        nDaysAverageCumulative: {
+            title: '7-day case count moving average cumulative: ',
+            dataKey: 'caseMovingNDaysCountCumulative',
+            tooltipName: '7-day case count average cumulative',
+        },
     };
 
     const dispatch = useAppDispatch();
@@ -65,9 +71,9 @@ const ChartView = () => {
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
     const availableDates = useAppSelector(selectAvailableDates);
 
-    const [chartType, setChartType] = useState<'cumulative' | 'nDaysAverage'>(
-        'cumulative',
-    );
+    const [chartType, setChartType] = useState<
+        'cumulative' | 'nDaysAverage' | 'nDaysAverageCumulative'
+    >('cumulative');
 
     useEffect(() => {
         if (
@@ -98,7 +104,7 @@ const ChartView = () => {
 
     const handleChartDataChange = (
         event: React.MouseEvent<HTMLElement>, //needs to be here for correct type check
-        newChartType: 'cumulative' | 'nDaysAverage',
+        newChartType: 'cumulative' | 'nDaysAverage' | 'nDaysAverageCumulative',
     ) => {
         if (!newChartType) return;
 
@@ -127,6 +133,10 @@ const ChartView = () => {
             >
                 <ToggleButton value="cumulative">Cumulative</ToggleButton>
                 <ToggleButton value="nDaysAverage"> 7-day average</ToggleButton>
+                <ToggleButton value="nDaysAverageCumulative">
+                    {' '}
+                    7-day average cumulative
+                </ToggleButton>
             </ToggleButtonGroup>
             <ResponsiveContainer width="90%" height="80%">
                 <AreaChart data={chartData}>

@@ -128,7 +128,20 @@ export const getChartDataFromTimeseriesData = (
                     ? formattedDate
                     : '',
             caseCount: data.cumulativeCases,
-            caseMovingNDaysCount: getNDaysAverage(countryData, idx, 7),
+            caseMovingNDaysCount: getNDaysAverage(
+                countryData,
+                idx,
+                7,
+                timeseriesData,
+                0,
+            ),
+            caseMovingNDaysCountCumulative: getNDaysAverage(
+                countryData,
+                idx,
+                7,
+                timeseriesData,
+                1,
+            ),
         };
     });
 
@@ -139,19 +152,51 @@ const getNDaysAverage = (
     data: TimeseriesCountryDataRow[] | TimeseriesCaseCountsDataRow[],
     idx: number,
     nDays: number,
+    timeseriesCountData:
+        | TimeseriesCaseCountsDataRow[]
+        | TimeseriesCountryDataRow[],
+    cumulative = 0,
 ): number | null => {
-    idx = idx + 1;
-    if (nDays > idx) return null;
+    //if first 7 days return null
+    if (
+        nDays > idx + 1 &&
+        compareAsc(data[0].date, timeseriesCountData[7].date) === -1
+    )
+        return null;
 
     const initialValue = 0;
+    let indexOfdateInTimeSeries = -1;
+
+    // check index of date in timeseries
+    for (let i = 0; i < timeseriesCountData.length; i++) {
+        if (compareAsc(data[idx].date, timeseriesCountData[i].date) === 0) {
+            indexOfdateInTimeSeries = i;
+            break;
+        }
+    }
+
+    //add 7 days prior to first date shown in chart
+    const newData = [
+        ...timeseriesCountData.slice(
+            indexOfdateInTimeSeries - 7,
+            indexOfdateInTimeSeries,
+        ),
+        ...data,
+    ];
+
+    //update index to return average of 7 days instead of more +7 +1
+    const newIdx = idx + 8;
 
     return (
         Math.round(
-            (data
-                .slice(idx - nDays, idx)
+            (newData
+                .slice(newIdx - nDays, newIdx)
                 .reduce(
                     (previousValue, currentValue) =>
-                        previousValue + currentValue.cumulativeCases,
+                        previousValue +
+                        (cumulative
+                            ? currentValue.cumulativeCases
+                            : currentValue.cases),
                     initialValue,
                 ) /
                 nDays) *
@@ -188,7 +233,20 @@ export const getGlobalChartData = (
             return {
                 date: format(data.date, 'MMM d, yyyy'),
                 caseCount: data.cumulativeCases,
-                caseMovingNDaysCount: getNDaysAverage(countryData, idx, 7),
+                caseMovingNDaysCount: getNDaysAverage(
+                    countryData,
+                    idx,
+                    7,
+                    timeseriesCountData,
+                    0,
+                ),
+                caseMovingNDaysCountCumulative: getNDaysAverage(
+                    countryData,
+                    idx,
+                    7,
+                    timeseriesCountData,
+                    1,
+                ),
             };
         });
 
@@ -198,6 +256,7 @@ export const getGlobalChartData = (
     // If there isn't any country selected get count data for global case count
 
     // Filter data so that only values from specified time period are returned
+
     const filteredData = timeseriesCountData.filter(
         (data) =>
             compareAsc(data.date, startDate) !== -1 &&
@@ -208,7 +267,20 @@ export const getGlobalChartData = (
         return {
             date: format(data.date, 'MMM d, yyyy'),
             caseCount: data.cumulativeCases,
-            caseMovingNDaysCount: getNDaysAverage(filteredData, idx, 7),
+            caseMovingNDaysCount: getNDaysAverage(
+                filteredData,
+                idx,
+                7,
+                timeseriesCountData,
+                0,
+            ),
+            caseMovingNDaysCountCumulative: getNDaysAverage(
+                filteredData,
+                idx,
+                7,
+                timeseriesCountData,
+                1,
+            ),
         };
     });
 
