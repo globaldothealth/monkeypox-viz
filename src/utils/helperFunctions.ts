@@ -135,6 +135,58 @@ export const getChartDataFromTimeseriesData = (
     return chartData;
 };
 
+const getNDaysAverage = (
+    data: TimeseriesCountryDataRow[] | TimeseriesCaseCountsDataRow[],
+    idx: number,
+    nDays: number,
+    timeseriesCountData:
+        | TimeseriesCaseCountsDataRow[]
+        | TimeseriesCountryDataRow[],
+    cumulative = false,
+): number | undefined => {
+    //if first 7 days return undefined
+
+    if (
+        nDays >= idx + 1 &&
+        compareAsc(data[0].date, timeseriesCountData[8].date) === -1
+    )
+        return undefined;
+
+    const initialValue = 0;
+    const indexOfdateInTimeSeries = timeseriesCountData.findIndex(
+        (element) => element.date === data[idx].date,
+    );
+
+    //add 7 days prior to first date shown in chart
+    const newData = [
+        ...timeseriesCountData.slice(
+            indexOfdateInTimeSeries - 7,
+            indexOfdateInTimeSeries,
+        ),
+        ...data,
+    ];
+
+    //update index to return average of 7 days instead of more
+    const newIdx = idx + 7;
+
+    return (
+        Math.round(
+            (newData
+                .slice(newIdx - nDays, newIdx)
+                .reduce(
+                    (previousValue, currentValue) =>
+                        previousValue +
+                        (cumulative
+                            ? currentValue.cumulativeCases
+                            : currentValue.cases),
+                    initialValue,
+                ) /
+                nDays) *
+                100,
+        ) / 100
+    );
+};
+
 // This gets global case counts for the chart
 export const getGlobalChartData = (
     timeseriesCountData: TimeseriesCaseCountsDataRow[],
@@ -148,21 +200,34 @@ export const getGlobalChartData = (
 
     // If there is a selected country specified get count data just for this country
     if (selectedCountry && selectedCountry.name !== 'worldwide') {
-        let countryData = timeseriesData.filter(
+        const countryData = timeseriesData.filter(
             (data) => data.country === selectedCountry.name,
         );
 
         // Filter data so that only values from specified time period are returned
-        countryData = countryData.filter(
+        const newCountryData = countryData.filter(
             (data) =>
                 compareAsc(data.date, startDate) !== -1 &&
                 compareAsc(data.date, endDate) === -1,
         );
 
-        const chartData = countryData.map((data) => {
+        const chartData = newCountryData.map((data, idx) => {
             return {
                 date: format(data.date, 'MMM d, yyyy'),
                 caseCount: data.cumulativeCases,
+                caseMovingNDaysCount: getNDaysAverage(
+                    newCountryData,
+                    idx,
+                    7,
+                    countryData, // sending countryData as timeseries because first dates of countries starts much later compared to worlds
+                ),
+                caseMovingNDaysCountCumulative: getNDaysAverage(
+                    newCountryData,
+                    idx,
+                    7,
+                    countryData,
+                    true,
+                ),
             };
         });
 
@@ -172,16 +237,30 @@ export const getGlobalChartData = (
     // If there isn't any country selected get count data for global case count
 
     // Filter data so that only values from specified time period are returned
+
     const filteredData = timeseriesCountData.filter(
         (data) =>
             compareAsc(data.date, startDate) !== -1 &&
             compareAsc(data.date, endDate) === -1,
     );
 
-    const chartData = filteredData.map((data) => {
+    const chartData = filteredData.map((data, idx) => {
         return {
             date: format(data.date, 'MMM d, yyyy'),
             caseCount: data.cumulativeCases,
+            caseMovingNDaysCount: getNDaysAverage(
+                filteredData,
+                idx,
+                7,
+                timeseriesCountData,
+            ),
+            caseMovingNDaysCountCumulative: getNDaysAverage(
+                filteredData,
+                idx,
+                7,
+                timeseriesCountData,
+                true,
+            ),
         };
     });
 

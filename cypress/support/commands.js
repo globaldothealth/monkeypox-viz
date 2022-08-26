@@ -23,4 +23,16 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
 import 'cypress-real-events/support';
+
+
+const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
+// eslint-disable-next-line no-undef
+Cypress.on('uncaught:exception', (err) => {
+    /* returning false here prevents Cypress from failing the test */
+    if (resizeObserverLoopErrRe.test(err.message)) {
+        return false;
+    }
+});
+
