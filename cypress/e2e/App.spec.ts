@@ -1,5 +1,5 @@
 describe('<App />', () => {
-    it.only('Shows loading indicator while fetching data', () => {
+    it('Shows loading indicator while fetching data', () => {
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json',
