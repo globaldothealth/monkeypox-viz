@@ -61,7 +61,7 @@ describe('<CopyStateLinkButton />', () => {
             }),
         );
 
-        cy.wait(2000);
+        cy.wait(3000);
 
         cy.contains('Argentina').click();
 
@@ -79,6 +79,8 @@ describe('<CopyStateLinkButton />', () => {
         });
 
         cy.visit('/chart');
+
+        cy.wait(3000);
 
         cy.contains('Argentina').click();
 
