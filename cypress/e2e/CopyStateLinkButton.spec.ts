@@ -47,11 +47,20 @@ describe('<CopyStateLinkButton />', () => {
     });
 
     it('Copying proper link to clipboard', () => {
-        cy.on('uncaught:exception', () => {
-            return false;
-        });
-
         cy.visit('/country');
+        cy.wrap(
+            Cypress.automation('remote:debugger:protocol', {
+                command: 'Browser.grantPermissions',
+                params: {
+                    permissions: [
+                        'clipboardReadWrite',
+                        'clipboardSanitizedWrite',
+                    ],
+                    origin: window.location.origin,
+                },
+            }),
+        );
+
         cy.wait(2000);
 
         cy.contains('Argentina').click();
