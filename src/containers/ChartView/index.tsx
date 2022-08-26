@@ -35,31 +35,31 @@ type ChartTypeValues = {
     tooltipName: string;
 };
 
-enum chartTypeNames {
+enum ChartTypeNames {
     Cumulative = 'cumulative',
     NDaysAverage = 'nDaysAverage',
     NDaysAverageCumulative = 'nDaysAverageCumulative',
 }
 
 interface ChartTypesValues {
-    [chartTypeNames.Cumulative]: ChartTypeValues;
-    [chartTypeNames.NDaysAverage]: ChartTypeValues;
-    [chartTypeNames.NDaysAverageCumulative]: ChartTypeValues;
+    [ChartTypeNames.Cumulative]: ChartTypeValues;
+    [ChartTypeNames.NDaysAverage]: ChartTypeValues;
+    [ChartTypeNames.NDaysAverageCumulative]: ChartTypeValues;
 }
 
 const ChartView = () => {
     const chartTypes: ChartTypesValues = {
-        [chartTypeNames.Cumulative]: {
+        [ChartTypeNames.Cumulative]: {
             title: 'Total confirmed cases: ',
             dataKey: 'caseCount',
             tooltipName: 'Case count',
         },
-        [chartTypeNames.NDaysAverage]: {
+        [ChartTypeNames.NDaysAverage]: {
             title: '7-day case count moving average: ',
             dataKey: 'caseMovingNDaysCount',
             tooltipName: '7-day case count average',
         },
-        [chartTypeNames.NDaysAverageCumulative]: {
+        [ChartTypeNames.NDaysAverageCumulative]: {
             title: '7-day case count moving average cumulative: ',
             dataKey: 'caseMovingNDaysCountCumulative',
             tooltipName: '7-day case count average cumulative',
@@ -77,8 +77,8 @@ const ChartView = () => {
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
     const availableDates = useAppSelector(selectAvailableDates);
 
-    const [chartType, setChartType] = useState<chartTypeNames>(
-        chartTypeNames.Cumulative,
+    const [chartType, setChartType] = useState<ChartTypeNames>(
+        ChartTypeNames.Cumulative,
     );
 
     useEffect(() => {
@@ -110,7 +110,7 @@ const ChartView = () => {
 
     const handleChartDataChange = (
         event: React.MouseEvent<HTMLElement>, //needs to be here for correct type check
-        newChartType: chartTypeNames,
+        newChartType: ChartTypeNames,
     ) => {
         if (!newChartType) return;
 
@@ -137,14 +137,14 @@ const ChartView = () => {
                 onChange={handleChartDataChange}
                 aria-label="chart data type change buttons"
             >
-                <ToggleButton value={chartTypeNames.Cumulative}>
+                <ToggleButton value={ChartTypeNames.Cumulative}>
                     Cumulative
                 </ToggleButton>
-                <ToggleButton value={chartTypeNames.NDaysAverage}>
+                <ToggleButton value={ChartTypeNames.NDaysAverage}>
                     {' '}
                     7-day average
                 </ToggleButton>
-                <ToggleButton value={chartTypeNames.NDaysAverageCumulative}>
+                <ToggleButton value={ChartTypeNames.NDaysAverageCumulative}>
                     {' '}
                     7-day average cumulative
                 </ToggleButton>
@@ -153,7 +153,7 @@ const ChartView = () => {
                 <AreaChart data={chartData}>
                     <defs>
                         <linearGradient
-                            id={chartTypes[chartTypeNames.Cumulative].dataKey}
+                            id={chartType}
                             x1="0"
                             y1="0"
                             x2="0"
@@ -186,9 +186,7 @@ const ChartView = () => {
                         dataKey={chartTypes[chartType].dataKey}
                         stroke={theme.palette.primary.main}
                         fillOpacity={1}
-                        fill={`url(#${
-                            chartTypes[chartTypeNames.Cumulative].dataKey
-                        })`}
+                        fill={`url(#${chartType})`}
                     />
 
                     <Tooltip

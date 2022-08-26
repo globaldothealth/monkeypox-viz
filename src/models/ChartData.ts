@@ -1,6 +1,6 @@
 export interface ChartDataFormat {
     date: string;
     caseCount: number;
-    caseMovingNDaysCount?: number | null;
-    caseMovingNDaysCountCumulative?: number | null;
+    caseMovingNDaysCount?: number;
+    caseMovingNDaysCountCumulative?: number;
 }

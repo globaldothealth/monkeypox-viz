@@ -142,14 +142,14 @@ const getNDaysAverage = (
         | TimeseriesCaseCountsDataRow[]
         | TimeseriesCountryDataRow[],
     cumulative = false,
-): number | null => {
-    //if first 7 days return null
+): number | undefined => {
+    //if first 7 days return undefined
 
     if (
-        nDays > idx + 1 &&
-        compareAsc(data[0].date, timeseriesCountData[7].date) === -1
+        nDays >= idx + 1 &&
+        compareAsc(data[0].date, timeseriesCountData[8].date) === -1
     )
-        return null;
+        return undefined;
 
     const initialValue = 0;
     const indexOfdateInTimeSeries = timeseriesCountData.findIndex(
@@ -165,8 +165,8 @@ const getNDaysAverage = (
         ...data,
     ];
 
-    //update index to return average of 7 days instead of more +7 +1
-    const newIdx = idx + 8;
+    //update index to return average of 7 days instead of more
+    const newIdx = idx + 7;
 
     return (
         Math.round(
@@ -199,32 +199,32 @@ export const getGlobalChartData = (
 
     // If there is a selected country specified get count data just for this country
     if (selectedCountry && selectedCountry.name !== 'worldwide') {
-        let countryData = timeseriesData.filter(
+        const countryData = timeseriesData.filter(
             (data) => data.country === selectedCountry.name,
         );
 
         // Filter data so that only values from specified time period are returned
-        countryData = countryData.filter(
+        const newCountryData = countryData.filter(
             (data) =>
                 compareAsc(data.date, startDate) !== -1 &&
                 compareAsc(data.date, endDate) === -1,
         );
 
-        const chartData = countryData.map((data, idx) => {
+        const chartData = newCountryData.map((data, idx) => {
             return {
                 date: format(data.date, 'MMM d, yyyy'),
                 caseCount: data.cumulativeCases,
                 caseMovingNDaysCount: getNDaysAverage(
-                    countryData,
+                    newCountryData,
                     idx,
                     7,
-                    timeseriesCountData,
+                    countryData, // sending countryData as timeseries because first dates of countries starts much later compared to worlds
                 ),
                 caseMovingNDaysCountCumulative: getNDaysAverage(
-                    countryData,
+                    newCountryData,
                     idx,
                     7,
-                    timeseriesCountData,
+                    countryData,
                     true,
                 ),
             };
