@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from 'redux/hooks';
 import {
     selectTimeseriesCaseCounts,
@@ -26,10 +26,46 @@ import Typography from '@mui/material/Typography';
 import ChartSlider from 'components/ChartSlider';
 import { getCountryName } from 'utils/helperFunctions';
 import { useTheme } from '@mui/material/styles';
-
 import { ChartContainer } from './styled';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+
+type ChartTypeValues = {
+    title: string;
+    dataKey: string;
+    tooltipName: string;
+};
+
+enum ChartTypeNames {
+    Cumulative = 'cumulative',
+    NDaysAverage = 'nDaysAverage',
+    NDaysAverageCumulative = 'nDaysAverageCumulative',
+}
+
+interface ChartTypesValues {
+    [ChartTypeNames.Cumulative]: ChartTypeValues;
+    [ChartTypeNames.NDaysAverage]: ChartTypeValues;
+    [ChartTypeNames.NDaysAverageCumulative]: ChartTypeValues;
+}
 
 const ChartView = () => {
+    const chartTypes: ChartTypesValues = {
+        [ChartTypeNames.Cumulative]: {
+            title: 'Total confirmed cases: ',
+            dataKey: 'caseCount',
+            tooltipName: 'Case count',
+        },
+        [ChartTypeNames.NDaysAverage]: {
+            title: '7-day case count moving average: ',
+            dataKey: 'caseMovingNDaysCount',
+            tooltipName: '7-day case count average',
+        },
+        [ChartTypeNames.NDaysAverageCumulative]: {
+            title: '7-day case count moving average cumulative: ',
+            dataKey: 'caseMovingNDaysCountCumulative',
+            tooltipName: '7-day case count average cumulative',
+        },
+    };
+
     const dispatch = useAppDispatch();
     const theme = useTheme();
 
@@ -40,6 +76,10 @@ const ChartView = () => {
     const timeseriesDates = useAppSelector(selectTimeseriesDates);
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
     const availableDates = useAppSelector(selectAvailableDates);
+
+    const [chartType, setChartType] = useState<ChartTypeNames>(
+        ChartTypeNames.Cumulative,
+    );
 
     useEffect(() => {
         if (
@@ -68,22 +108,52 @@ const ChartView = () => {
         availableDates,
     ]);
 
+    const handleChartDataChange = (
+        event: React.MouseEvent<HTMLElement>, //needs to be here for correct type check
+        newChartType: ChartTypeNames,
+    ) => {
+        if (!newChartType) return;
+
+        setChartType(newChartType);
+    };
+
     return (
         <ChartContainer>
-            <Typography variant="body1">
-                Total confirmed cases:{' '}
+            <Typography
+                variant="body1"
+                sx={{ width: '100%', textAlign: 'center' }}
+            >
+                {chartTypes[chartType].title}
                 <strong>
                     {selectedCountry
                         ? getCountryName(selectedCountry.name)
                         : `Worldwide`}
                 </strong>
             </Typography>
-
+            <ToggleButtonGroup
+                color="primary"
+                value={chartType}
+                exclusive
+                onChange={handleChartDataChange}
+                aria-label="chart data type change buttons"
+            >
+                <ToggleButton value={ChartTypeNames.Cumulative}>
+                    Cumulative
+                </ToggleButton>
+                <ToggleButton value={ChartTypeNames.NDaysAverage}>
+                    {' '}
+                    7-day average
+                </ToggleButton>
+                <ToggleButton value={ChartTypeNames.NDaysAverageCumulative}>
+                    {' '}
+                    7-day average cumulative
+                </ToggleButton>
+            </ToggleButtonGroup>
             <ResponsiveContainer width="90%" height="80%">
                 <AreaChart data={chartData}>
                     <defs>
                         <linearGradient
-                            id="caseCount"
+                            id={chartType}
                             x1="0"
                             y1="0"
                             x2="0"
@@ -113,13 +183,17 @@ const ChartView = () => {
                     <YAxis />
                     <Area
                         type="monotone"
-                        dataKey="caseCount"
+                        dataKey={chartTypes[chartType].dataKey}
                         stroke={theme.palette.primary.main}
                         fillOpacity={1}
-                        fill="url(#caseCount)"
+                        fill={`url(#${chartType})`}
                     />
+
                     <Tooltip
-                        formatter={(value: string) => [value, 'Case count']}
+                        formatter={(value: string) => [
+                            value,
+                            chartTypes[chartType].tooltipName,
+                        ]}
                     />
                 </AreaChart>
             </ResponsiveContainer>

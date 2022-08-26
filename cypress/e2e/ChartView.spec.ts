@@ -58,6 +58,8 @@ describe('<ChartView />', () => {
 
         cy.contains(/Total confirmed cases: Worldwide/i);
 
+        cy.wait(3000);
+
         cy.contains(/spain/i).click();
 
         cy.contains(/Total confirmed cases: worldwide/i).should('not.exist');
@@ -66,6 +68,7 @@ describe('<ChartView />', () => {
 
     it('Can switch to worldwide cases', () => {
         cy.contains('Chart View').click();
+        cy.wait(3000);
         cy.contains('Spain').click();
         cy.contains('Total confirmed cases: Spain');
 
