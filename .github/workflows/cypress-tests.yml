@@ -22,6 +22,10 @@ jobs:
             #   run: |
             #       apt-get update
             #       apt-get --assume-yes install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+            #       wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            #       sudo sh -c 'echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+            #       sudo apt-get update
+            #       sudo apt-get -y install google-chrome-stable
 
             - name: Cypress run
               uses: cypress-io/github-action@v4
