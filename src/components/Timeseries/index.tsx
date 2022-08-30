@@ -143,8 +143,12 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
     ) => {
         const properlyFormatedNumber = Number(currDate);
 
-        if (!properlyFormatedNumber) return max;
-        if (properlyFormatedNumber > max) return max;
+        if (
+            !properlyFormatedNumber ||
+            properlyFormatedNumber > max ||
+            dataType === DataType.Combined
+        )
+            return max;
         if (properlyFormatedNumber < 0) return 0;
         return Math.floor(properlyFormatedNumber);
     };

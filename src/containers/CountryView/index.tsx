@@ -152,16 +152,13 @@ const CountryView: React.FC = () => {
         const { countryName } = popupData;
         const mapRef = map.current;
 
-
         if (
             !countryName ||
             !mapRef ||
             !timeseriesData ||
             !currentTimeseriesDate
         )
-          return;
-
-      
+            return;
 
         if (countryName === '' || countryName === 'worldwide') {
             // Close previous popup if it exists
@@ -318,13 +315,6 @@ const CountryView: React.FC = () => {
             'admin-1-boundary',
         );
 
-        //Filter out countries without any data
-        mapRef.setFilter('countries-join', [
-            'in',
-            'iso_3166_1_alpha_3',
-            ...countriesData.map((country) => country.name),
-        ]);
-
         // Change the mouse cursor to pointer when hovering above this layer
         mapRef.on('mouseenter', 'countries-join', () => {
             mapRef.getCanvas().style.cursor = 'pointer';
@@ -395,6 +385,7 @@ const CountryView: React.FC = () => {
             });
         });
 
+        //Filter out countries without any data
         mapRef.setFilter('countries-join', [
             'in',
             'iso_3166_1_alpha_3',
