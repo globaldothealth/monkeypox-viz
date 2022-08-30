@@ -112,7 +112,7 @@ describe('<CopyStateLinkButton />', () => {
             'left: 0%; width: 100%;',
         );
         cy.contains(
-            /Unfortunately, there is no data from the country that u selected./i,
+            /Unfortunately, there is no data from the country that you have selected./i,
         ).should('be.visible');
 
         cy.url().should('not.include', '?');
@@ -131,7 +131,7 @@ describe('<CopyStateLinkButton />', () => {
         );
 
         cy.contains(
-            /Unfortunately, there is no data from the country that u selected./i,
+            /Unfortunately, there is no data from the country that you have selected./i,
         ).should('be.visible');
         cy.url().should('not.include', '?');
 
