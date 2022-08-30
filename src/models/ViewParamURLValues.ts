@@ -1,3 +1,5 @@
+import { ChartTypeNames } from 'containers/ChartView/index';
+import { DataType } from '../redux/App/slice';
 export interface ViewParamURLValues {
     name?: string;
     startDate?: number;
@@ -6,4 +8,6 @@ export interface ViewParamURLValues {
     lng?: number;
     lat?: number;
     zoom?: number;
+    chartType?: ChartTypeNames;
+    dataType?: DataType;
 }

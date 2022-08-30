@@ -111,7 +111,9 @@ describe('<CopyStateLinkButton />', () => {
             'style',
             'left: 0%; width: 100%;',
         );
-        cy.get('.MuiAlert-message').should('exist');
+        cy.contains(
+            /Unfortunately, there is no data from the country that u selected./i,
+        ).should('be.visible');
 
         cy.url().should('not.include', '?');
 
@@ -128,7 +130,9 @@ describe('<CopyStateLinkButton />', () => {
             'left: 0%; width: 100%;',
         );
 
-        cy.get('.MuiAlert-message').should('exist');
+        cy.contains(
+            /Unfortunately, there is no data from the country that u selected./i,
+        ).should('be.visible');
         cy.url().should('not.include', '?');
 
         cy.wait(1500);

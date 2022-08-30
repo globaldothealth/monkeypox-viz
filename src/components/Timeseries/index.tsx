@@ -24,7 +24,7 @@ import {
     setPopup,
 } from 'redux/App/slice';
 import { getCountryDataFromTimeseriesData } from 'utils/helperFunctions';
-import { URLToFilters } from '../../utils/helperFunctions';
+import { URLToFilters } from 'utils/helperFunctions';
 import { useNavigate } from 'react-router-dom';
 
 function getLabel(dates: Date[], selectedDate: number | undefined) {
@@ -74,7 +74,6 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
 
         setStartDate(start);
         setEndDate(end);
-
 
         setSelectedDate(newSelectedDate);
 

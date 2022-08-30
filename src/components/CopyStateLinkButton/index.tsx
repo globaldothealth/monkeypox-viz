@@ -5,24 +5,33 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks';
 import { selectChartDatePeriod } from 'redux/ChartView/selectors';
 import {
     selectCurrentDate,
+    selectDataType,
     selectSelectedCountryInSideBar,
     selectTimeseriesDates,
 } from 'redux/App/selectors';
 import { URLToFilters } from 'utils/helperFunctions';
-import { setPopup, setSelectedCountryInSidebar } from 'redux/App/slice';
+import {
+    setPopup,
+    setSelectedCountryInSidebar,
+    setDataType,
+    DataType,
+} from 'redux/App/slice';
 import { selectCountriesData } from '../../redux/App/selectors';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { CopyStateLinkButtonContainer } from './styled';
+import { ChartTypeNames } from 'containers/ChartView/index';
 
 interface CopyStateLinkButtonProps {
     onWhichContainer: 'view' | 'chart';
     map?: RefObject<mapboxgl.Map | null>;
+    chartType?: ChartTypeNames;
 }
 
 const CopyStateLinkButton = ({
     onWhichContainer,
     map,
+    chartType,
 }: CopyStateLinkButtonProps) => {
     const dispatch = useAppDispatch();
 
@@ -31,6 +40,7 @@ const CopyStateLinkButton = ({
     const countriesData = useAppSelector(selectCountriesData);
     const timeseriesDates = useAppSelector(selectTimeseriesDates);
     const currentDate = useAppSelector(selectCurrentDate);
+    const dataType = useAppSelector(selectDataType);
 
     useEffect(() => {
         const newViewValues = URLToFilters(location.search);
@@ -42,15 +52,17 @@ const CopyStateLinkButton = ({
             mapRef.setCenter([newViewValues.lng || 40, newViewValues.lat || 0]);
             mapRef.setZoom(newViewValues.zoom || 2.5);
         }
-        for (const country of countriesData) {
-            if (country.name === newViewValues.name) {
-                dispatch(
-                    setSelectedCountryInSidebar({ name: newViewValues.name }),
-                );
-                dispatch(setPopup({ isOpen: true, countryName: country.name }));
 
-                return;
-            }
+        dispatch(setDataType(handleDataTypeNumber(newViewValues.dataType)));
+
+        if (
+            countriesData.find((country) => country.name === newViewValues.name)
+        ) {
+            dispatch(setSelectedCountryInSidebar({ name: newViewValues.name }));
+            dispatch(
+                setPopup({ isOpen: true, countryName: newViewValues.name }),
+            );
+            return;
         }
 
         dispatch(setPopup({ isOpen: false, countryName: '' }));
@@ -72,11 +84,17 @@ const CopyStateLinkButton = ({
         }, 3000);
     }, [snackbarAlertOpen]);
 
-    const handleCopyLinkButton = () => {
-        if (copyHandler.isCopying) return;
+    const handleDataTypeNumber = (dataType: DataType | undefined) => {
+        const handledNumber = Number(dataType);
+        if (!handledNumber || handledNumber > 1 || handledNumber < 0)
+            return DataType.Confirmed;
+        return DataType.Combined;
+    };
 
-        const center = map?.current?.getCenter().toArray();
-        const zoom = map?.current?.getZoom();
+    const handleCopyLinkButton = () => {
+        const mapRef = map?.current;
+
+        if (copyHandler.isCopying) return;
 
         const countryName = selectedCountry
             ? selectedCountry.name
@@ -84,19 +102,27 @@ const CopyStateLinkButton = ({
 
         if (onWhichContainer === 'chart') {
             navigator.clipboard.writeText(
-                `${window.location.href}?name=${countryName}&startDate=${chartDatePeriod[0]}&endDate=${chartDatePeriod[1]}`,
+                `${window.location.href}?name=${countryName}&startDate=${
+                    chartDatePeriod[0]
+                }&endDate=${chartDatePeriod[1]}&chartType=${
+                    chartType || ChartTypeNames.Cumulative
+                }`,
             );
-        } else {
+        } else if (!mapRef) return;
+        else {
+            const center = mapRef.getCenter().toArray();
+            const zoom = mapRef.getZoom();
+            const currDate =
+                dataType || !currentDate
+                    ? timeseriesDates.length - 1
+                    : timeseriesDates.indexOf(currentDate);
+
             navigator.clipboard.writeText(
                 `${
                     window.location.href
-                }?name=${countryName}&currDate=${timeseriesDates.indexOf(
-                    currentDate || timeseriesDates[timeseriesDates.length - 1],
-                )}${
-                    center &&
-                    zoom &&
+                }?name=${countryName}&currDate=${currDate}${
                     '&lng=' + center[0] + '&lat=' + center[1] + '&zoom=' + zoom
-                }`,
+                }&dataType=${dataType}`,
             );
         }
         setCopyHandler({ message: 'Copied!', isCopying: true });
@@ -122,14 +148,13 @@ const CopyStateLinkButton = ({
             </CopyStateLinkButtonContainer>
             <Snackbar
                 open={snackbarAlertOpen}
-                // open={true}
                 onClose={() => setSnackbarAlertOpen(false)}
                 anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
                 sx={{ height: '100%' }}
             >
                 <Alert severity="error" variant="filled">
-                    Unfortunately, there is no data from the country that u
-                    selected.
+                    Unfortunately, there is no data from the country that you
+                    have selected.
                 </Alert>
             </Snackbar>
         </>
