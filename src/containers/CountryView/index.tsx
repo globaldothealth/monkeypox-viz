@@ -36,6 +36,7 @@ import {
 import CaseChart from 'components/CaseChart';
 import { Box } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import CopyStateLinkButton from 'components/CopyStateLinkButton';
 
 const dataLayers: LegendRow[] = [
     { label: '0 or no data', color: CountryViewColors['NoData'] },
@@ -64,6 +65,7 @@ const CountryView: React.FC = () => {
     const [mapLoaded, setMapLoaded] = useState(false);
     const [currentPopup, setCurrentPopup] = useState<mapboxgl.Popup>();
     const [featureStateIds, setFeatureStateIds] = useState<number[]>([]);
+    const [dragging, setDragging] = useState(false);
 
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useMapboxMap(mapboxAccessToken, mapContainer);
@@ -73,6 +75,18 @@ const CountryView: React.FC = () => {
     const lookupTableData = countryLookupTable.adm0.data.all as {
         [key: string]: any;
     };
+
+    useEffect(() => {
+        if (
+            !dragging ||
+            !selectedCountry ||
+            selectedCountry.name === 'worldwide'
+        )
+            return;
+
+        dispatch(setSelectedCountryInSidebar(null));
+        if (currentPopup) currentPopup.remove();
+    }, [dragging]);
 
     // Fly to country
     useEffect(() => {
@@ -131,14 +145,20 @@ const CountryView: React.FC = () => {
 
         updateFeatureState();
         // eslint-disable-next-line
-    }, [countriesData]);
+    }, [countriesData, mapLoaded]);
 
     // Display popup on the map
     useEffect(() => {
         const { countryName } = popupData;
         const mapRef = map.current;
 
-        if (!countryName || !mapRef) return;
+        if (
+            !countryName ||
+            !mapRef ||
+            !timeseriesData ||
+            !currentTimeseriesDate
+        )
+            return;
 
         if (countryName === '' || countryName === 'worldwide') {
             // Close previous popup if it exists
@@ -158,7 +178,6 @@ const CountryView: React.FC = () => {
         const countryDetails = lookupTableData[countryCode];
         if (!countryDetails) return;
 
-        const confirmedCases = country.confirmed;
         const suspectedCases = country.suspected;
         const lat = countryDetails.centroid[1];
         const lng = countryDetails.centroid[0];
@@ -169,6 +188,10 @@ const CountryView: React.FC = () => {
             country.name,
             currentTimeseriesDate,
         );
+
+        const confirmedCases = chartData.length
+            ? chartData[chartData.length - 1].caseCount
+            : 0;
 
         const popupContent = (
             <>
@@ -216,7 +239,7 @@ const CountryView: React.FC = () => {
             );
 
         setCurrentPopup(popup);
-    }, [popupData]);
+    }, [popupData, timeseriesData, currentTimeseriesDate]);
 
     // Display countries data on the map
     const displayCountriesOnMap = () => {
@@ -292,13 +315,6 @@ const CountryView: React.FC = () => {
             'admin-1-boundary',
         );
 
-        //Filter out countries without any data
-        mapRef.setFilter('countries-join', [
-            'in',
-            'iso_3166_1_alpha_3',
-            ...countriesData.map((country) => country.name),
-        ]);
-
         // Change the mouse cursor to pointer when hovering above this layer
         mapRef.on('mouseenter', 'countries-join', () => {
             mapRef.getCanvas().style.cursor = 'pointer';
@@ -316,6 +332,13 @@ const CountryView: React.FC = () => {
 
             dispatch(setSelectedCountryInSidebar({ name: countryName }));
             dispatch(setPopup({ isOpen: true, countryName }));
+        });
+
+        mapRef.on('dragstart', () => {
+            setDragging(true);
+        });
+        mapRef.on('dragend', () => {
+            setDragging(false);
         });
     };
 
@@ -362,6 +385,7 @@ const CountryView: React.FC = () => {
             });
         });
 
+        //Filter out countries without any data
         mapRef.setFilter('countries-join', [
             'in',
             'iso_3166_1_alpha_3',
@@ -384,6 +408,7 @@ const CountryView: React.FC = () => {
                 }
                 legendRows={dataLayers}
             />
+            <CopyStateLinkButton onWhichContainer="view" map={map} />
         </>
     );
 };

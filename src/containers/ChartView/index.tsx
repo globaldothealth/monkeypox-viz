@@ -21,12 +21,13 @@ import {
     Area,
     CartesianGrid,
 } from 'recharts';
-import { getGlobalChartData } from 'utils/helperFunctions';
+import { getGlobalChartData, URLToFilters } from 'utils/helperFunctions';
 import Typography from '@mui/material/Typography';
 import ChartSlider from 'components/ChartSlider';
 import { getCountryName } from 'utils/helperFunctions';
 import { useTheme } from '@mui/material/styles';
 import { ChartContainer } from './styled';
+import CopyStateLinkButton from 'components/CopyStateLinkButton';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 type ChartTypeValues = {
@@ -35,7 +36,7 @@ type ChartTypeValues = {
     tooltipName: string;
 };
 
-enum ChartTypeNames {
+export enum ChartTypeNames {
     Cumulative = 'cumulative',
     NDaysAverage = 'nDaysAverage',
     NDaysAverageCumulative = 'nDaysAverageCumulative',
@@ -108,6 +109,20 @@ const ChartView = () => {
         availableDates,
     ]);
 
+    useEffect(() => {
+        const newViewValues = URLToFilters(location.search);
+        if (
+            !newViewValues.chartType ||
+            newViewValues.chartType === ChartTypeNames.Cumulative ||
+            !Object.values(ChartTypeNames).includes(
+                newViewValues.chartType as ChartTypeNames,
+            )
+        )
+            return;
+
+        setChartType(newViewValues.chartType);
+    }, [location.search]);
+
     const handleChartDataChange = (
         event: React.MouseEvent<HTMLElement>, //needs to be here for correct type check
         newChartType: ChartTypeNames,
@@ -118,88 +133,93 @@ const ChartView = () => {
     };
 
     return (
-        <ChartContainer>
-            <Typography
-                variant="body1"
-                sx={{ width: '100%', textAlign: 'center' }}
-            >
-                {chartTypes[chartType].title}
-                <strong>
-                    {selectedCountry
-                        ? getCountryName(selectedCountry.name)
-                        : `Worldwide`}
-                </strong>
-            </Typography>
-            <ToggleButtonGroup
-                color="primary"
-                value={chartType}
-                exclusive
-                onChange={handleChartDataChange}
-                aria-label="chart data type change buttons"
-            >
-                <ToggleButton value={ChartTypeNames.Cumulative}>
-                    Cumulative
-                </ToggleButton>
-                <ToggleButton value={ChartTypeNames.NDaysAverage}>
-                    {' '}
-                    7-day average
-                </ToggleButton>
-                <ToggleButton value={ChartTypeNames.NDaysAverageCumulative}>
-                    {' '}
-                    7-day average cumulative
-                </ToggleButton>
-            </ToggleButtonGroup>
-            <ResponsiveContainer width="90%" height="80%">
-                <AreaChart data={chartData}>
-                    <defs>
-                        <linearGradient
-                            id={chartType}
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                        >
-                            <stop
-                                offset="5%"
-                                stopColor={theme.palette.primary.main}
-                                stopOpacity={0.8}
-                            />
-                            <stop
-                                offset="95%"
-                                stopColor={theme.palette.primary.main}
-                                stopOpacity={0}
-                            />
-                        </linearGradient>
-                    </defs>
-                    <CartesianGrid
-                        stroke="rgba(0, 0, 0, 0.1)"
-                        strokeDasharray="5 5"
-                    />
-                    <XAxis
-                        dataKey="date"
-                        interval="preserveStartEnd"
-                        minTickGap={100}
-                    />
-                    <YAxis />
-                    <Area
-                        type="monotone"
-                        dataKey={chartTypes[chartType].dataKey}
-                        stroke={theme.palette.primary.main}
-                        fillOpacity={1}
-                        fill={`url(#${chartType})`}
-                    />
+        <>
+            <ChartContainer>
+                <Typography
+                    variant="body1"
+                    sx={{ width: '100%', textAlign: 'center' }}
+                >
+                    {chartTypes[chartType].title}
+                    <strong>
+                        {selectedCountry
+                            ? getCountryName(selectedCountry.name)
+                            : `Worldwide`}
+                    </strong>
+                </Typography>
+                <ToggleButtonGroup
+                    color="primary"
+                    value={chartType}
+                    exclusive
+                    onChange={handleChartDataChange}
+                    aria-label="chart data type change buttons"
+                >
+                    <ToggleButton value={ChartTypeNames.Cumulative}>
+                        Cumulative
+                    </ToggleButton>
+                    <ToggleButton value={ChartTypeNames.NDaysAverage}>
+                        {' '}
+                        7-day average
+                    </ToggleButton>
+                    <ToggleButton value={ChartTypeNames.NDaysAverageCumulative}>
+                        {' '}
+                        7-day average cumulative
+                    </ToggleButton>
+                </ToggleButtonGroup>
+                <ResponsiveContainer width="90%" height="80%">
+                    <AreaChart data={chartData}>
+                        <defs>
+                            <linearGradient
+                                id={chartType}
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                y2="1"
+                            >
+                                <stop
+                                    offset="5%"
+                                    stopColor={theme.palette.primary.main}
+                                    stopOpacity={0.8}
+                                />
+                                <stop
+                                    offset="95%"
+                                    stopColor={theme.palette.primary.main}
+                                    stopOpacity={0}
+                                />
+                            </linearGradient>
+                        </defs>
+                        <CartesianGrid
+                            stroke="rgba(0, 0, 0, 0.1)"
+                            strokeDasharray="5 5"
+                        />
+                        <XAxis
+                            dataKey="date"
+                            interval="preserveStartEnd"
+                            minTickGap={100}
+                        />
+                        <YAxis />
+                        <Area
+                            type="monotone"
+                            dataKey={chartTypes[chartType].dataKey}
+                            stroke={theme.palette.primary.main}
+                            fillOpacity={1}
+                            fill={`url(#${chartType})`}
+                        />
 
-                    <Tooltip
-                        formatter={(value: string) => [
-                            value,
-                            chartTypes[chartType].tooltipName,
-                        ]}
-                    />
-                </AreaChart>
-            </ResponsiveContainer>
-
-            <ChartSlider />
-        </ChartContainer>
+                        <Tooltip
+                            formatter={(value: string) => [
+                                value,
+                                chartTypes[chartType].tooltipName,
+                            ]}
+                        />
+                    </AreaChart>
+                </ResponsiveContainer>
+                <ChartSlider />
+            </ChartContainer>
+            <CopyStateLinkButton
+                onWhichContainer="chart"
+                chartType={chartType}
+            />
+        </>
     );
 };
 

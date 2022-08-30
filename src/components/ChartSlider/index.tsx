@@ -15,7 +15,11 @@ import Stack from '@mui/material/Stack';
 import { format } from 'date-fns';
 
 import Slider from '@mui/material/Slider';
-import { getAvailableDatesForCountry } from 'utils/helperFunctions';
+import { useNavigate } from 'react-router-dom';
+import {
+    getAvailableDatesForCountry,
+    URLToFilters,
+} from 'utils/helperFunctions';
 
 const minDistance = 5;
 
@@ -27,6 +31,7 @@ function getLabel(dates: Date[], selectedDate: number | undefined) {
 
 export default function ChartSlider() {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const chartDatePeriod = useAppSelector(selectChartDatePeriod);
     const allTimeseriesDates = useAppSelector(selectTimeseriesDates);
@@ -40,16 +45,24 @@ export default function ChartSlider() {
         if (!timeseriesCountryData || timeseriesCountryData.length === 0)
             return;
 
-        const dates = selectedCountry && selectedCountry.name !== 'worldwide'
-            ? getAvailableDatesForCountry(
-                  timeseriesCountryData,
-                  selectedCountry,
-              )
-            : allTimeseriesDates;
+        const dates =
+            selectedCountry && selectedCountry.name !== 'worldwide'
+                ? getAvailableDatesForCountry(
+                      timeseriesCountryData,
+                      selectedCountry,
+                  )
+                : allTimeseriesDates;
+        const newChartValues = URLToFilters(location.search);
+        const dateRange = spaceBetweenDatesParams(
+            Number(newChartValues.startDate) || 0,
+            Number(newChartValues.endDate) || dates.length - 1,
+            dates.length - 1,
+        );
 
-        setSliderRange([0, dates.length - 1]);
+        setSliderRange(dateRange);
         dispatch(setAvailableDates(dates));
-        dispatch(setChartDatePeriod([0, dates.length - 1]));
+        dispatch(setChartDatePeriod(dateRange));
+        navigate(location.pathname);
     }, [selectedCountry, timeseriesCountryData]);
 
     const handleValueChange = (
@@ -78,6 +91,25 @@ export default function ChartSlider() {
         } else {
             dispatch(setChartDatePeriod(newValue as number[]));
         }
+    };
+
+    const spaceBetweenDatesParams = (
+        start: number,
+        end: number,
+        max: number,
+    ): number[] => {
+        start = start > max || start < 0 ? 0 : Math.floor(start);
+        end = end > max || end < 0 ? max : Math.floor(end);
+
+        if (start > end) return [0, max];
+
+        const distance = Math.abs(start - end);
+        if (distance < minDistance) {
+            if (start - distance < 0) end = end + minDistance - distance;
+            else start = start - minDistance + distance;
+        }
+
+        return [start, end];
     };
 
     return (

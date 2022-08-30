@@ -29,6 +29,12 @@
                 "confirmed": 11,
                 "suspected": 0
             }
+        },
+        {
+            "ARG": {
+                "confirmed": 20,
+                "suspected": 0
+            }
         }
     ]
 }
