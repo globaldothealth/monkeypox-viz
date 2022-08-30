@@ -92,7 +92,7 @@ export default function Timeseries({ isHidden }: TimeseriesProps) {
         if (popupData.isOpen) {
             dispatch(setPopup({ isOpen: false, countryName: '' }));
         }
-    }, [selectedDate]);
+    }, [selectedDate, dataType]);
 
     // Stop animation and delete interval when completed
     useEffect(() => {
