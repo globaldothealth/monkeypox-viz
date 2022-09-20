@@ -103,6 +103,12 @@ const CountryView: React.FC = () => {
 
         const bounds = lookupTableData[countryCode].bounds;
         map.current?.fitBounds(bounds);
+
+        //on some browsers the blank space is added below the body element when using fitBounds function
+        //this is to manually scroll to top of the page where map is located
+        setTimeout(() => {
+            scrollTo(0, 0);
+        }, 100);
     }, [selectedCountry]);
 
     // Setup map
