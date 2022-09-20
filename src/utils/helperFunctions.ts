@@ -146,6 +146,8 @@ const getNDaysAverage = (
 ): number | undefined => {
     //if first 7 days return undefined
 
+    if (!timeseriesCountData[8]) return;
+
     if (
         nDays >= idx + 1 &&
         compareAsc(data[0].date, timeseriesCountData[8].date) === -1

@@ -21,7 +21,7 @@ import {
     URLToFilters,
 } from 'utils/helperFunctions';
 
-const minDistance = 5;
+let minDistance = 5;
 
 function getLabel(dates: Date[], selectedDate: number | undefined) {
     if (selectedDate === undefined || !dates || dates.length === 0) return '';
@@ -52,6 +52,9 @@ export default function ChartSlider() {
                       selectedCountry,
                   )
                 : allTimeseriesDates;
+
+        minDistance = dates.length > 5 ? 5 : dates.length - 1;
+
         const newChartValues = URLToFilters(location.search);
         const dateRange = spaceBetweenDatesParams(
             Number(newChartValues.startDate) || 0,
