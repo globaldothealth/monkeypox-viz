@@ -30,3 +30,6 @@ You can start the development server by running:
 
 #### `npm start`
 
+## Deployment
+
+Deployments are set up to happen automatically. If a deploy pushes to a website using a Cloudfront distribution, an invalidation will need to be created to apply changes.
