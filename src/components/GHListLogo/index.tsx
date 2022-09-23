@@ -1,6 +1,7 @@
 import logo from 'assets/images/gh_logo.svg';
 import { LogoStyles, LogoImage } from './styled';
 import MapGuide from 'components/MapGuide';
+import DataUpdateInfoTooltip from '../DataUpdateInfoTooltip/index';
 
 export default function GHListLogo(): JSX.Element {
     return (
@@ -12,6 +13,7 @@ export default function GHListLogo(): JSX.Element {
                 </div>
             </a>
             <MapGuide />
+            <DataUpdateInfoTooltip />
         </LogoStyles>
     );
 }
