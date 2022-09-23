@@ -33,7 +33,7 @@ const StyledMapGuideContext: React.FC = () => {
     return (
         <>
             <StyledTooltipTitle>
-                Welcome to Global.health Map!
+                Welcome to the Global.health monkeypox map!
             </StyledTooltipTitle>
             <Typography
                 sx={{
