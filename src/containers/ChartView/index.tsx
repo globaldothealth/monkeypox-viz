@@ -196,7 +196,7 @@ const ChartView = () => {
                             interval="preserveStartEnd"
                             minTickGap={100}
                         />
-                        <YAxis />
+                        <YAxis allowDecimals={false} />
                         <Area
                             type="monotone"
                             dataKey={chartTypes[chartType].dataKey}
