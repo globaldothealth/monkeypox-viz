@@ -55,6 +55,8 @@ export const getCountryCode = (countryName: string): string => {
     if (countryName === 'Taiwan') return 'TWN';
     if (countryName === 'Russia') return 'RUS';
     if (countryName === 'Venezuela') return 'VEN';
+    if (countryName === 'Moldova') return 'MDA';
+    if (countryName === 'Saint Martin (French part)') return 'MAF';
 
     return countryObj ? countryObj.alpha3 : 'N/A';
 };
