@@ -72,7 +72,11 @@ const CountryView: React.FC = () => {
 
     const smallScreen = useMediaQuery('(max-width:1400px)');
 
-    const lookupTableData = countryLookupTable.adm0.data.all as {
+    //SS not updating from AWS in json file lookup table for field .all, tmp fix
+    const lookupTableData = {
+        ...countryLookupTable.adm0.data.all,
+        SS: countryLookupTable.adm0.data.US.SS,
+    } as {
         [key: string]: any;
     };
 
