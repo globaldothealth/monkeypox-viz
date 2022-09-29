@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { ClickAwayListener, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
@@ -61,31 +61,36 @@ export const DataUpdateInfo: React.FC = () => {
         useState(true);
 
     useEffect(() => {
-        setTimeout(() => setDisableHoverListenerBoolean(false), 6000);
+        setTimeout(() => setDisableHoverListenerBoolean(false), 4000);
         setTimeout(() => setIsOpen(false), 14000);
     }, []);
 
     return (
-        <StyledDataUpdateInfoButton>
-            <StyledDataUpdateInfoTooltip
-                onOpen={() => setIsOpen(true)}
-                onClose={() => setIsOpen(false)}
-                leaveTouchDelay={14000}
-                open={isOpen}
-                arrow
-                title={<StyledDataUpdateInfoContext />}
-                placement="bottom-end"
-                disableHoverListener={disableHoverListenerBoolean}
-            >
-                <DataUpdateInfoButton
-                    disableRipple
-                    onClick={() => setIsOpen(!isOpen)}
-                    startIcon={<WarningAmberOutlinedIcon />}
+        <ClickAwayListener
+            mouseEvent={'onMouseDown'}
+            onClickAway={() => setIsOpen(false)}
+        >
+            <StyledDataUpdateInfoButton>
+                <StyledDataUpdateInfoTooltip
+                    onOpen={() => setIsOpen(true)}
+                    onClose={() => setIsOpen(false)}
+                    leaveTouchDelay={14000}
+                    open={isOpen}
+                    arrow
+                    title={<StyledDataUpdateInfoContext />}
+                    placement="bottom-end"
+                    disableHoverListener={disableHoverListenerBoolean}
                 >
-                    Update Info
-                </DataUpdateInfoButton>
-            </StyledDataUpdateInfoTooltip>
-        </StyledDataUpdateInfoButton>
+                    <DataUpdateInfoButton
+                        disableRipple
+                        onClick={() => setIsOpen(!isOpen)}
+                        startIcon={<WarningAmberOutlinedIcon />}
+                    >
+                        Update Info
+                    </DataUpdateInfoButton>
+                </StyledDataUpdateInfoTooltip>
+            </StyledDataUpdateInfoButton>
+        </ClickAwayListener>
     );
 };
 
