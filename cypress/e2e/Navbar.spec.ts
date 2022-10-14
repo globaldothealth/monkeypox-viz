@@ -6,6 +6,10 @@ describe('<Navbar />', () => {
 
         cy.get('.popup-small-screens').should('not.exist');
 
+        // temporary line of code, after updating mpx data it will be obsolete
+        cy.contains(/Update Info/i).click();
+        //-------------------------
+
         cy.get('.navbar').should('be.visible');
         cy.get('#logo').should('be.visible');
         cy.contains('Country View').should('be.visible');
@@ -15,6 +19,10 @@ describe('<Navbar />', () => {
 
     it('Opens and closes the MapGuide', () => {
         cy.visit('/');
+
+        // temporary line of code, after updating mpx data it will be obsolete
+        cy.contains(/Update Info/i).click();
+        //-------------------------
 
         //hovering over button should display tooltip container
         cy.get('.MuiTooltip-tooltip').should('not.exist');
@@ -42,6 +50,10 @@ describe('<Navbar />', () => {
     it('Displays popup on small devices', () => {
         cy.viewport(520, 780);
         cy.visit('/');
+
+        // temporary line of code, after updating mpx data it will be obsolete
+        cy.wait(15000);
+        //-------------------------
 
         cy.get('.popup-small-screens').contains(
             'For a better experience please visit this website using a device with a larger screen',
