@@ -19,7 +19,7 @@ export default function CaseChart({ data }: CaseChartProps) {
                 tickLine={false}
                 interval="preserveStartEnd"
             />
-            <YAxis />
+            <YAxis allowDecimals={false} />
         </LineChart>
     );
 }
