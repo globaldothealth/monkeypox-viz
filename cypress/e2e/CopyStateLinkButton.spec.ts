@@ -2,22 +2,22 @@ describe('<CopyStateLinkButton />', () => {
     beforeEach(() => {
         cy.intercept(
             'GET',
-            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country-who/latest.json',
             { fixture: 'countriesData.json', statusCode: 200 },
         ).as('fetchCountriesData');
         cy.intercept(
             'GET',
-            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries-who/country_confirmed.json',
             { fixture: 'timeseriesCountryData.json', statusCode: 200 },
         ).as('fetchTimeseriesData');
         cy.intercept(
             'GET',
-            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries-who/confirmed.json',
             { fixture: 'timeseriesTotalData.json', statusCode: 200 },
         ).as('fetchTimeseriesCountData');
         cy.intercept(
             'GET',
-            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/total/latest.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/total-who/latest.json',
             { fixture: 'totalCasesData.json', statusCode: 200 },
         ).as('fetchTotalCasesData');
 
@@ -139,7 +139,7 @@ describe('<CopyStateLinkButton />', () => {
         cy.get('.MuiAlert-message').should('not.exist');
     });
 
-    it('Propely setup view via given URL', () => {
+    it('Properly setup view via given URL', () => {
         cy.visit('/country?name=ARG&currDate=11');
         cy.wait(3000);
         cy.get('.MuiSlider-thumb > input').should('have.attr', 'value', '11');
@@ -149,7 +149,7 @@ describe('<CopyStateLinkButton />', () => {
         cy.get('.MuiSlider-track').should(
             'have.attr',
             'style',
-            'left: 25%; width: 50%;',
+            'left: 27.2727%; width: 54.5455%;',
         );
         cy.contains(/Total confirmed cases: Argentina/i).should('exist');
     });
