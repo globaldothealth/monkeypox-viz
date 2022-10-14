@@ -44,17 +44,17 @@ describe('<SideBar />', () => {
     it('Displays loading skeleton while feetching data', () => {
         cy.intercept(
             'GET',
-            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country/latest.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/country-who/latest.json',
             { fixture: 'countriesData.json', statusCode: 200, delay: 3000 },
         ).as('fetchCountriesData');
         cy.intercept(
             'GET',
-            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/total/latest.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/total-who/latest.json',
             { fixture: 'totalCasesData.json', statusCode: 200, delay: 3000 },
         ).as('fetchTotalCasesData');
         cy.intercept(
             'GET',
-            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/country_confirmed.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries-who/country_confirmed.json',
             {
                 fixture: 'timeseriesCountryData.json',
                 statusCode: 200,
@@ -63,7 +63,7 @@ describe('<SideBar />', () => {
         ).as('fetchTimeseriesData');
         cy.intercept(
             'GET',
-            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries/confirmed.json',
+            'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries-who/confirmed.json',
             {
                 fixture: 'timeseriesTotalData.json',
                 statusCode: 200,
