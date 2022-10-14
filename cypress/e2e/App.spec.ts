@@ -8,12 +8,18 @@ describe('<App />', () => {
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries-who/country_confirmed.json',
-            { fixture: 'timeseriesCountryData.json', statusCode: 200 },
+            {
+                fixture: 'timeseriesCountryData.json',
+                statusCode: 200,
+            },
         ).as('fetchTimeseriesData');
         cy.intercept(
             'GET',
             'https://monkeypox-aggregates.s3.eu-central-1.amazonaws.com/timeseries-who/confirmed.json',
-            { fixture: 'timeseriesTotalData.json', statusCode: 200 },
+            {
+                fixture: 'timeseriesTotalData.json',
+                statusCode: 200,
+            },
         ).as('fetchTimeseriesCountData');
         cy.intercept(
             'GET',
@@ -73,9 +79,6 @@ describe('<App />', () => {
 
         cy.visit('/');
         cy.wait('@fetchCountriesData');
-
-        // temporary line of code, after updating mpx data it will be obsolete
-        cy.contains(/Update Info/i).click();
 
         cy.contains(/Country view/i).click();
         cy.contains(/Line List Cases/i).should('be.visible');

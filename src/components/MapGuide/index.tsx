@@ -7,6 +7,7 @@ import {
     StyledMapGuideButton,
     StyledTooltipTitle,
     MapGuideButton,
+    Link,
 } from './styled';
 import { useState } from 'react';
 
@@ -40,14 +41,24 @@ const StyledMapGuideContext: React.FC = () => {
                     marginBottom: '2rem',
                 }}
             >
-                These geospatial data visualisations allow you to explore our
-                Monkeypox line-list dataset.
+                These geospatial data visualisations allow you to explore data
+                produced by the World Health Organization for the 2022 Monkeypox
+                outbreak. You can read about our data transition and completing
+                a 100 days mission on the{' '}
+                <Link
+                    href="https://globaldothealth.substack.com/p/tracking-the-2022-monkeypox-outbreak-8c3"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    G.h blog
+                </Link>
+                .
             </Typography>
             <Typography>
                 <strong>Country View:</strong> Click on a country to see
-                available line-list data in that country. You can also use the
-                left-hand navigation to search or select a country. Darker
-                colours indicate more available line-list data.
+                available data in that country. You can also use the left-hand
+                navigation to search or select a country. Darker colours
+                indicate more available data.
             </Typography>
         </>
     );

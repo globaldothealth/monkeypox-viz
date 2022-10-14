@@ -25,9 +25,6 @@ describe('<SideBar />', () => {
     it('Displays navbar, hides navbar', () => {
         cy.visit('/');
 
-        // temporary line of code, after updating mpx data it will be obsolete
-        cy.contains(/Update Info/i).click();
-
         cy.get('[data-cy="sidebar"]').should('be.visible');
 
         cy.contains('MONKEYPOX LINE LIST CASES');
@@ -119,10 +116,6 @@ describe('<SideBar />', () => {
         cy.visit('/');
 
         cy.wait('@fetchCountriesData');
-
-        // temporary line of code, after updating mpx data it will be obsolete
-        cy.contains(/Update Info/i).click();
-        //-------------------------
 
         cy.contains(/Confirmed/i);
         cy.contains(/Confirmed and Suspected/i);
