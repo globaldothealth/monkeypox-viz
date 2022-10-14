@@ -66,7 +66,6 @@ export const DataUpdateInfo: React.FC = () => {
     }, []);
 
     return (
-
         <ClickAwayListener
             mouseEvent={'onMouseDown'}
             onClickAway={() => setIsOpen(false)}

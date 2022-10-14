@@ -11,7 +11,6 @@ import {
     getDataPortalUrl,
     Env,
     sortCountriesData,
-    getCountryCode,
 } from 'utils/helperFunctions';
 import enUSLocale from 'date-fns/locale/en-US';
 import { formatInTimeZone } from 'date-fns-tz';
@@ -178,7 +177,7 @@ interface TimeseriesDataRow {
     Date: string;
     Cases: number;
     Cumulative_cases: number;
-    Country: string;
+    Country_ISO3: string;
 }
 
 interface TimeseriesCountsDataRow {
@@ -215,7 +214,7 @@ export const fetchTimeseriesData = createAsyncThunk<
             jsonResponse.map((row) => {
                 return {
                     date: new Date(row.Date),
-                    country: getCountryCode(row.Country),
+                    country: row.Country_ISO3,
                     cases: row.Cases,
                     cumulativeCases: row.Cumulative_cases,
                 };
