@@ -11,7 +11,6 @@ import {
     getDataPortalUrl,
     Env,
     sortCountriesData,
-    getCountryCode,
 } from 'utils/helperFunctions';
 import enUSLocale from 'date-fns/locale/en-US';
 import { formatInTimeZone } from 'date-fns-tz';

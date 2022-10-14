@@ -37,27 +37,6 @@ export const getTwoLetterCountryCode = (code: string) => {
     return countryObj ? countryObj.alpha2 : 'N/A';
 };
 
-export const getCountryCode = (countryCode: string): string => {
-    const countryObj = iso.whereAlpha3(countryCode);
-
-    // Manual overrides
-    // if (countryName === 'United Kingdom') return 'GBR';
-    // if (countryName === 'England') return 'GBR';
-    // if (countryName === 'Scotland') return 'GBR';
-    // if (countryName === 'Wales') return 'GBR';
-    // if (countryName === 'Northern Ireland') return 'GBR';
-    // if (countryName === 'United States') return 'USA';
-    // if (countryName === 'Iran') return 'IRN';
-    // if (countryName === 'South Korea') return 'KOR';
-    // if (countryName === 'Democratic Republic Of The Congo') return 'COD';
-    // if (countryName === 'Republic of Congo') return 'COG';
-    // if (countryName === 'Taiwan') return 'TWN';
-    // if (countryName === 'Russia') return 'RUS';
-    // if (countryName === 'Venezuela') return 'VEN';
-
-    return countryObj ? countryObj.alpha3 : 'N/A';
-};
-
 export enum Env {
     Local = 'local',
     Dev = 'dev',
