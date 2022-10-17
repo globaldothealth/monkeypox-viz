@@ -80,6 +80,10 @@ describe('<App />', () => {
         cy.visit('/');
         cy.wait('@fetchCountriesData');
 
+        // temporary line of code, after updating mpx data it will be obsolete
+        cy.contains(/Update Info/i).click();
+        //-------------------------
+
         cy.contains(/Country view/i).click();
         cy.contains(/Line List Cases/i).should('be.visible');
         cy.url().should('eq', 'http://localhost:3000/country');
