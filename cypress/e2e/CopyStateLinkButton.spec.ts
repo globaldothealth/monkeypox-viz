@@ -46,7 +46,7 @@ describe('<CopyStateLinkButton />', () => {
         cy.contains(/COPY LINK TO/i).should('be.visible');
     });
 
-    it('Copying proper link to clipboard', () => {
+    it('Copying proper link to clipboard for country view', () => {
         cy.visit('/country');
         cy.wrap(
             Cypress.automation('remote:debugger:protocol', {
@@ -77,8 +77,23 @@ describe('<CopyStateLinkButton />', () => {
                 expect(text).to.include('?name=ARG&currDate=12');
             });
         });
+    });
 
+    it('Copying proper link to clipboard from chart', () => {
         cy.visit('/chart');
+
+        cy.wrap(
+            Cypress.automation('remote:debugger:protocol', {
+                command: 'Browser.grantPermissions',
+                params: {
+                    permissions: [
+                        'clipboardReadWrite',
+                        'clipboardSanitizedWrite',
+                    ],
+                    origin: window.location.origin,
+                },
+            }),
+        );
 
         cy.wait(3000);
 
@@ -89,6 +104,8 @@ describe('<CopyStateLinkButton />', () => {
             'left: 25%',
             'width: 50%',
         ]);
+
+        cy.get('button').contains(/Accept/i).should('be.visible').click()
 
         cy.contains(/COPY LINK TO/i)
             .should('be.visible')
