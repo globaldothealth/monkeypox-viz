@@ -67,6 +67,8 @@ describe('<CopyStateLinkButton />', () => {
 
         cy.get('.MuiSlider-track + span > input').invoke('attr', 'value', 12);
 
+        cy.get('button').contains(/Accept/i).should('be.visible').click()
+
         cy.contains(/COPY LINK TO/i)
             .should('be.visible')
             .focus()
