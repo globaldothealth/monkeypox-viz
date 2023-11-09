@@ -65,7 +65,7 @@ describe('<App />', () => {
         cy.visit('/');
 
         cy.contains(/Country view/i).should('be.visible');
-        cy.contains(/Monkeypox Dataset/i).should('be.visible');
+        cy.contains(/Mpox Dataset/i).should('be.visible');
         cy.contains(/Feedback/i).should('be.visible');
         cy.contains(/Briefing Report/i).should('be.visible');
     });
@@ -84,7 +84,7 @@ describe('<App />', () => {
         cy.contains(/Line List Cases/i).should('be.visible');
         cy.url().should('eq', 'http://localhost:3000/country');
 
-        cy.contains(/Monkeypox Dataset/i)
+        cy.contains(/Mpox Dataset/i)
             .should('have.attr', 'href')
             .and('eq', 'https://github.com/globaldothealth/monkeypox');
 
