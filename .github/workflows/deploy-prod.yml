@@ -44,4 +44,4 @@ jobs:
                   aws-region: eu-central-1
 
             - name: Deploy to AWS S3
-              run: aws s3 sync ./build s3://map.monkeypox.global.health --delete
+              run: aws s3 sync ./build s3://map.mpox.global.health --delete
