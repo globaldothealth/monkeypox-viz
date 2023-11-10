@@ -34,7 +34,7 @@ const StyledMapGuideContext: React.FC = () => {
     return (
         <>
             <StyledTooltipTitle>
-                Welcome to the Global.health monkeypox map!
+                Welcome to the Global.health Mpox map!
             </StyledTooltipTitle>
             <Typography
                 sx={{
@@ -42,7 +42,7 @@ const StyledMapGuideContext: React.FC = () => {
                 }}
             >
                 These geospatial data visualisations allow you to explore data
-                produced by the World Health Organization for the 2022 Monkeypox
+                produced by the World Health Organization for the 2022 Mpox
                 outbreak. You can read about our data transition and completing
                 a 100 days mission on the{' '}
                 <Link

@@ -1,6 +1,6 @@
-# Global.health Monkeypox visualization
+# Global.health Mpox visualization
 
-Global.health Monkeypox visualization
+Global.health Mpox visualization
 
 https://map.monkeypox.global.health
 

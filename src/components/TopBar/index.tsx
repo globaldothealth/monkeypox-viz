@@ -37,7 +37,7 @@ const TopBar = () => {
                             target="_blank"
                         >
                             <Typography variant="navbarlink" gutterBottom>
-                                Monkeypox Dataset
+                                Mpox Dataset
                             </Typography>
                         </a>
 
