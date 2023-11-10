@@ -236,7 +236,7 @@ const SideBar = () => {
         <StyledSideBar sidebaropen={openSidebar} data-cy="sidebar">
             <>
                 <SideBarHeader id="sidebar-header">
-                    <h1 id="total">MONKEYPOX LINE LIST CASES</h1>
+                    <h1 id="total">MPOX LINE LIST CASES</h1>
                 </SideBarHeader>
 
                 {location.pathname !== '/chart' && <DataTypeButtons />}
