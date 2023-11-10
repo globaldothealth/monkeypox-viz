@@ -27,11 +27,11 @@ describe('<SideBar />', () => {
 
         cy.get('[data-cy="sidebar"]').should('be.visible');
 
-        cy.contains('MONKEYPOX LINE LIST CASES');
+        cy.contains('MPOX LINE LIST CASES');
         cy.get('#sidebar-tab-icon').should('be.visible').click();
 
         cy.get('[data-cy="sidebar"]').should('not.be.visible');
-        cy.contains('MONKEYPOX LINE LIST CASES').should('not.be.visible');
+        cy.contains('MPOX LINE LIST CASES').should('not.be.visible');
 
         cy.get('#sidebar-tab-icon').click();
 
